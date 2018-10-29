@@ -175,5 +175,5 @@ namespace ADCOPlugin
 <<<<<<< HEAD
 // Dr Nguyen owes us pizza
 =======
-//causing more errors
->>>>>>> as;ldkfj
+}
+>>>>>>> returning to normal
