@@ -5,7 +5,7 @@ using static AngelSix.SolidDna.SolidWorksEnvironment;
 
 namespace ADCOPlugin
 {
-    // 
+    //
     //  *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
     //
     //     Welcome to SolidDNA by AngelSix
@@ -13,7 +13,7 @@ namespace ADCOPlugin
     //        SolidDNA is a modern framework designed to make developing SolidWorks Add-ins easy.
     //
     //        With this template you have a ready-to-go add-in that will load inside of SolidWorks
-    //        and a bunch of useful example projects available here 
+    //        and a bunch of useful example projects available here
     //        https://github.com/angelsix/solidworks-api/tree/develop/Tutorials
     //
     //
@@ -24,12 +24,12 @@ namespace ADCOPlugin
     //        Compile your project, open up the SolidWorksAddinInstaller.exe, then browse for your
     //        output dll file (for example /bin/Debug/ADCOPlugin.dll) and click Install.
     //
-    //        Now when you start SolidWorks your Add-in should load and should appear in the 
-    //        Tools > Add-ins menu. 
+    //        Now when you start SolidWorks your Add-in should load and should appear in the
+    //        Tools > Add-ins menu.
     //
-    //        NOTE: You only need to register your add-in once, or when you move the location or 
+    //        NOTE: You only need to register your add-in once, or when you move the location or
     //              change the filename.
-    //        
+    //
     //
     //     Debugging Code
     //
@@ -45,16 +45,16 @@ namespace ADCOPlugin
     //     Startup Flow
     //
     //        When your SolidDna add-in first loads, SolidWorks will call the ConnectToSW method
-    //        inside your AddInIntegration class. 
+    //        inside your AddInIntegration class.
     //
     //        This method will fire the following methods in this order:
-    // 
+    //
     //         - ConfigureServices
     //         - PreConnectToSolidWorks
     //         - PreLoadPlugIns
     //         - ApplicationStartup
     //         - ConnectedToSolidWorks
-    //        
+    //
     //        Once your add-in is unloaded by SolidWorks the DisconnectFromSW method will be called
     //        which will in turn fire the following methods:
     //
@@ -100,7 +100,7 @@ namespace ADCOPlugin
         }
 
         /// <summary>
-        /// Use this to do early initialization and any configuration of the 
+        /// Use this to do early initialization and any configuration of the
         /// PlugInIntegration class properties such as <see cref="PlugInIntegration.UseDetachedAppDomain"/>
         /// </summary>
         public override void PreConnectToSolidWorks()
@@ -118,9 +118,9 @@ namespace ADCOPlugin
     }
 
     /// <summary>
-    /// Registers as a SolidDna PlugIn to be loaded by our AddIn Integration class 
+    /// Registers as a SolidDna PlugIn to be loaded by our AddIn Integration class
     /// when the SolidWorks add-in gets loaded.
-    /// 
+    ///
     /// NOTE: We can have multiple plug-ins in a single add-in
     /// </summary>
     public class MySolidDnaPlugIn : SolidPlugIn
@@ -175,5 +175,5 @@ namespace ADCOPlugin
 <<<<<<< HEAD
 // Dr Nguyen owes us pizza
 =======
-//SUBHAN IS TOO COOL
->>>>>>> STuff
+//Makin money moves
+>>>>>>> another test
