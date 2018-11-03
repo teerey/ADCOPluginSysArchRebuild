@@ -19,29 +19,11 @@ namespace ADCOPlugin
         /// </summary>
         public MyAddinControl()
         {
-            InitializeComponent();
+           InitializeComponent();
         }
 
         #endregion
 
-        /// <summary>
-        /// When the button is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // Get the number of selected objects
-            /*
-            var count = 0;
-            Application.ActiveModel?.SelectedObjects(objects => count = objects?.Count ?? 0);
 
-            // Let the user know
-            Application.ShowMessageBox($"Looks like you have {count} objects selected");
-            */
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-                txtEditor.Text = File.ReadAllText(openFileDialog.FileName); 
-        }
     }
 }
