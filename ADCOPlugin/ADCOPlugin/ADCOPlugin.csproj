@@ -101,6 +101,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ADCOguiTemplate.png" />
     <Content Include="logo-small.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
