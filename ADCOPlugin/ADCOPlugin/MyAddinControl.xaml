@@ -7,9 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="400">
 
-    <Border Padding="10">
+    <Border Padding="10" Margin="0,-9,0,104">
         <!--Wraps Everything in border and adds space of 10-->
-        <StackPanel RenderTransformOrigin="0.5,0.5" Background="#FFC9C9C9">
+        <StackPanel RenderTransformOrigin="0.5,0.5">
             <StackPanel.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -39,111 +39,71 @@
 
             </Grid>
 
-            <TextBlock Text="Pulse Properties" FontWeight="Bold" Margin="0 10"/>
+            <TextBlock Text="Carton Former Design Suite" FontWeight="Bold" Margin="0 10"/>
             <!--Creates Text of Content "Text"
-                                                                                 Font "Bold" and position "margin"-->
-            <!--Description-->
-            <TextBlock Text="Description" />
-
-            <TextBox Padding="2"/>
-            <!--Creates user input textbox with padding between letters typed-->
-
-            <!--Status and revision-->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <!--Status-->
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Status" />
-                    <TextBox IsReadOnly="True" Background="#eee" Margin="0 0 10 0" Padding="2"/>
-                </StackPanel>
-
-                <!--Revision-->
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="Revision" />
-                    <TextBox IsReadOnly="True" Background="#eee" Padding="2"/>
-                </StackPanel>
-            </Grid>
-
-            <!--Part Number-->
-            <TextBlock Text="Part Number"/>
-            <TextBox Padding="2" IsReadOnly="True"/>
-
-            <!--Raw Material-->
-            <TextBlock Text="Raw Material" FontWeight="Bold" Margin="0 5"/>
-            <TextBlock Text="Material"/>
-            <ComboBox Padding="2"/>
-
-            <!--Manufacturing Info-->
-            <TextBlock Text="Manufacturing Information" FontWeight="Bold" Margin="0 5"/>
-
-            <!--Work Centres-->
-            <TextBlock Text="Work Centres" Margin="0 0 0 10"/>
-            <Grid>
+            
+                                                                    Font "Bold" and position "margin"-->
+         
+            <!--Graphical Reference for Parameters-->
+            <Image Source="ADCOguiTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" />
+            
+            <!--Carton Type-->
+            <TextBlock Text="Carton Type" Margin="0 20 0 10" HorizontalAlignment="Center" FontWeight="DemiBold"/>
+            <Grid Width="190">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <!--Column 1-->
                 <StackPanel Grid.Column="0">
-                    <CheckBox Content="Weld"/>
-                    <CheckBox Content="Assembly"/>
-                    <CheckBox Content="Plasma"/>
-                    <CheckBox Content="Laser"/>
-                    <CheckBox Content="Purchase"/>
+                    <CheckBox Content="Glue" HorizontalAlignment="Center"/>
                 </StackPanel>
 
                 <!--Column 2-->
                 <StackPanel Grid.Column="1">
-                    <CheckBox Content="Lathe"/>
-                    <CheckBox Content="Drill"/>
-                    <CheckBox Content="Fold"/>
-                    <CheckBox Content="Roll"/>
-                    <CheckBox Content="Saw Dude"/>
+                    <CheckBox Content="Lock" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Grid>
 
-            <!--Length-->
-            <TextBlock Text="Length" Margin="0 5"/>
-            <TextBox Padding="2"/>
+            <TextBlock Text="Length Parameters (inches)" Margin="0 10 0 -5" HorizontalAlignment="Center" FontWeight="DemiBold"/>
+            <!--a-->
+            <TextBlock Text="a" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -5 0 0">
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform Y="17" X="-85"/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+            <TextBox Padding="2" IsReadOnly="True" Background="#eee" HorizontalAlignment="Center" Width="150" />
 
-            <!--Mass-->
-            <TextBlock Text="Mass"/>
-            <TextBox Padding="2" IsReadOnly="true" Background="#eee"/>
+            <!--b-->
+            <TextBlock Text="b" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -10 0 0">
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform Y="17" X="-85"/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+            <TextBox Padding="2" IsReadOnly="True" Background="#eee" HorizontalAlignment="Center" Width="150"/>
 
-            <!--Finish-->
-            <TextBlock Text="Finish"/>
-            <ComboBox SelectedIndex="0" Padding="2">
-                <!--SelectedIndex 0 selects first item in combobox-->
-                <ComboBoxItem>Painted</ComboBoxItem>
-                <!--Inputs item in combobox-->
-                <ComboBoxItem>Not Painted</ComboBoxItem>
-            </ComboBox>
-
-            <!--Purchas info-->
-            <TextBlock Text="Purchase Information"/>
-            <ComboBox SelectedIndex="0" Padding="2">
-                <ComboBoxItem>Rubber</ComboBoxItem>
-                <ComboBoxItem>Not Rubber</ComboBoxItem>
-            </ComboBox>
-
-            <!--Supplier Name-->
-            <TextBlock Text="Supplier Name"/>
-            <TextBox Padding="2"/>
-
-            <!--Supplier Code-->
-            <TextBlock Text="Supplier Code"/>
-            <TextBox Padding="2"/>
-
-            <!--Additional Information-->
-            <TextBlock Text="Addition Information" FontWeight="Bold" Margin="0 10"/>
-            <TextBlock Text="Note" />
-            <TextBox Padding="2"/>
-
-
+            <!--c-->
+            <TextBlock Text="c" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -10 0 0">
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform Y="17" X="-85"/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+            <TextBox Padding="2" IsReadOnly="True" Background="#eee" HorizontalAlignment="Center" Width="150"/>
         </StackPanel>
     </Border>
 </UserControl>
