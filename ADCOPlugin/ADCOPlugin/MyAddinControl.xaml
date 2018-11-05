@@ -9,7 +9,7 @@
 
     <Border Padding="10">
         <!--Wraps Everything in border and adds space of 10-->
-        <StackPanel RenderTransformOrigin="0.5,0.5">
+        <StackPanel RenderTransformOrigin="0.5,0.5" Background="#FFC9C9C9">
             <StackPanel.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>

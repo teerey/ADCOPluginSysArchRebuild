@@ -139,12 +139,12 @@ namespace ADCOPlugin
         /// <summary>
         /// My Add-in title
         /// </summary>
-        public override string AddInTitle => "ADCO Carton-Former Design";
+        public override string AddInTitle => "ADCO Carton Former Design";
 
         /// <summary>
         /// My Add-in description
         /// </summary>
-        public override string AddInDescription => "A plugin that automatically designs a generic model of the typical carton-former machinery";
+        public override string AddInDescription => "A plugin that automatically designs a generic model of the typical carton former machinery";
 
         #endregion
 
