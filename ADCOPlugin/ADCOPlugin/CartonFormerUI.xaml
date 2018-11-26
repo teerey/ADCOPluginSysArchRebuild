@@ -22,17 +22,17 @@
                     </Grid.ColumnDefinitions>
                     <!--Column 1-->
                     <StackPanel Grid.Column="0">
-                        <CheckBox x:Name="TypeGlueCheck" Content="Glue" HorizontalAlignment="Center"/>
+                        <CheckBox x:Name="TypeGlueCheck" Checked="TypeGlueCheck_Checked" Unchecked="TypeGlueCheck_Checked" Content="Glue" HorizontalAlignment="Center" ClickMode="Press"/>
                     </StackPanel>
 
                     <!--Column 2-->
                     <StackPanel Grid.Column="1">
-                        <CheckBox x:Name="TypeLockCheck" Content="Lock" HorizontalAlignment="Center"/>
+                        <CheckBox x:Name="TypeLockCheck" Checked="TypeLockCheck_Checked" Unchecked="TypeLockCheck_Checked" Content="Lock" HorizontalAlignment="Center" ClickMode="Press"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
             
-        <StackPanel x:Name="GlueContent" RenderTransformOrigin="0.5,0.5">
+        <StackPanel Visibility="Hidden" x:Name="GlueContent" RenderTransformOrigin="0.5,0.5">
             <StackPanel.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -63,9 +63,6 @@
             </Grid>
 
             <TextBlock Text="Glue Former Critical Dimensions" FontWeight="Bold" Margin="0 10"/>
-            <!--Creates Text of Content "Text"
-            
-                                                                    Font "Bold" and position "margin"-->
          
             <!--Graphical Reference for Parameters-->
                 <Image Margin="10" Source="ADCOguiTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" OpacityMask="White" />

@@ -47,16 +47,6 @@ namespace ADCOPlugin
             // By default show the Initial Screen (Former type selection)
             InitContent.Visibility = System.Windows.Visibility.Visible;
             GlueContent.Visibility = System.Windows.Visibility.Hidden;
-
-            // Check to see if a former type is selected
-            SolidWorksEnvironment.Application.ActiveModelInformationChanged += Application_ActiveModelInformationChanged;
-            checkFormSelect();
-
-        }
-
-        private void Application_ActiveModelInformationChanged(Model obj)
-        {
-            checkFormSelect();
         }
 
         #region Check Type Selection
@@ -65,21 +55,18 @@ namespace ADCOPlugin
         /// Checks for a form type selection to alter taskpane content visibility
         /// </summary>
 
-        private void checkFormSelect()
-        {
-            AngelSix.SolidDna.ThreadHelpers.RunOnUIThread(() =>
-            {
-                if (TypeGlueCheck.IsChecked.Value)
-                {
-                    InitContent.Visibility = System.Windows.Visibility.Hidden;
-                    GlueContent.Visibility = System.Windows.Visibility.Visible;
-                    return;
-                }
-            });
-        }
-        
-
         #endregion
+
+        private void TypeLockCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void TypeGlueCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            GlueContent.Visibility = TypeGlueCheck.IsChecked.Value ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+            InitContent.Visibility = TypeGlueCheck.IsChecked.Value ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
+        }
     }
 
 }
