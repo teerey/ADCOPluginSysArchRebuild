@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 using static AngelSix.SolidDna.SolidWorksEnvironment;
+using AngelSix.SolidDna;
 
 namespace ADCOPlugin
 {
@@ -48,8 +49,14 @@ namespace ADCOPlugin
             GlueContent.Visibility = System.Windows.Visibility.Hidden;
 
             // Check to see if a former type is selected
+            SolidWorksEnvironment.Application.ActiveModelInformationChanged += Application_ActiveModelInformationChanged;
             checkFormSelect();
 
+        }
+
+        private void Application_ActiveModelInformationChanged(Model obj)
+        {
+            checkFormSelect();
         }
 
         #region Check Type Selection
@@ -57,15 +64,20 @@ namespace ADCOPlugin
         /// <summary>
         /// Checks for a form type selection to alter taskpane content visibility
         /// </summary>
+
         private void checkFormSelect()
         {
             AngelSix.SolidDna.ThreadHelpers.RunOnUIThread(() =>
             {
                 if (TypeGlueCheck.IsChecked.Value)
-                    InitContent.Visibility = Visibility.Hidden;
-                    GlueContent.Visibility = Visibility.Visible;
+                {
+                    InitContent.Visibility = System.Windows.Visibility.Hidden;
+                    GlueContent.Visibility = System.Windows.Visibility.Visible;
+                    return;
+                }
             });
         }
+        
 
         #endregion
     }
