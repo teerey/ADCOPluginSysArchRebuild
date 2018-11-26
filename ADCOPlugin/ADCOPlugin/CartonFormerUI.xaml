@@ -5,11 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ADCOPlugin"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="400">
+             d:DesignHeight="700" d:DesignWidth="400"
+             Loaded="UserControl_Loaded">
 
+    <!--Wraps Everything in border and adds space of 10-->
     <Border Padding="10" Margin="0,-9,0,104">
-        <!--Wraps Everything in border and adds space of 10-->
-        <StackPanel RenderTransformOrigin="0.5,0.5">
+        <Grid>
+        <StackPanel x:Name="InitContent" VerticalAlignment="Center">
+          <TextBlock HorizontalAlignment="Center" Text="Select former type"/>
+                <!--Carton Type-->
+                <TextBlock Text="Carton Type" Margin="0 20 0 10" HorizontalAlignment="Center" FontWeight="DemiBold"/>
+                <Grid Width="190">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Column 1-->
+                    <StackPanel Grid.Column="0">
+                        <CheckBox x:Name="TypeGlueCheck" Content="Glue" HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!--Column 2-->
+                    <StackPanel Grid.Column="1">
+                        <CheckBox x:Name="TypeLockCheck" Content="Lock" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+            
+        <StackPanel x:Name="GlueContent" RenderTransformOrigin="0.5,0.5">
             <StackPanel.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -39,33 +62,15 @@
 
             </Grid>
 
-            <TextBlock Text="Carton Former Design Suite" FontWeight="Bold" Margin="0 10"/>
+            <TextBlock Text="Glue Former Critical Dimensions" FontWeight="Bold" Margin="0 10"/>
             <!--Creates Text of Content "Text"
             
                                                                     Font "Bold" and position "margin"-->
          
             <!--Graphical Reference for Parameters-->
-            <Image Source="ADCOguiTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" />
-            
-            <!--Carton Type-->
-            <TextBlock Text="Carton Type" Margin="0 20 0 10" HorizontalAlignment="Center" FontWeight="DemiBold"/>
-            <Grid Width="190">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <!--Column 1-->
-                <StackPanel Grid.Column="0">
-                    <CheckBox Content="Glue" HorizontalAlignment="Center"/>
-                </StackPanel>
+                <Image Margin="10" Source="ADCOguiTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" OpacityMask="White" />
 
-                <!--Column 2-->
-                <StackPanel Grid.Column="1">
-                    <CheckBox Content="Lock" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Grid>
-
-            <TextBlock Text="Length Parameters (inches)" Margin="0 10 0 -5" HorizontalAlignment="Center" FontWeight="DemiBold"/>
+                <TextBlock Text="Length Parameters (inches)" Margin="0 10 0 -5" HorizontalAlignment="Center" FontWeight="DemiBold"/>
             <!--a-->
             <TextBlock Text="a" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -5 0 0">
                 <TextBlock.RenderTransform>
@@ -105,5 +110,6 @@
             </TextBlock>
             <TextBox Padding="2" IsReadOnly="False" Background="#eee" HorizontalAlignment="Center" Width="150"/>
         </StackPanel>
+        </Grid>
     </Border>
 </UserControl>

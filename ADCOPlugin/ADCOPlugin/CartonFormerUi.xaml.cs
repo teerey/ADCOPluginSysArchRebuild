@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
@@ -12,6 +13,16 @@ namespace ADCOPlugin
     /// </summary>
     public partial class MyAddinControl : UserControl
     {
+        #region Private Members
+
+        private const string typeGlue = "GLUE";
+        private const string typeLock = "LOCK";
+        private const string mCustomPropertyGlueA = "GlueA";
+        private const string mCustomPropertyGlueB = "GlueB";
+        private const string mCustomPropertyGlueC = "GlueC";
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
@@ -22,9 +33,41 @@ namespace ADCOPlugin
            InitializeComponent();
         }
 
+
         #endregion
 
+        /// <summary>
+        /// Fired when the plugin first loads up
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // By default show the Initial Screen (Former type selection)
+            InitContent.Visibility = System.Windows.Visibility.Visible;
+            GlueContent.Visibility = System.Windows.Visibility.Hidden;
 
+            // Check to see if a former type is selected
+            checkFormSelect();
+
+        }
+
+        #region Check Type Selection
+
+        /// <summary>
+        /// Checks for a form type selection to alter taskpane content visibility
+        /// </summary>
+        private void checkFormSelect()
+        {
+            AngelSix.SolidDna.ThreadHelpers.RunOnUIThread(() =>
+            {
+                if (TypeGlueCheck.IsChecked.Value)
+                    InitContent.Visibility = Visibility.Hidden;
+                    GlueContent.Visibility = Visibility.Visible;
+            });
+        }
+
+        #endregion
     }
 
 }
