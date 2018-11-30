@@ -1,15 +1,21 @@
 ﻿using System.Windows.Controls;
+using System.Diagnostics;
+using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 using static AngelSix.SolidDna.SolidWorksEnvironment;
 using AngelSix.SolidDna;
 using System;
+using SolidWorks.Interop.sldworks;
+using SolidWorks.Interop.swconst;
 
 namespace ADCOPlugin
 {
+    
     /// <summary>
     /// Interaction logic for MyAddinControl.xaml
     /// </summary>
@@ -19,13 +25,34 @@ namespace ADCOPlugin
 
         private const string typeGlue = "GLUE";
         private string typeLock;
-        private string gluePath;
+        public string gluePath = "C:\\Users\\trent\\Documents\\glueTemplate.SLDPRT";
         private const string lockPath = "LOCKPATH";
         private const string mCustomPropertyGlueA = "GlueA";
         private const string mCustomPropertyGlueB = "GlueB";
         private const string mCustomPropertyGlueC = "GlueC";
+        public SldWorks swApp;
+        ModelDoc2 swPart;
+        int fileerror;
+        int filewarning;
 
         #endregion
+
+        //public void GlueOpen()
+        //{
+        //        try
+        //        {
+        //            swPart = (ModelDoc2)swApp.OpenDoc6(gluePath, (int)swDocumentTypes_e.swDocPART, (int)swOpenDocOptions_e.swOpenDocOptions_LoadModel, "", ref fileerror, ref filewarning);
+
+        //        }
+        //        catch (Exception)
+        //        {
+
+        //            MessageBox.Show(string.Format("File Open Failed {0} {0}", fileerror, filewarning));
+        //            return;
+        //        }
+        //}
+
+
 
         #region Constructor
 
@@ -58,6 +85,8 @@ namespace ADCOPlugin
             {
                 GlueContent.Visibility = System.Windows.Visibility.Hidden;
                 InitContent.Visibility = System.Windows.Visibility.Visible;
+
+                
             });
         }
 
@@ -103,6 +132,8 @@ namespace ADCOPlugin
         private void GlueButton_Click(object sender, RoutedEventArgs e)
         {
             GlueScreen();
+            //GlueOpen();
+            
         }
 
         private void GlueScreen()
@@ -110,6 +141,9 @@ namespace ADCOPlugin
             // If glue is checked, change visibility of init and glue content screens so that glue info is visible
             GlueContent.Visibility = System.Windows.Visibility.Visible;
             InitContent.Visibility = System.Windows.Visibility.Hidden;
+            
+            
+            
         }
     }
 
