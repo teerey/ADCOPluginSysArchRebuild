@@ -54,61 +54,21 @@ namespace ADCOPlugin
 
         private void initScreen()
         {
-            
-            GlueContent.Visibility = System.Windows.Visibility.Hidden;
-            InitContent.Visibility = System.Windows.Visibility.Visible;
-
+            ThreadHelpers.RunOnUIThread(() =>
+            {
+                GlueContent.Visibility = System.Windows.Visibility.Hidden;
+                InitContent.Visibility = System.Windows.Visibility.Visible;
+            });
         }
 
         #region Type-Specific Functions
-        /// <summary>
-        /// Checks to see if user checked Lock carton type on init screen & carries out all lock carton functionalities if true
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TypeLockCheck_Checked(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        /// <summary>
-        /// Checks to see if user checked "Glue" carton type on init screen & carries out all glue carton functionalites if true
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TypeGlueCheck_Checked(object sender, RoutedEventArgs e)
-        {
-
-            // Check if Glue box is checked on itit screen
-            if (TypeGlueCheck.IsChecked.Value)
-            {
-                // If glue is checked, change visibility of init and glue content screens so that glue info is visible
-                GlueContent.Visibility = System.Windows.Visibility.Visible;
-                InitContent.Visibility = System.Windows.Visibility.Hidden;
-
-                if (BackButton.IsPressed)
-                {
-                    initScreen();
-                    TypeGlueCheck.IsChecked.Value = 0;
-                }
-
-            }
-            else
-            {
-                // If glue is not checked, make sure that init screen is visible and glue content remains hidden
-                GlueContent.Visibility = System.Windows.Visibility.Hidden;
-                InitContent.Visibility = System.Windows.Visibility.Visible;
-            }
-        }
-
-
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        private void GlueApplyButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
@@ -118,7 +78,7 @@ namespace ADCOPlugin
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        private void GlueResetButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
@@ -128,12 +88,29 @@ namespace ADCOPlugin
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        private void GlueBackButton_Click(object sender, RoutedEventArgs e)
         {
-
+            initScreen();
         }
 
         #endregion
+
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void GlueButton_Click(object sender, RoutedEventArgs e)
+        {
+            GlueScreen();
+        }
+
+        private void GlueScreen()
+        {
+            // If glue is checked, change visibility of init and glue content screens so that glue info is visible
+            GlueContent.Visibility = System.Windows.Visibility.Visible;
+            InitContent.Visibility = System.Windows.Visibility.Hidden;
+        }
     }
 
 }

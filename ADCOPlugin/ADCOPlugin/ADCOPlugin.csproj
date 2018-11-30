@@ -101,10 +101,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ADCOguiTemplate.png" />
+    <Resource Include="ADCOglueTemplate.png" />
+    <Resource Include="GlueSymbol.png" />
+    <Resource Include="LockSymbol.png" />
     <Content Include="logo-small.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="pluginHeader.png" />
     <Content Include="References\SolidWorks.Interop.sldworks.dll" />
     <Content Include="References\SolidWorks.Interop.sw3dprinter.dll" />
     <Content Include="References\SolidWorks.Interop.swcommands.dll" />
