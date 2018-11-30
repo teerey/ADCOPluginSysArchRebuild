@@ -6,13 +6,14 @@
              xmlns:local="clr-namespace:ADCOPlugin"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="400"
+             Background="Gray"
              Loaded="UserControl_Loaded">
 
     <!--Wraps Everything in border and adds space of 10-->
-    <Border Padding="10" Margin="0,-9,0,104">
+    <Border Padding="10" Margin="0,10,0,10">
         <Grid>
-        <StackPanel x:Name="InitContent" VerticalAlignment="Center">
-          <TextBlock HorizontalAlignment="Center" Text="Select former type"/>
+            <StackPanel x:Name="InitContent" VerticalAlignment="Center" Visibility="Visible">
+                <TextBlock HorizontalAlignment="Center" Text="Select former type" FontWeight="Bold"/>
                 <!--Carton Type-->
                 <TextBlock Text="Carton Type" Margin="0 20 0 10" HorizontalAlignment="Center" FontWeight="DemiBold"/>
                 <Grid Width="190">
@@ -31,82 +32,93 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
-            
-        <StackPanel Visibility="Hidden" x:Name="GlueContent" RenderTransformOrigin="0.5,0.5">
-            <StackPanel.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="-0.203"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="-1.027"/>
-                </TransformGroup>
-            </StackPanel.RenderTransform>
-            <!--Makes a stack window-->
-            <Grid>
 
-                <!--Buttons-->
-                <Grid.ColumnDefinitions>
-                    <!--Makes columns for buttons to be placed-->
-                    <ColumnDefinition Width="*" />
-                    <!-- * is unit length. can enter 2* and doubles-->
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <StackPanel x:Name="GlueContent" RenderTransformOrigin="0.5,0.5" Visibility="Hidden">
+                <StackPanel.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform AngleX="-0.203"/>
+                        <RotateTransform/>
+                        <TranslateTransform X="-1.027"/>
+                    </TransformGroup>
+                </StackPanel.RenderTransform>
+                <!--Makes a stack window-->
+                <Grid>
 
-                <Button Margin=" 0 0 10 0" Grid.Column="0" Content="Apply" />
-                <!--Adds a button named "apply" with position 0 on grid column-->
-                <Button Grid.Column="1" Content="Reset" />
-                <Button Margin="10 0 0 0" Grid.Column="2" Content="Refresh" />
-                <!-- Margin func makes space between buttons
+                    <!--Buttons-->
+                    <Grid.ColumnDefinitions>
+                        <!--Makes columns for buttons to be placed-->
+                        <ColumnDefinition Width="*" />
+                        <!-- * is unit length. can enter 2* and doubles-->
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="ApplyButton" Margin=" 0 0 10 0" Grid.Column="0" Content="Apply" Click="ApplyButton_Click"/>
+                    <Button x:Name="ResetButton" Grid.Column="1" Content="Reset" Click="ResetButton_Click"/>
+                    <Button x:Name="BackButton" Margin="10 0 0 0" Grid.Column="2" Content="Back" Click="BackButton_Click"/>
+                    <!-- Margin func makes space between buttons
                                                                                 w/ Left right top bottom-->
 
-            </Grid>
+                </Grid>
 
-            <TextBlock Text="Glue Former Critical Dimensions" FontWeight="Bold" Margin="0 10"/>
-         
-            <!--Graphical Reference for Parameters-->
+                <TextBlock Text="Glue Former Critical Dimensions" FontWeight="Bold" Margin="0 10"/>
+
+                <!--Graphical Reference for Parameters-->
                 <Image Margin="10" Source="ADCOguiTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" OpacityMask="White" />
 
                 <TextBlock Text="Length Parameters (inches)" Margin="0 10 0 -5" HorizontalAlignment="Center" FontWeight="DemiBold"/>
-            <!--a-->
-            <TextBlock Text="a" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -5 0 0">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform Y="17" X="-85"/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBox Padding="2" IsReadOnly="False" Background="#eee" HorizontalAlignment="Center" Width="150" />
+                <!--a-->
+                <TextBlock Text="a" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -5 0 0">
+                    <TextBlock.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform Y="17" X="-85"/>
+                        </TransformGroup>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBox Padding="2" IsReadOnly="False" Background="#eee" HorizontalAlignment="Center" Width="150" />
 
-            <!--b-->
-            <TextBlock Text="b" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -10 0 0">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform Y="17" X="-85"/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBox Padding="2" IsReadOnly="False" Background="#eee" HorizontalAlignment="Center" Width="150"/>
+                <!--b-->
+                <TextBlock Text="b" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -10 0 0">
+                    <TextBlock.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform Y="17" X="-85"/>
+                        </TransformGroup>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBox Padding="2" IsReadOnly="False" Background="#eee" HorizontalAlignment="Center" Width="150"/>
 
-            <!--c-->
-            <TextBlock Text="c" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -10 0 0">
-                <TextBlock.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform Y="17" X="-85"/>
-                    </TransformGroup>
-                </TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBox Padding="2" IsReadOnly="False" Background="#eee" HorizontalAlignment="Center" Width="150"/>
-        </StackPanel>
+                <!--c-->
+                <TextBlock Text="c" Width="10" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="0 -10 0 0">
+                    <TextBlock.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform Y="17" X="-85"/>
+                        </TransformGroup>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBox Padding="2" IsReadOnly="False" Background="#eee" HorizontalAlignment="Center" Width="150"/>
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2.3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Path to Glue File-->
+                    <TextBlock Grid.Column ="0" Text="File Path" Margin="10,10,6,10" TextAlignment="Right"/>
+                    <TextBox x:Name="gluePathBox" Grid.Column ="1" Padding="2" IsReadOnly="True" Background="DarkGray" Margin="0,0,10,0" Height="22" Text="C:/path/to/generic/glue/part"/>
+                </Grid>
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
