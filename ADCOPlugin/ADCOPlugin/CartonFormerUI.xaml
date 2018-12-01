@@ -12,51 +12,57 @@
     <!--Wraps Everything in border and adds space of 10-->
     <Border Padding="10" Margin="10,10,10,10">
         <Grid>
+            <!--Initial/load-up page-->
             <StackPanel x:Name="InitContent" Visibility="Hidden">
+                
+                <!--ADCO logo-->
                 <Image Margin="5 0 0 40"  Source="pluginHeader.png" HorizontalAlignment="Center" Stretch="UniformToFill"/>
-                <!--Carton Type-->
+                
+                <!--Carton Type Selection Region-->
                 <Grid Width="250">
+                    <!--Column sizing for carton selection region-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <!--Column 1-->
+                    
+                    <!--Glue button region-->
                     <StackPanel Grid.Column="0">
+                        <!--Glue button-->
                         <Button x:Name="GlueButton" Grid.Column="0" Click="GlueButton_Click" ClickMode="Press" Width="100" Height="100">
                             <Button.Effect>
                                 <DropShadowEffect BlurRadius="1"/>
                             </Button.Effect>
+                            
+                            <!--Button image-->
                             <Image Source="GlueSymbol.png" HorizontalAlignment="Center" Width="80" OpacityMask="White" Height="80" />
                         </Button>
                     </StackPanel>
 
-                    <!--Column 2-->
+                    <!--Lock button region-->
                     <StackPanel Grid.Column="1">
+                        <!--Lock button-->
                         <Button x:Name="LockButton" Grid.Column="1" Click="LockButton_Click" Width="100" Height="100" Background="#FFDDDDDD">
                             <Button.Effect>
                                 <DropShadowEffect BlurRadius="1"/>
                             </Button.Effect>
+                            
+                            <!--Button image-->
                             <Image Source="LockSymbol.png" HorizontalAlignment="Center" Width="95" OpacityMask="White" Height="95" />
                         </Button>
                     </StackPanel>
                 </Grid>
-
+                
+                <!--Carton type selection prompt-->
                 <TextBlock Margin="10"  HorizontalAlignment="Center" Text="Select former type" FontWeight="Bold" FontSize="18"/>
             </StackPanel>
-
-            <StackPanel x:Name="GlueContent" RenderTransformOrigin="0.5,0.5" Visibility="Visible">
-                <StackPanel.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform AngleX="-0.203"/>
-                        <RotateTransform/>
-                        <TranslateTransform X="-1.027"/>
-                    </TransformGroup>
-                </StackPanel.RenderTransform>
-                <!--Makes a stack window-->
+            
+            <!--Glue-Formed Carton Page-->
+            <StackPanel x:Name="GlueContent" Visibility="Visible">
+                <!--Control button grid region-->
                 <Grid>
 
-                    <!--Buttons-->
+                    <!--Specify column dimensions-->
                     <Grid.ColumnDefinitions>
                         <!--Makes columns for buttons to be placed-->
                         <ColumnDefinition Width="*" />
@@ -64,53 +70,65 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-
+                    
+                    <!--Apply button for data acceptance-->
                     <Button x:Name="GlueApplyButton" Margin=" 0 0 10 0" Grid.Column="0" Content="Apply" Click="GlueApplyButton_Click"/>
+                    
+                    <!--Reset button for data clear/default settings-->
                     <Button x:Name="GlueResetButton" Grid.Column="1" Content="Reset" Click="GlueResetButton_Click"/>
+                    
+                    <!--Back button to return to previous screen-->
                     <Button x:Name="GlueBackButton" Margin="10 0 0 0" Grid.Column="2" Content="Back" Click="GlueBackButton_Click"/>
-                    <!-- Margin func makes space between buttons
-                                                                                w/ Left right top bottom-->
 
                 </Grid>
 
 
                 <!--Graphical Reference for Parameters-->
                 <Image  Margin="20" Source="ADCOglueTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" OpacityMask="White" />
-
+                
+                <!---Data entry header-->
                 <TextBlock Margin="0 10 0 10" Text="Glue-Formed Carton Parameters (inches)" FontSize="14" HorizontalAlignment="Center" FontWeight="DemiBold"/>
-
+                
+                <!--Data entry grid region-->
                 <Grid>
+                    <!--2-Column Setup for data entry-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
+                    
                     <StackPanel Grid.Column="0" VerticalAlignment="Top">
-                        <!--a-->
+                        <!--Label for Dimension a entry-->
                         <TextBlock  Margin="0 8 5 8" Text="Dimension a" HorizontalAlignment="Right"/>
 
-                        <!--b-->
+                        <!--Label for Dimension b entry-->
                         <TextBlock Margin="0 8 5 8" Text="Dimension b" HorizontalAlignment="Right"/>
 
-                        <!--c-->
+                        <!--Label for Dimension c entry-->
                         <TextBlock Margin="0 8 5 8" Text="Dimension c" HorizontalAlignment="Right"/>
 
-                        <!--Path to Glue File-->
+                        <!--Label for Output path-->
                         <TextBlock Margin="0 8 5 8" Text="Destination Path" TextAlignment="Right"/>
 
-                        <!--Path to Glue File-->
+                        <!--Label for Source path -->
                         <TextBlock Margin="0 8 5 8" Text="Source Path" TextAlignment="Right"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
 
+                        <!--Dimension a entry-->
                         <TextBox Margin="0 5 0 5" x:Name="GlueAParam" Padding="2" IsReadOnly="False" Background="#eee"/>
 
+                        <!--Dimension b entry-->
                         <TextBox Margin="0 5 0 5" x:Name="GlueBParam" Padding="2" IsReadOnly="False" Background="#eee"/>
 
+                        <!--Dimension c entry-->
                         <TextBox Margin="0 5 0 5" x:Name="GlueCParam" Padding="2" IsReadOnly="False" Background="#eee"/>
-
+                        
+                        <!--Destination file path entry-->
                         <TextBox Margin="0 5 0 5" x:Name="glueDestPathBox" Padding="2" IsReadOnly="False" Background="#eee" Text="C:/path/to/output"/>
 
+                        <!--Source file path display, read-only-->
                         <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="True" Background="#FFCBCBCB" Text="C:/path/to/generic/glue/part"/>
                     </StackPanel>
                 </Grid>
