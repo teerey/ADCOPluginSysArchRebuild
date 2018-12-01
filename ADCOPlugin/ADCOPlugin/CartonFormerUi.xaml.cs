@@ -21,6 +21,8 @@ namespace ADCOPlugin
     /// </summary>
     public partial class MyAddinControl : UserControl
     {
+        // NOTE: CHANGE STRINGS SPECIFYING THE FILE LOCATIONS TO THOSE YOU WANT TO USE FOR YOUR MACHINE: I.E. C:\\USERS\\TRENT WILL NOT WORK ON YOUR COMPUTER
+
         #region Private Members
 
         private const string typeGlue = "GLUE";
@@ -32,13 +34,22 @@ namespace ADCOPlugin
 
         #endregion
 
+        #region Public Members
 
+        // Declare a SolidWorks instance field
         SldWorks.SldWorks swApp;
-        ModelDoc2 swPart;
+
+        // Declare a SolidWorks part field
+        SldWorks.ModelDoc2 swPart;
+
+        // Error/warning handlers - Only to be used if OpenDoc method is updated to newer version
         int fileerror;
         int filewarning;
+
+        // Default path for the template test box - Will be dynamic in final iteration of package
         public string gluePath = "C:\\Users\\trent\\Documents\\glueTemplate.SLDPRT";
 
+        #endregion
 
         #region Constructor
 
@@ -53,6 +64,8 @@ namespace ADCOPlugin
 
         #endregion
 
+        #region Load-Up/Initial Screen Functions
+
         /// <summary>
         /// Fired when the plugin first loads up
         /// </summary>
@@ -60,26 +73,95 @@ namespace ADCOPlugin
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
+            // Get the active SolidWorks application handle right after the plugin is loaded up
+            swApp = (SldWorks.SldWorks)Marshal.GetActiveObject("SldWorks.Application");
+
             // By default show the Initial Screen (Former type selection)
             initScreen();
 
         }
 
+        /// <summary>
+        /// Initial screen to display when the plugin is first loaded in
+        /// </summary>
         private void initScreen()
         {
             ThreadHelpers.RunOnUIThread(() =>
             {
+                // Hide all other content except that which should be displayed on initial screen
                 GlueContent.Visibility = System.Windows.Visibility.Hidden;
                 InitContent.Visibility = System.Windows.Visibility.Visible;
 
-                
             });
         }
 
-        #region Type-Specific Functions
+        #endregion
+
+        #region Glue-Formed Carton Functions
 
         /// <summary>
-        /// 
+        /// Fired when the glue button on the initial page is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GlueButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Change display to glue screen
+            GlueScreen();
+
+            // Open the default glue-formed carton template
+            GlueOpen();
+
+        }
+
+        /// <summary>
+        /// UI screen change - Set the displayed screen to that specific to glue-formed cartons
+        /// </summary>
+        private void GlueScreen()
+        {
+            // Show the glue screen content and hide all other content pages
+            GlueContent.Visibility = System.Windows.Visibility.Visible;
+            InitContent.Visibility = System.Windows.Visibility.Hidden;
+
+        }
+
+        /// <summary>
+        /// Copy the template file and load the copied file to the SW screen
+        /// </summary>
+        public void GlueOpen()
+        {
+            // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
+            string destPath = "C:\\Users\\trent\\Documents\\glueResult.SLDPRT";
+
+            // Check that the file at the destination path does not already exist
+            if (!File.Exists(destPath))
+            {
+                // If the destination file does not already exist, then copy the template from the source path to the destination path
+                File.Copy(gluePath, destPath);
+
+            }
+
+            try
+            {
+                // Try to open the copied document
+                swPart = swApp.OpenDoc(destPath, (int)swDocumentTypes_e.swDocPART);
+
+            }
+            catch (Exception)
+            {
+                // If an exception is thrown, notify the user that the file was not able to be opened
+                MessageBox.Show(string.Format("File Open Failed"));
+
+                // Clear any unused objects - should clean up any COM-related errors that arise after debug close
+                Marshal.CleanupUnusedObjectsInCurrentContext();
+
+                // Return to the parent function (GlueButtonClick)
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Fired when the apply button on the glue page is clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -89,7 +171,7 @@ namespace ADCOPlugin
         }
 
         /// <summary>
-        /// 
+        /// Fired when the reset button on the glue page is clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -99,62 +181,42 @@ namespace ADCOPlugin
         }
 
         /// <summary>
-        /// 
+        /// Fired when the back button on the glue page is clicked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GlueBackButton_Click(object sender, RoutedEventArgs e)
         {
+            // When the back button is clicked, send the UI back to the previous page (initial screen)
             initScreen();
         }
 
         #endregion
 
+        #region Lock-Formed Carton Functions
+
+        /// <summary>
+        /// Fired when the lock button on the initial page is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LockButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void GlueButton_Click(object sender, RoutedEventArgs e)
-        {
-            GlueScreen();
-            GlueOpen();
-            
-        }
+        #endregion
 
+        #region General Functions / WIP
+
+        /// <summary>
+        /// WIP used to route file-selection/opening process depending on user-input parameters
+        /// </summary>
         private void FileHandling()
         {
            
         }
 
-        private void GlueScreen()
-        {
-            // If glue is checked, change visibility of init and glue content screens so that glue info is visible
-            GlueContent.Visibility = System.Windows.Visibility.Visible;
-            InitContent.Visibility = System.Windows.Visibility.Hidden;
-            
-            
-            
-        }
-
-        public void GlueOpen()
-        {
-            string destPath = "C:\\Users\\trent\\Documents\\glueResult.SLDPRT";
-
-            File.Copy(gluePath, destPath);
-
-            try
-            {
-                swPart = swApp.OpenDoc6(destPath, (int)swDocumentTypes_e.swDocPART, (int)swOpenDocOptions_e.swOpenDocOptions_LoadModel, "", ref fileerror, ref filewarning);
-
-            }
-            catch (Exception)
-            {
-
-                MessageBox.Show(string.Format("File Open Failed {0} {1}", fileerror, filewarning));
-                return;
-            }
-        }
+        #endregion
     }
-
 }
