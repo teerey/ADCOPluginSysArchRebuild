@@ -10,8 +10,8 @@ using Microsoft.Win32;
 using static AngelSix.SolidDna.SolidWorksEnvironment;
 using AngelSix.SolidDna;
 using System;
-using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swconst;
+using SldWorks;
+using SwConst;
 
 namespace ADCOPlugin
 {
@@ -25,33 +25,19 @@ namespace ADCOPlugin
 
         private const string typeGlue = "GLUE";
         private string typeLock;
-        public string gluePath = "C:\\Users\\trent\\Documents\\glueTemplate.SLDPRT";
         private const string lockPath = "LOCKPATH";
         private const string mCustomPropertyGlueA = "GlueA";
         private const string mCustomPropertyGlueB = "GlueB";
         private const string mCustomPropertyGlueC = "GlueC";
-        public SldWorks swApp;
-        ModelDoc2 swPart;
-        int fileerror;
-        int filewarning;
 
         #endregion
 
-        //public void GlueOpen()
-        //{
-        //        try
-        //        {
-        //            swPart = (ModelDoc2)swApp.OpenDoc6(gluePath, (int)swDocumentTypes_e.swDocPART, (int)swOpenDocOptions_e.swOpenDocOptions_LoadModel, "", ref fileerror, ref filewarning);
 
-        //        }
-        //        catch (Exception)
-        //        {
-
-        //            MessageBox.Show(string.Format("File Open Failed {0} {0}", fileerror, filewarning));
-        //            return;
-        //        }
-        //}
-
+        SldWorks.SldWorks swApp;
+        ModelDoc2 swPart;
+        int fileerror;
+        int filewarning;
+        public string gluePath = "C:\\Users\\trent\\Documents\\glueTemplate.SLDPRT";
 
 
         #region Constructor
@@ -132,8 +118,13 @@ namespace ADCOPlugin
         private void GlueButton_Click(object sender, RoutedEventArgs e)
         {
             GlueScreen();
-            //GlueOpen();
+            GlueOpen();
             
+        }
+
+        private void FileHandling()
+        {
+           
         }
 
         private void GlueScreen()
@@ -144,6 +135,25 @@ namespace ADCOPlugin
             
             
             
+        }
+
+        public void GlueOpen()
+        {
+            string destPath = "C:\\Users\\trent\\Documents\\glueResult.SLDPRT";
+
+            File.Copy(gluePath, destPath);
+
+            try
+            {
+                swPart = swApp.OpenDoc6(destPath, (int)swDocumentTypes_e.swDocPART, (int)swOpenDocOptions_e.swOpenDocOptions_LoadModel, "", ref fileerror, ref filewarning);
+
+            }
+            catch (Exception)
+            {
+
+                MessageBox.Show(string.Format("File Open Failed {0} {1}", fileerror, filewarning));
+                return;
+            }
         }
     }
 
