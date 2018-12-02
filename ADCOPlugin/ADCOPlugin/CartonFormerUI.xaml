@@ -13,7 +13,7 @@
     <Border Padding="10" Margin="10,10,10,10">
         <Grid>
             <!--Initial/load-up page-->
-            <StackPanel x:Name="InitContent" Visibility="Hidden">
+            <StackPanel x:Name="InitContent" Visibility="Hidden" VerticalAlignment="Center">
                 
                 <!--ADCO logo-->
                 <Image Margin="5 0 0 40"  Source="pluginHeader.png" HorizontalAlignment="Center" Stretch="UniformToFill"/>
@@ -28,10 +28,13 @@
                     
                     <!--Glue button region-->
                     <StackPanel Grid.Column="0">
+                        
+                        <TextBlock Text="Glue" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14"/>
+
                         <!--Glue button-->
-                        <Button x:Name="GlueButton" Grid.Column="0" Click="GlueButton_Click" ClickMode="Press" Width="100" Height="100">
+                        <Button x:Name="GlueButton" Click="GlueButton_Click" ClickMode="Press" Width="100" Height="100">
                             <Button.Effect>
-                                <DropShadowEffect BlurRadius="1"/>
+                                <DropShadowEffect BlurRadius="1" ShadowDepth="2"/>
                             </Button.Effect>
                             
                             <!--Button image-->
@@ -41,10 +44,13 @@
 
                     <!--Lock button region-->
                     <StackPanel Grid.Column="1">
+
+                        <TextBlock Text="Lock" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14"/>
+                        
                         <!--Lock button-->
-                        <Button x:Name="LockButton" Grid.Column="1" Click="LockButton_Click" Width="100" Height="100" Background="#FFDDDDDD">
+                        <Button x:Name="LockButton" Click="LockButton_Click" Width="100" Height="100" Background="#FFDDDDDD">
                             <Button.Effect>
-                                <DropShadowEffect BlurRadius="1"/>
+                                <DropShadowEffect BlurRadius="1" ShadowDepth="2"/>
                             </Button.Effect>
                             
                             <!--Button image-->
@@ -55,6 +61,26 @@
                 
                 <!--Carton type selection prompt-->
                 <TextBlock Margin="10"  HorizontalAlignment="Center" Text="Select former type" FontWeight="Bold" FontSize="18"/>
+
+                <Grid Width="250" Margin="0 40 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" HorizontalAlignment="Right">
+                        <TextBlock Text="Project ID" Margin="0 0 5 18"/>
+                        <TextBlock Text="Customer" Margin="0 0 5 0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBox x:Name="projectID" Background="#eee" Padding="2" FontSize="12" Margin="0 0 0 10"/>
+                        <TextBox x:Name="customer" Background="#eee" Padding="2" FontSize="12"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="Comments/Description:" Margin="0 10 0 0"/>
+                <TextBox x:Name="projectDescription" Padding="2" Background="#eee" TextWrapping="Wrap" Height="60" Margin="5"/>
             </StackPanel>
             
             <!--Glue-Formed Carton Page-->
@@ -96,7 +122,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
-                    
+
+                    <!--Labels-->
                     <StackPanel Grid.Column="0" VerticalAlignment="Top">
                         <!--Label for Dimension a entry-->
                         <TextBlock  Margin="0 8 5 8" Text="Dimension a" HorizontalAlignment="Right"/>
@@ -114,6 +141,7 @@
                         <TextBlock Margin="0 8 5 8" Text="Source Path" TextAlignment="Right"/>
                     </StackPanel>
 
+                    <!--Entry fields-->
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
 
                         <!--Dimension a entry-->
@@ -124,12 +152,206 @@
 
                         <!--Dimension c entry-->
                         <TextBox Margin="0 5 0 5" x:Name="GlueCParam" Padding="2" IsReadOnly="False" Background="#eee"/>
-                        
-                        <!--Destination file path entry-->
-                        <TextBox Margin="0 5 0 5" x:Name="glueDestPathBox" Padding="2" IsReadOnly="False" Background="#eee" Text="C:/path/to/output"/>
 
-                        <!--Source file path display, read-only-->
-                        <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="True" Background="#FFCBCBCB" Text="C:/path/to/generic/glue/part"/>
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" VerticalAlignment="Top">
+
+                                <!--Destination file path entry-->
+                                <TextBox Margin="0 5 0 5" x:Name="glueDestPathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                                <!--Source file path display-->
+                                <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+
+                                <!--Destination file path browse button-->
+                                <Button x:Name="glueDestBrowse" Content="Browse" Margin="5 5.5 0 6"/>
+
+                                <!--Source file path browse button-->
+                                <Button x:Name="glueSourceBrowse" Content="Browse" Margin="5 6.5 0 6"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+                
+                <!--Board material selection-->
+                <Grid Width="250" Margin="10">
+                    
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+      
+                            <TextBlock Grid.Column="0" Text="Corrugated" HorizontalAlignment="Right"/>
+                            <CheckBox Grid.Column="1" x:Name="GlueCorrugated" Margin="5 0 0 0" Checked="GlueCorrugated_Checked"/>
+                        </Grid>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Paperboard" HorizontalAlignment="Right"/>
+                            <CheckBox Grid.Column="1" x:Name="GluePaperboard" Margin="5 0 0 0" Checked="GluePaperboard_Checked"/>
+                        </Grid>
+
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+            <!--Locking Carton Page-->
+            <StackPanel x:Name="LockContent" Visibility="Hidden">
+                <!--Control button grid region-->
+                <Grid>
+
+                    <!--Specify column dimensions-->
+                    <Grid.ColumnDefinitions>
+                        <!--Makes columns for buttons to be placed-->
+                        <ColumnDefinition Width="*" />
+                        <!-- * is unit length. can enter 2* and doubles-->
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--Apply button for data acceptance-->
+                    <Button x:Name="LockApplyButton" Margin=" 0 0 10 0" Grid.Column="0" Content="Apply" Click="LockApplyButton_Click"/>
+
+                    <!--Reset button for data clear/default settings-->
+                    <Button x:Name="LockResetButton" Grid.Column="1" Content="Reset" Click="LockResetButton_Click"/>
+
+                    <!--Back button to return to previous screen-->
+                    <Button x:Name="LockBackButton" Margin="10 0 0 0" Grid.Column="2" Content="Back" Click="LockBackButton_Click"/>
+                </Grid>
+
+
+                <!--Graphical Reference for Parameters-->
+                <Image  Margin="20" Source="ADCOglueTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" OpacityMask="White" />
+
+                <!---Data entry header-->
+                <TextBlock Margin="0 10 0 10" Text="Locking Carton Parameters (inches)" FontSize="14" HorizontalAlignment="Center" FontWeight="DemiBold"/>
+
+                <!--Data entry grid region-->
+                <Grid>
+                    <!--2-Column Setup for data entry-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Labels-->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Top">
+                        <!--Label for Dimension a entry-->
+                        <TextBlock  Margin="0 8 5 8" Text="Dimension a" HorizontalAlignment="Right"/>
+
+                        <!--Label for Dimension b entry-->
+                        <TextBlock Margin="0 8 5 8" Text="Dimension b" HorizontalAlignment="Right"/>
+
+                        <!--Label for Dimension c entry-->
+                        <TextBlock Margin="0 8 5 8" Text="Dimension c" HorizontalAlignment="Right"/>
+
+                        <!--Label for Output path-->
+                        <TextBlock Margin="0 8 5 8" Text="Destination Path" TextAlignment="Right"/>
+
+                        <!--Label for Source path -->
+                        <TextBlock Margin="0 8 5 8" Text="Source Path" TextAlignment="Right"/>
+                    </StackPanel>
+
+                    <!--Entry fields-->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top">
+
+                        <!--Dimension a entry-->
+                        <TextBox Margin="0 5 0 5" x:Name="LockAParam" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                        <!--Dimension b entry-->
+                        <TextBox Margin="0 5 0 5" x:Name="LockBParam" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                        <!--Dimension c entry-->
+                        <TextBox Margin="0 5 0 5" x:Name="LockCParam" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3.5*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" VerticalAlignment="Top">
+
+                                <!--Destination file path entry-->
+                                <TextBox Margin="0 5 0 5" x:Name="LockDestPathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                                <!--Source file path display-->
+                                <TextBox Margin="0 5 0 5" x:Name="LockSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+
+                                <!--Destination file path browse button-->
+                                <Button x:Name="LockDestBrowse" Content="Browse" Margin="5 5.5 0 6"/>
+
+                                <!--Source file path browse button-->
+                                <Button x:Name="LockSourceBrowse" Content="Browse" Margin="5 6.5 0 6"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+                
+                <!--Board material selection-->
+                <Grid Width="250" Margin="10">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Corrugated" HorizontalAlignment="Right"/>
+                            <CheckBox Grid.Column="1" x:Name="LockCorrugated" Margin="5 0 0 0" Checked="LockCorrugated_Checked"/>
+                        </Grid>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="Paperboard" HorizontalAlignment="Right"/>
+                            <CheckBox Grid.Column="1" x:Name="LockPaperboard" Margin="5 0 0 0" Checked="LockPaperboard_Checked"/>
+                        </Grid>
+
                     </StackPanel>
                 </Grid>
             </StackPanel>

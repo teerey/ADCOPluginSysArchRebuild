@@ -13,6 +13,8 @@ using System;
 using SldWorks;
 using SwConst;
 
+
+
 namespace ADCOPlugin
 {
     
@@ -25,13 +27,6 @@ namespace ADCOPlugin
 
         #region Private Members
 
-        private const string typeGlue = "GLUE";
-        private string typeLock;
-        private const string lockPath = "LOCKPATH";
-        private const string mCustomPropertyGlueA = "GlueA";
-        private const string mCustomPropertyGlueB = "GlueB";
-        private const string mCustomPropertyGlueC = "GlueC";
-
         #endregion
 
         #region Public Members
@@ -42,19 +37,25 @@ namespace ADCOPlugin
         // Declare a SolidWorks part field
         SldWorks.ModelDoc2 swPart;
 
+        // INCH CONVERSION NUMBER: NO. OF INCHES IN 1 M - Most API functions assume the unit is in meters
+        double INCH_CONVERSION = 39.370079;
+
         // Error/warning handlers - Only to be used if OpenDoc method is updated to newer version
-        int fileerror;
-        int filewarning;
+        //int fileerror;
+        //int filewarning;
 
         #endregion
 
         #region Demo Variables
 
         // Default path for the template test box - Will be dynamic in final iteration of package
-        public string gluePath = "C:\\Users\\trent\\Documents\\glueTemplate.SLDPRT";
+        static string glueSrcPathDEFAULT = @"C:\Users\trent\Documents\glueTemplate.SLDPRT";
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
-        string destPath = "C:\\Users\\trent\\Documents\\glueResult.SLDPRT";
+        static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
+
+        string glueDestPath;
+        string glueSrcPath;
 
         #endregion
 
@@ -97,7 +98,9 @@ namespace ADCOPlugin
             {
                 // Hide all other content except that which should be displayed on initial screen
                 GlueContent.Visibility = System.Windows.Visibility.Hidden;
+                LockContent.Visibility = System.Windows.Visibility.Hidden;
                 InitContent.Visibility = System.Windows.Visibility.Visible;
+
 
             });
         }
@@ -113,11 +116,24 @@ namespace ADCOPlugin
         /// <param name="e"></param>
         private void GlueButton_Click(object sender, RoutedEventArgs e)
         {
+
+            // Before switching screens, checks to see if the user entered a project ID
+            // If so, then the project ID will be the name of the actual part file and is appended to the default home path
+            // If not, then some preset name is set
+            if (projectID.Text != null)
+            {
+                glueDestPath = $@"{glueDestPathDEFAULT}{projectID.Text}.SLDPRT";
+            }
+            else
+            {
+                glueDestPath = $@"{glueDestPathDEFAULT}\CopyOfglueTemplate.SLDPRT";
+            }
+
             // Change display to glue screen
             GlueScreen();
 
             // Open the default glue-formed carton template
-            GlueOpen();
+            // GlueSet();
 
         }
 
@@ -129,21 +145,23 @@ namespace ADCOPlugin
             // Show the glue screen content and hide all other content pages
             GlueContent.Visibility = System.Windows.Visibility.Visible;
             InitContent.Visibility = System.Windows.Visibility.Hidden;
+            LockContent.Visibility = System.Windows.Visibility.Hidden;
+            glueSourcePathBox.Text = glueSrcPathDEFAULT;
+            glueDestPathBox.Text = glueDestPath;
 
         }
 
         /// <summary>
         /// Copy the template file and load the copied file to the SW screen
         /// </summary>
-        public void GlueOpen()
+        public void GlueOpen(string destPath, string sourcePath)
         {
 
             // Check that the file at the destination path does not already exist
             if (!File.Exists(destPath))
             {
                 // If the destination file does not already exist, then copy the template from the source path to the destination path
-                File.Copy(gluePath, destPath);
-
+                File.Copy(sourcePath, destPath);
             }
 
             try
@@ -163,6 +181,7 @@ namespace ADCOPlugin
                 // Return to the parent function (GlueButtonClick)
                 return;
             }
+            return;
         }
 
         /// <summary>
@@ -172,7 +191,70 @@ namespace ADCOPlugin
         /// <param name="e"></param>
         private void GlueApplyButton_Click(object sender, RoutedEventArgs e)
         {
+            GlueRead();
+            GlueSet();
+        }
 
+        private void GlueRead()
+        {
+            
+        }
+
+        /// <summary>
+        /// Adjusts the dimensions of a copied generic model - this is where most of the work is done
+        /// </summary>
+        public void GlueSet()
+        {
+
+            ThreadHelpers.RunOnUIThread(() =>
+            {
+                // Declare and initialize dimensions and paths based on glue screen fields
+                double aDim = double.Parse(GlueAParam.Text) / INCH_CONVERSION;
+                double bDim = double.Parse(GlueBParam.Text) / INCH_CONVERSION;
+                double cDim = double.Parse(GlueCParam.Text) / INCH_CONVERSION;
+                string destPath = glueDestPathBox.Text;
+                string sourcePath = glueSourcePathBox.Text;
+                
+                // Copy and open the generic part
+                GlueOpen(destPath, sourcePath);
+
+                // Get the active document
+                PartDoc part = swApp.ActiveDoc as PartDoc;
+
+                // Get the part feature called exstrusionBase
+                Feature Feat = part.FeatureByName("extrusionBase");
+
+                // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
+                Feat.Select2(false, -1);
+
+                // Get dimension a of extrusionBase
+                Dimension swDim = (Dimension)Feat.Parameter("a");
+
+                // Set the new value of a as the value from the read-in field
+                int errors = swDim.SetSystemValue3(aDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                // Get dimension b of extrusionBase
+                swDim = (Dimension)Feat.Parameter("b");
+
+                // Set the new value of b as the value from the read-in field
+                errors = swDim.SetSystemValue3(bDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                // Get the part feature called extrusion
+                Feat = part.FeatureByName("extrusion");
+
+                // Replace the current selection
+                Feat.Select2(false, -1);
+
+                // Get dimension c of extrusion
+                swDim = (Dimension)Feat.Parameter("c");
+
+                // Set the new value of c as the value from the read-in field
+                errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                // Invoke all changes and rebuild the document
+                part.EditRebuild();
+            });
+            return;
         }
 
         /// <summary>
@@ -196,6 +278,16 @@ namespace ADCOPlugin
             initScreen();
         }
 
+        private void GluePaperboard_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void GlueCorrugated_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         #endregion
 
         #region Lock-Formed Carton Functions
@@ -206,6 +298,35 @@ namespace ADCOPlugin
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            LockContent.Visibility = System.Windows.Visibility.Visible;
+            InitContent.Visibility = System.Windows.Visibility.Hidden;
+            GlueContent.Visibility = System.Windows.Visibility.Hidden;
+            LockSourcePathBox.Text = @"NOT\YET\IMPLEMENTED";
+            LockDestPathBox.Text = @"NOT\YET\IMPLEMENTED";
+        }
+
+        private void LockBackButton_Click(object sender, RoutedEventArgs e)
+        {
+            initScreen();
+        }
+
+        private void LockApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LockResetButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LockCorrugated_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LockPaperboard_Checked(object sender, RoutedEventArgs e)
         {
 
         }
