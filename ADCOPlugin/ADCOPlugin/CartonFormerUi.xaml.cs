@@ -46,8 +46,15 @@ namespace ADCOPlugin
         int fileerror;
         int filewarning;
 
+        #endregion
+
+        #region Demo Variables
+
         // Default path for the template test box - Will be dynamic in final iteration of package
         public string gluePath = "C:\\Users\\trent\\Documents\\glueTemplate.SLDPRT";
+
+        // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
+        string destPath = "C:\\Users\\trent\\Documents\\glueResult.SLDPRT";
 
         #endregion
 
@@ -130,8 +137,6 @@ namespace ADCOPlugin
         /// </summary>
         public void GlueOpen()
         {
-            // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
-            string destPath = "C:\\Users\\trent\\Documents\\glueResult.SLDPRT";
 
             // Check that the file at the destination path does not already exist
             if (!File.Exists(destPath))
