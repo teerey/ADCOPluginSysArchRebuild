@@ -50,9 +50,11 @@ namespace ADCOPlugin
 
         // Default path for the template test box - Will be dynamic in final iteration of package
         static string glueSrcPathDEFAULT = @"C:\Users\trent\Documents\glueTemplate.SLDPRT";
+        static string lockSrcPathDEFAULT = @"C:\Users\trent\Documents\";
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
         static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
+        static string lockDestPathDEFAULT = @"C:\Users\trent\Documents\";
 
         string glueDestPath;
         string glueSrcPath;
@@ -208,18 +210,29 @@ namespace ADCOPlugin
 
             ThreadHelpers.RunOnUIThread(() =>
             {
+
+
+                if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "")
+                {
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+                    MessageBoxButton button = MessageBoxButton.OK;
+                    MessageBox.Show("You must enter values for box dimensions.", "", button, icon);
+                    return;
+                }
+
                 // Declare and initialize dimensions and paths based on glue screen fields
                 double aDim = double.Parse(GlueAParam.Text) / INCH_CONVERSION;
                 double bDim = double.Parse(GlueBParam.Text) / INCH_CONVERSION;
                 double cDim = double.Parse(GlueCParam.Text) / INCH_CONVERSION;
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
-                
+
                 // Copy and open the generic part
                 GlueOpen(destPath, sourcePath);
 
-                // Get the active document
+                // Get the active document as a Part and a Model
                 PartDoc part = swApp.ActiveDoc as PartDoc;
+                ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
 
                 // Get the part feature called exstrusionBase
                 Feature Feat = part.FeatureByName("extrusionBase");
@@ -251,8 +264,10 @@ namespace ADCOPlugin
                 // Set the new value of c as the value from the read-in field
                 errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
-                // Invoke all changes and rebuild the document
+                // Invoke all changes and rebuild the document, save afterwards
                 part.EditRebuild();
+                swModel.Save();
+
             });
             return;
         }
@@ -299,11 +314,25 @@ namespace ADCOPlugin
         /// <param name="e"></param>
         private void LockButton_Click(object sender, RoutedEventArgs e)
         {
-            LockContent.Visibility = System.Windows.Visibility.Visible;
-            InitContent.Visibility = System.Windows.Visibility.Hidden;
+            LockSourcePathBox.Text = $@"{lockSrcPathDEFAULT}\lockTemplate";
+            
+            if (projectID.Text == "")
+            {
+                LockDestPathBox.Text = $@"{lockDestPathDEFAULT}Copy of lockTemplate";
+            }
+            else
+            {
+                LockDestPathBox.Text = $@"{lockDestPathDEFAULT}{projectID.Text} lockTemplate";
+            }
+
+            LockScreen();
+        }
+
+        private void LockScreen()
+        {
             GlueContent.Visibility = System.Windows.Visibility.Hidden;
-            LockSourcePathBox.Text = @"NOT\YET\IMPLEMENTED";
-            LockDestPathBox.Text = @"NOT\YET\IMPLEMENTED";
+            InitContent.Visibility = System.Windows.Visibility.Hidden;
+            LockContent.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void LockBackButton_Click(object sender, RoutedEventArgs e)
@@ -313,7 +342,267 @@ namespace ADCOPlugin
 
         private void LockApplyButton_Click(object sender, RoutedEventArgs e)
         {
+            lockRead();
+            lockSet();
 
+        }
+
+        private void lockSet()
+        {
+            ThreadHelpers.RunOnUIThread(() =>
+            {
+
+
+            if (LockAParam.Text == "" || LockBParam.Text == "" || LockCParam.Text == "")
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("You must enter values for box dimensions.", "", button, icon);
+                return;
+            }
+
+            // Declare and initialize dimensions and paths based on glue screen fields
+            double aDim = double.Parse(LockAParam.Text) / INCH_CONVERSION;
+            double bDim = double.Parse(LockBParam.Text) / INCH_CONVERSION;
+            double cDim = double.Parse(LockCParam.Text) / INCH_CONVERSION;
+            string destPath = LockDestPathBox.Text;
+            string sourcePath = LockSourcePathBox.Text;
+            string Component1 = "Block1.SLDPRT";
+            string Component2 = "Block2.SLDPRT";
+            string Component3 = "Cylinder.SLDPRT";
+
+            MessageBox.Show("STARTING ON 1ST PART");
+
+            #region 1st Part
+
+            // Copy and open the generic block1 part
+
+            LockOpen($"{destPath}{Component1}", $"{sourcePath}{Component1}");
+
+            // Get the active document as a Part and a Model
+            PartDoc part = swApp.ActiveDoc as PartDoc;
+            ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
+
+            // Get the part feature called exstrusionBase
+            Feature Feat = part.FeatureByName("rectSketch");
+
+            // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
+            Feat.Select2(false, -1);
+
+            // Get dimension a of extrusionBase
+            Dimension swDim = (Dimension)Feat.Parameter("a");
+
+            // Set the new value of a as the value from the read-in field
+            int errors = swDim.SetSystemValue3(aDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+            // Get dimension b of extrusionBase
+            swDim = (Dimension)Feat.Parameter("b");
+
+            // Set the new value of b as the value from the read-in field
+            errors = swDim.SetSystemValue3(bDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+            // Get the part feature called extrusion
+            Feat = part.FeatureByName("Extrude");
+
+            // Replace the current selection
+            Feat.Select2(false, -1);
+
+            // Get dimension c of extrusion
+            swDim = (Dimension)Feat.Parameter("c");
+
+            // Set the new value of c as the value from the read-in field
+            errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+            // Invoke all changes and rebuild the document, save afterwards
+            part.EditRebuild();
+            swModel.Save();
+            swApp.CloseDoc($"{ destPath}{Component1}");
+
+
+                #endregion
+
+                MessageBox.Show("Beginning Second Part");
+
+                #region 2nd Part
+
+                double part2a = aDim * 2.0;
+                double part2b = bDim / 2.0;
+                double part2c = cDim * 3.0;
+
+                // Copy and open the generic block1 part
+                LockOpen($"{destPath}{Component2}", $"{sourcePath}{Component2}");
+
+                // Get the active document as a Part and a Model
+                part = swApp.ActiveDoc as PartDoc;
+                swModel = swApp.ActiveDoc as ModelDoc2;
+
+                // Get the part feature called exstrusionBase
+                Feat = part.FeatureByName("rectSketch");
+
+                // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
+                Feat.Select2(false, -1);
+
+                // Get dimension a of extrusionBase
+                swDim = (Dimension)Feat.Parameter("a");
+
+                // Set the new value of a as the value from the read-in field
+                errors = swDim.SetSystemValue3(part2a, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                // Get dimension b of extrusionBase
+                swDim = (Dimension)Feat.Parameter("b");
+
+                // Set the new value of b as the value from the read-in field
+                errors = swDim.SetSystemValue3(part2b, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                // Get the part feature called extrusion
+                Feat = part.FeatureByName("Extrude");
+
+                // Replace the current selection
+                Feat.Select2(false, -1);
+
+                // Get dimension c of extrusion
+                swDim = (Dimension)Feat.Parameter("c");
+
+                // Set the new value of c as the value from the read-in field
+                errors = swDim.SetSystemValue3(part2c, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                // Invoke all changes and rebuild the document, save afterwards
+                part.EditRebuild();
+                swModel.Save();
+                swApp.CloseDoc($"{destPath}{Component2}");
+
+                #endregion
+
+                MessageBox.Show("Beginning 3rd Part");
+
+                #region 3rd Part
+
+                double part3a = aDim * 2;
+                double part3b = bDim * 0.5;
+                double part3c = cDim / 0.2;
+
+                // Copy and open the generic block1 part
+                LockOpen($"{destPath}{Component3}", $"{sourcePath}{Component3}");
+
+                // Get the active document as a Part and a Model
+                part = swApp.ActiveDoc as PartDoc;
+                swModel = swApp.ActiveDoc as ModelDoc2;
+
+                // Get the part feature called exstrusionBase
+                Feat = part.FeatureByName("cylSketch");
+
+                // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
+                Feat.Select2(false, -1);
+
+                // Get dimension a of extrusionBase
+                swDim = (Dimension)Feat.Parameter("a");
+
+                // Set the new value of a as the value from the read-in field
+                errors = swDim.SetSystemValue3(part3a, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                Feat = part.FeatureByName("cylExtrude");
+
+                // Get dimension b of extrusionBase
+                swDim = (Dimension)Feat.Parameter("b");
+
+                // Set the new value of b as the value from the read-in field
+                errors = swDim.SetSystemValue3(part3b, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+
+                // Get the part feature called extrusion
+                Feat = part.FeatureByName("holeCut");
+
+                Debug.Print("Beginning to mess with the extruded cut");
+
+                // Replace the current selection
+                ExtrudeFeatureData swCutFeatureData = default(ExtrudeFeatureData);
+                swCutFeatureData = (ExtrudeFeatureData)Feat.GetDefinition();
+
+                Debug.Print("Made Some Data Objects");
+                if (aDim >= 0.25)
+                {
+                    Debug.Print("Attempting to edit entity");
+                    Entity ent = (Entity)part.GetEntityByName("endingFace", (int)swSelectType_e.swSelFACES);
+                    if (ent != null)
+                    {
+                        Debug.Print("Attempting to Select a Face");
+                        ent.Select4(false, null);
+                    }
+                    swCutFeatureData.SetEndCondition(true, (int)swEndConditions_e.swEndCondUpToSelection);
+                }
+                //else
+                //{
+                //    Debug.Print("Attempting to Suppress Feature");
+                //    Feat.SetSuppression((int)swFeatureSuppressionAction_e.swSuppressFeature);
+                //}
+
+                // Invoke all changes and rebuild the document, save afterwards
+                part.EditRebuild();
+                swModel.Save();
+                swApp.CloseDoc($"{destPath}{Component3}");
+
+                //LockOpen($"{destPath}Assembly.SLDASM", $"{sourcePath}Assembly.SLDASM");\
+                Debug.Print("Opening the Assembly File");
+                if (!File.Exists($"{destPath}Assembly.SLDASM"))
+                {
+                    File.Copy($"{sourcePath}Assembly.SLDASM",$"{destPath}Assembly.SLDASM");
+                }
+                swPart = swApp.OpenDoc($"{destPath}Assembly.SLDASM", (int)swDocumentTypes_e.swDocASSEMBLY);
+                Debug.Print("Setting Model and Assembly Variables");
+                ModelDoc2 model = (ModelDoc2)swApp.ActiveDoc;
+                ModelDocExtension modelExt = (ModelDocExtension)model.Extension;
+                AssemblyDoc swAssem = (AssemblyDoc)model;
+                Component component = default(Component);
+                bool isSelected = modelExt.SelectByID2("lockTemplateBlock1-1@Copy of lockTemplateAssembly", "COMPONENT", 0, 0, 0, false, -1, (Callout)null, (int)swSelectOption_e.swSelectOptionDefault);
+                bool returnVal = swAssem.ReplaceComponents($"{destPath}{Component1}", "", true, true);
+                isSelected = modelExt.SelectByID2("lockTemplateBlock2-1@Copy of lockTemplateAssembly", "COMPONENT", 0, 0, 0, false, -1, (Callout)null, (int)swSelectOption_e.swSelectOptionDefault);
+                returnVal = swAssem.ReplaceComponents($"{destPath}{Component2}", "", true, true);
+                isSelected = modelExt.SelectByID2("lockTemplateCylinder-1@Copy of lockTemplateAssembly", "COMPONENT", 0, 0, 0, false, -1, (Callout)null, (int)swSelectOption_e.swSelectOptionDefault);
+                returnVal = swAssem.ReplaceComponents($"{destPath}{Component3}", "", true, true);
+
+                #endregion
+
+            });
+            return;
+        }
+
+        private void LockOpen(string destPath, string sourcePath)
+        {
+
+            MessageBox.Show($"File Attempting to Open: {destPath}");
+            MessageBox.Show($"Copying From: {sourcePath}");
+
+            // Check that the file at the destination path does not already exist
+            if (!File.Exists(destPath))
+            {
+                // If the destination file does not already exist, then copy the template from the source path to the destination path
+                File.Copy(sourcePath, destPath);
+                MessageBox.Show("Successully Opened");
+            }
+
+            try
+            {
+                // Try to open the copied document
+                swPart = swApp.OpenDoc(destPath, (int)swDocumentTypes_e.swDocPART);
+
+            }
+            catch (Exception)
+            {
+                // If an exception is thrown, notify the user that the file was not able to be opened
+                MessageBox.Show("File Open Failed");
+
+                // Clear any unused objects - should clean up any COM-related errors that arise after debug close
+                Marshal.CleanupUnusedObjectsInCurrentContext();
+
+                // Return to the parent function (GlueButtonClick)
+                return;
+            }
+            return;
+        }
+
+        private void lockRead()
+        {
+            return;
         }
 
         private void LockResetButton_Click(object sender, RoutedEventArgs e)

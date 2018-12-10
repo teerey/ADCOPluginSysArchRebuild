@@ -84,7 +84,7 @@
             </StackPanel>
             
             <!--Glue-Formed Carton Page-->
-            <StackPanel x:Name="GlueContent" Visibility="Visible">
+            <StackPanel x:Name="GlueContent" Visibility="Hidden">
                 <!--Control button grid region-->
                 <Grid>
 
@@ -221,7 +221,7 @@
             </StackPanel>
 
             <!--Locking Carton Page-->
-            <StackPanel x:Name="LockContent" Visibility="Hidden">
+            <StackPanel x:Name="LockContent" Visibility="Visible">
                 <!--Control button grid region-->
                 <Grid>
 
