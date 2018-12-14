@@ -224,6 +224,8 @@ namespace ADCOPlugin
                 double aDim = double.Parse(GlueAParam.Text) / INCH_CONVERSION;
                 double bDim = double.Parse(GlueBParam.Text) / INCH_CONVERSION;
                 double cDim = double.Parse(GlueCParam.Text) / INCH_CONVERSION;
+                double dDim = double.Parse(GlueDParam.Text) / INCH_CONVERSION;
+                double eDim = double.Parse(GlueEParam.Text) / INCH_CONVERSION;
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
 
@@ -270,6 +272,16 @@ namespace ADCOPlugin
 
             });
             return;
+        }
+
+        private void glueDestBrowse_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void glueSourceBrowse_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         /// <summary>

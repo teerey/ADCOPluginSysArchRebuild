@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ADCOPlugin"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="400"
+             d:DesignHeight="700" d:DesignWidth="300"
              Background="White"
              Loaded="UserControl_Loaded">
 
@@ -13,7 +13,7 @@
     <Border Padding="10" Margin="10,10,10,10">
         <Grid>
             <!--Initial/load-up page-->
-            <StackPanel x:Name="InitContent" Visibility="Hidden" VerticalAlignment="Center">
+            <StackPanel x:Name="InitContent" Visibility="Hidden">
                 
                 <!--ADCO logo-->
                 <Image Margin="5 0 0 40"  Source="pluginHeader.png" HorizontalAlignment="Center" Stretch="UniformToFill"/>
@@ -38,7 +38,7 @@
                             </Button.Effect>
                             
                             <!--Button image-->
-                            <Image Source="GlueSymbol.png" HorizontalAlignment="Center" Width="80" OpacityMask="White" Height="80" />
+                            <Image Source="GlueSymbol.png" HorizontalAlignment="Center" Width="90" OpacityMask="White" Height="90" />
                         </Button>
                     </StackPanel>
 
@@ -60,11 +60,11 @@
                 </Grid>
                 
                 <!--Carton type selection prompt-->
-                <TextBlock Margin="10"  HorizontalAlignment="Center" Text="Select former type" FontWeight="Bold" FontSize="18"/>
+                <TextBlock Margin="10"  HorizontalAlignment="Center" Text="Select Carton Type" FontWeight="Bold" FontSize="18"/>
 
                 <Grid Width="250" Margin="0 40 0 0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1.5*"/>
                         <ColumnDefinition Width="4*"/>
                     </Grid.ColumnDefinitions>
 
@@ -84,7 +84,7 @@
             </StackPanel>
             
             <!--Glue-Formed Carton Page-->
-            <StackPanel x:Name="GlueContent" Visibility="Hidden">
+            <StackPanel x:Name="GlueContent" Visibility="Visible">
                 <!--Control button grid region-->
                 <Grid>
 
@@ -110,7 +110,7 @@
 
 
                 <!--Graphical Reference for Parameters-->
-                <Image  Margin="20" Source="ADCOglueTemplate.png" Stretch="Fill" HorizontalAlignment="Center" Width="254.6" OpacityMask="White" />
+                <Image  Margin="0 20 10 0" Source="ADCOglueTemplate.png" Stretch="None" HorizontalAlignment="Center" OpacityMask="White" />
                 
                 <!---Data entry header-->
                 <TextBlock Margin="0 10 0 10" Text="Glue-Formed Carton Parameters (inches)" FontSize="14" HorizontalAlignment="Center" FontWeight="DemiBold"/>
@@ -126,19 +126,25 @@
                     <!--Labels-->
                     <StackPanel Grid.Column="0" VerticalAlignment="Top">
                         <!--Label for Dimension a entry-->
-                        <TextBlock  Margin="0 8 5 8" Text="Dimension a" HorizontalAlignment="Right"/>
+                        <TextBlock  Margin="0 8 5 8" Text="Dimension A" HorizontalAlignment="Right"/>
 
                         <!--Label for Dimension b entry-->
-                        <TextBlock Margin="0 8 5 8" Text="Dimension b" HorizontalAlignment="Right"/>
+                        <TextBlock Margin="0 8 5 8" Text="Dimension B" HorizontalAlignment="Right"/>
 
                         <!--Label for Dimension c entry-->
-                        <TextBlock Margin="0 8 5 8" Text="Dimension c" HorizontalAlignment="Right"/>
+                        <TextBlock Margin="0 8 5 8" Text="Dimension C" HorizontalAlignment="Right"/>
+
+                        <!--Label for Dimension d entry-->
+                        <TextBlock Margin="0 8 5 8" Text="Dimension D" HorizontalAlignment="Right"/>
+
+                        <!--Label for Dimension e entry-->
+                        <TextBlock Margin="0 8 5 8" Text="Dimension E" HorizontalAlignment="Right"/>
 
                         <!--Label for Output path-->
-                        <TextBlock Margin="0 8 5 8" Text="Destination Path" TextAlignment="Right"/>
+                        <TextBlock Margin="0 8 5 8" Text="Destination" TextAlignment="Right"/>
 
                         <!--Label for Source path -->
-                        <TextBlock Margin="0 8 5 8" Text="Source Path" TextAlignment="Right"/>
+                        <TextBlock Margin="0 8 5 8" Text="Source" TextAlignment="Right"/>
                     </StackPanel>
 
                     <!--Entry fields-->
@@ -153,10 +159,16 @@
                         <!--Dimension c entry-->
                         <TextBox Margin="0 5 0 5" x:Name="GlueCParam" Padding="2" IsReadOnly="False" Background="#eee"/>
 
+                        <!--Dimension d entry-->
+                        <TextBox Margin="0 5 0 5" x:Name="GlueDParam" Padding="2" IsReadOnly="False" Background="#eee"/>
+
+                        <!--Dimension e entry-->
+                        <TextBox Margin="0 5 0 5" x:Name="GlueEParam" Padding="2" IsReadOnly="False" Background="#eee"/>
+
                         <Grid>
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2.5*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
@@ -173,10 +185,10 @@
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
 
                                 <!--Destination file path browse button-->
-                                <Button x:Name="glueDestBrowse" Content="Browse" Margin="5 5.5 0 6"/>
+                                <Button x:Name="glueDestBrowse" Content="Browse" Margin="5 5.5 0 6" Click="glueDestBrowse_Click"/>
 
                                 <!--Source file path browse button-->
-                                <Button x:Name="glueSourceBrowse" Content="Browse" Margin="5 6.5 0 6"/>
+                                <Button x:Name="glueSourceBrowse" Content="Browse" Margin="5 6.5 0 6" Click="glueSourceBrowse_Click"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -221,7 +233,7 @@
             </StackPanel>
 
             <!--Locking Carton Page-->
-            <StackPanel x:Name="LockContent" Visibility="Visible">
+            <StackPanel x:Name="LockContent" Visibility="Hidden">
                 <!--Control button grid region-->
                 <Grid>
 
