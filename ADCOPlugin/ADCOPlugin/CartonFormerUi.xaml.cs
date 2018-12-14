@@ -47,21 +47,45 @@ namespace ADCOPlugin
         #endregion
 
         #region Demo Variables
-
-        // Default path for the template test box - Will be dynamic in final iteration of package
-        //static string glueSrcPathDEFAULT = @"C:\Users\trent\Documents\glueTemplate.SLDPRT";
-        //static string lockSrcPathDEFAULT = @"C:\Users\trent\Documents\";
-
         
+        //Get current windows user for proper default destination
+        static string userName = System.Environment.UserName;
+        static DateTime dt = DateTime.Today;
 
-        
+        //Default routing for part/assembly files
+
+        //Home folder of all template parts/assemblies
+        static string glueSrcLibDEFAULT = @"C:\Program Files\ADCO Carton Former Templates";
+
+        //Type of carton (glue/lock)
+        static string[] formerType = { "GLUE", "LOCK" };
+
+        //Overall component folder names
+        static string[] formerElement = { "MANDREL", "FORMER PLATE" };
+
+        //Part files in the glue mandrel domain
+        static string[] glueMandrelParts = { "R&D15D350A.SLDPRT" , "R&D5086-21-108-H.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "R&D5634-15-108.SLDPRT", "R&D5959-11-104-H.SLDPRT","R&D5959-11-105-H.SLDPRT","R&D5959-11-106-3-H.SLDPRT","R&D5959-11-106-H.SLDPRT","R&D5959-11-107.SLDPRT","R&D5959-11-109-H.SLDPRT","R&D5959-11-110-H.SLDPRT","R&D06451-1062.sldprt","R&DAS2211FG-N01-07S.SLDPRT"};
+
+        //Assembly files in the glue mandrel domain
+        static string[] glueMandrelAssemblies = { "R&D5321-31 SMC MGPM20N-100.SLDASM", "R&DMGPM20N-100.SLDASM", "R&D5959-11-001.SLDASM" };
+
+        //Default home folder of resulting project folder
+        static string destLibDEFAULT = $@"C:\Users\Users\{userName}\Documents";
+
+        //Destination path to be set
+        string destPath = destLibDEFAULT;
+        string srcPath = glueSrcLibDEFAULT;
+        static string lockSrcPathDEFAULT = @"C:\Users\trent\Documents\";
+
+
+
+
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
         //static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
-        //static string lockDestPathDEFAULT = @"C:\Users\trent\Documents\";
+        static string lockDestPathDEFAULT = @"C:\Users\trent\Documents\";
 
-        string glueDestPath;
-        string glueSrcPath;
+
 
         #endregion
 
@@ -123,17 +147,19 @@ namespace ADCOPlugin
         private void GlueButton_Click(object sender, RoutedEventArgs e)
         {
 
-            // Before switching screens, checks to see if the user entered a project ID
+            // Before switching screens, checks to see if the user entered a project ID or customer name
             // If so, then the project ID will be the name of the actual part file and is appended to the default home path
             // If not, then some preset name is set
-            if (projectID.Text != null)
+            if (projectID.Text != null || customer.Text != null)
             {
-                glueDestPath = $@"{glueDestPathDEFAULT}{projectID.Text}.SLDPRT";
+                destPath = $@"{destLibDEFAULT}\{customer.Text}{projectID.Text}";
             }
             else
             {
-                glueDestPath = $@"{glueDestPathDEFAULT}\CopyOfglueTemplate.SLDPRT";
+                destPath = $@"{destLibDEFAULT}\{dt.ToShortDateString()}";
             }
+
+            srcPath = $@"{glueSrcLibDEFAULT}\{formerType[0]}";
 
             // Change display to glue screen
             GlueScreen();
@@ -152,8 +178,8 @@ namespace ADCOPlugin
             GlueContent.Visibility = System.Windows.Visibility.Visible;
             InitContent.Visibility = System.Windows.Visibility.Hidden;
             LockContent.Visibility = System.Windows.Visibility.Hidden;
-            glueSourcePathBox.Text = glueSrcPathDEFAULT;
-            glueDestPathBox.Text = glueDestPath;
+            glueSourcePathBox.Text = srcPath;
+            glueDestPathBox.Text = destPath;
 
         }
 
@@ -247,7 +273,7 @@ namespace ADCOPlugin
                 Feat.Select2(false, -1);
 
                 // Get dimension a of extrusionBase
-                Dimension swDim = (Dimension)Feat.Parameter("a");
+                Dimension swDim = (Dimension) Feat.Parameter("a");
 
                 // Set the new value of a as the value from the read-in field
                 int errors = swDim.SetSystemValue3(aDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);

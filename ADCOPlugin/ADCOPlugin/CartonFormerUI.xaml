@@ -13,7 +13,7 @@
     <Border Padding="10" Margin="10,10,10,10">
         <Grid>
             <!--Initial/load-up page-->
-            <StackPanel x:Name="InitContent" Visibility="Hidden">
+            <StackPanel x:Name="InitContent" Visibility="Visible">
                 
                 <!--ADCO logo-->
                 <Image Margin="5 0 0 40"  Source="pluginHeader.png" HorizontalAlignment="Center" Stretch="UniformToFill"/>
@@ -84,7 +84,7 @@
             </StackPanel>
             
             <!--Glue-Formed Carton Page-->
-            <StackPanel x:Name="GlueContent" Visibility="Visible">
+            <StackPanel x:Name="GlueContent" Visibility="Hidden">
                 <!--Control button grid region-->
                 <Grid>
 
