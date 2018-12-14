@@ -49,12 +49,16 @@ namespace ADCOPlugin
         #region Demo Variables
 
         // Default path for the template test box - Will be dynamic in final iteration of package
-        static string glueSrcPathDEFAULT = @"C:\Users\trent\Documents\glueTemplate.SLDPRT";
-        static string lockSrcPathDEFAULT = @"C:\Users\trent\Documents\";
+        //static string glueSrcPathDEFAULT = @"C:\Users\trent\Documents\glueTemplate.SLDPRT";
+        //static string lockSrcPathDEFAULT = @"C:\Users\trent\Documents\";
+
+        
+
+        
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
-        static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
-        static string lockDestPathDEFAULT = @"C:\Users\trent\Documents\";
+        //static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
+        //static string lockDestPathDEFAULT = @"C:\Users\trent\Documents\";
 
         string glueDestPath;
         string glueSrcPath;
@@ -212,7 +216,7 @@ namespace ADCOPlugin
             {
 
 
-                if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "")
+                if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "")
                 {
                     MessageBoxImage icon = MessageBoxImage.Warning;
                     MessageBoxButton button = MessageBoxButton.OK;
@@ -233,7 +237,7 @@ namespace ADCOPlugin
                 GlueOpen(destPath, sourcePath);
 
                 // Get the active document as a Part and a Model
-                PartDoc part = swApp.ActiveDoc as PartDoc;
+                PartDoc part = (PartDoc) swApp.ActiveDoc;
                 ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
 
                 // Get the part feature called exstrusionBase
