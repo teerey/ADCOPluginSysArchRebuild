@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using static AngelSix.SolidDna.SolidWorksEnvironment;
 using AngelSix.SolidDna;
 using System;
+using System.Globalization;
 using SldWorks;
 using SwConst;
 
@@ -31,18 +32,16 @@ namespace ADCOPlugin
 
         #region Public Members
 
-        // Declare a SolidWorks instance field
-        SldWorks.SldWorks swApp;
+        
 
-        // Declare a SolidWorks part field
-        SldWorks.ModelDoc2 swPart;
+        
 
         // INCH CONVERSION NUMBER: NO. OF INCHES IN 1 M - Most API functions assume the unit is in meters
         double INCH_CONVERSION = 39.370079;
 
         // Error/warning handlers - Only to be used if OpenDoc method is updated to newer version
-        //int fileerror;
-        //int filewarning;
+        // int fileerror;
+        // int filewarning;
 
         #endregion
 
@@ -50,12 +49,11 @@ namespace ADCOPlugin
         
         //Get current windows user for proper default destination
         static string userName = System.Environment.UserName;
-        static DateTime dt = DateTime.Today;
+        
 
         //Default routing for part/assembly files
-
         //Home folder of all template parts/assemblies
-        static string glueSrcLibDEFAULT = @"C:\Program Files\ADCO Carton Former Templates";
+        static string glueSrcLibDEFAULT = $@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";
 
         //Type of carton (glue/lock)
         static string[] formerType = { "GLUE", "LOCK" };
@@ -64,21 +62,34 @@ namespace ADCOPlugin
         static string[] formerElement = { "MANDREL", "FORMER PLATE" };
 
         //Part files in the glue mandrel domain
-        static string[] glueMandrelParts = { "R&D15D350A.SLDPRT" , "R&D5086-21-108-H.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "R&D5634-15-108.SLDPRT", "R&D5959-11-104-H.SLDPRT","R&D5959-11-105-H.SLDPRT","R&D5959-11-106-3-H.SLDPRT","R&D5959-11-106-H.SLDPRT","R&D5959-11-107.SLDPRT","R&D5959-11-109-H.SLDPRT","R&D5959-11-110-H.SLDPRT","R&D06451-1062.sldprt","R&DAS2211FG-N01-07S.SLDPRT"};
+        static string[] glueMandrelParts = { "R&D5959 SHOW CARTON 5-30-18 LG.SLDPRT", "R&D15D350A.SLDPRT" , "R&D5086-21-108-H.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "R&D5634-15-108.SLDPRT", "R&D5959-11-104-H.SLDPRT","R&D5959-11-105-H.SLDPRT","R&D5959-11-106-3-H.SLDPRT","R&D5959-11-106-H.SLDPRT","R&D5959-11-107.SLDPRT","R&D5959-11-109-H.SLDPRT","R&D5959-11-110-H.SLDPRT","R&D06451-1062.sldprt","R&DAS2211FG-N01-07S.SLDPRT"};
 
         //Assembly files in the glue mandrel domain
         static string[] glueMandrelAssemblies = { "R&D5321-31 SMC MGPM20N-100.SLDASM", "R&DMGPM20N-100.SLDASM", "R&D5959-11-001.SLDASM" };
 
         //Default home folder of resulting project folder
-        static string destLibDEFAULT = $@"C:\Users\Users\{userName}\Documents";
+        static string destLibDEFAULT = $@"C:\Users\{userName}\Documents";
 
         //Destination path to be set
         string destPath = destLibDEFAULT;
         string srcPath = glueSrcLibDEFAULT;
         static string lockSrcPathDEFAULT = @"C:\Users\trent\Documents\";
 
-
-
+        //Overarching SW variables
+        // Declare a SolidWorks instance field
+        public SldWorks.SldWorks swApp;
+        // Declare a SolidWorks part doc field
+        public PartDoc swPart;
+        // Declare a SolidWorks model doc field
+        public ModelDoc2 swModel;
+        // Declare a Solidworks feature field
+        public Feature swFeat;
+        // Declare a SolidWorks dimension field
+        public Dimension swDim;
+        // Declare a Solidworks assembly doc field
+        public AssemblyDoc swAssem;
+        // Declarea a model document extension field
+        public ModelDocExtension modelExt;
 
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
@@ -150,13 +161,13 @@ namespace ADCOPlugin
             // Before switching screens, checks to see if the user entered a project ID or customer name
             // If so, then the project ID will be the name of the actual part file and is appended to the default home path
             // If not, then some preset name is set
-            if (projectID.Text != null || customer.Text != null)
+            if (projectID.Text != "" || customer.Text != "")
             {
                 destPath = $@"{destLibDEFAULT}\{customer.Text}{projectID.Text}";
             }
             else
             {
-                destPath = $@"{destLibDEFAULT}\{dt.ToShortDateString()}";
+                destPath = $@"{destLibDEFAULT}\TESTCOPY";
             }
 
             srcPath = $@"{glueSrcLibDEFAULT}\{formerType[0]}";
@@ -186,33 +197,46 @@ namespace ADCOPlugin
         /// <summary>
         /// Copy the template file and load the copied file to the SW screen
         /// </summary>
-        public void GlueOpen(string destPath, string sourcePath)
+        private void GlueOpen(bool copystate, int type, int idx, int component)
         {
-
-            // Check that the file at the destination path does not already exist
-            if (!File.Exists(destPath))
+            if (copystate == true && !Directory.Exists(destPath))
             {
-                // If the destination file does not already exist, then copy the template from the source path to the destination path
-                File.Copy(sourcePath, destPath);
+                // Source, Destination, Copy Subdirectories?
+                DirectoryCopy(srcPath, destPath, true);
             }
 
-            try
+            if(copystate == false && type == 0)
             {
-                // Try to open the copied document
-                swPart = swApp.OpenDoc(destPath, (int)swDocumentTypes_e.swDocPART);
-
+                //MessageBox.Show($@"{destPath}\{formerElement[component]}\{glueMandrelParts[idx]}");
+                swModel = swApp.OpenDoc($@"{destPath}\{formerElement[component]}\{glueMandrelParts[idx]}", (int)swDocumentTypes_e.swDocPART);
+                swPart = (PartDoc)swApp.ActiveDoc;
             }
-            catch (Exception)
+
+            if(copystate == false && type == 1)
             {
-                // If an exception is thrown, notify the user that the file was not able to be opened
-                MessageBox.Show(string.Format("File Open Failed"));
-
-                // Clear any unused objects - should clean up any COM-related errors that arise after debug close
-                Marshal.CleanupUnusedObjectsInCurrentContext();
-
-                // Return to the parent function (GlueButtonClick)
-                return;
+                swModel = swApp.OpenDoc($@"{destPath}\{formerElement[component]}\{glueMandrelAssemblies[idx]}", (int)swDocumentTypes_e.swDocASSEMBLY);
+                swAssem = (AssemblyDoc)swApp.ActiveDoc;
+                modelExt = (ModelDocExtension)swModel.Extension;
             }
+
+            //ModelDocExtension modelExt = (ModelDocExtension)model.Extension;
+            //try
+            //{
+            //    // Try to open the copied document
+            //swPart = swApp.OpenDoc(destPath, (int)swDocumentTypes_e.swDocPART);
+
+            //}
+            //catch (Exception)
+            //{
+            //    // If an exception is thrown, notify the user that the file was not able to be opened
+            //    MessageBox.Show(string.Format("File Open Failed"));
+
+            //    // Clear any unused objects - should clean up any COM-related errors that arise after debug close
+            //    Marshal.CleanupUnusedObjectsInCurrentContext();
+
+            //    // Return to the parent function (GlueButtonClick)
+            //    return;
+            //}
             return;
         }
 
@@ -223,33 +247,75 @@ namespace ADCOPlugin
         /// <param name="e"></param>
         private void GlueApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            GlueRead();
-            GlueSet();
+            int error = GlueRead();
+            if (error == 0)
+            {
+                GlueSet();
+                return (0);
+            }
         }
 
-        private void GlueRead()
+        private int GlueRead()
         {
-            
+            if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "")
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("You must enter values for all box dimensions.", "", button, icon);
+                return (1);
+            }
+
+            if(double.Parse(GlueAParam.Text) < 7 || double.Parse(GlueAParam.Text) > 30)
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("Value of A must be between 7\" and 30\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(GlueBParam.Text) < 7 || double.Parse(GlueBParam.Text) > 26)
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("Value of B must be between 7\" and 26\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(GlueCParam.Text) < 7 || double.Parse(GlueCParam.Text) > 19)
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("Value of C must be between 7\" and 19\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(GlueDParam.Text) < 5.5 || double.Parse(GlueDParam.Text) > 10)
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("Value of D must be between 7\" and 10\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(GlueEParam.Text) < 1 || double.Parse(GlueEParam.Text) > 6)
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("Value of E must be between 1\" and 6\"", "", button, icon);
+                return (1);
+            }
+
+            return (0);
         }
 
         /// <summary>
         /// Adjusts the dimensions of a copied generic model - this is where most of the work is done
         /// </summary>
-        public void GlueSet()
+        private void GlueSet()
         {
 
             ThreadHelpers.RunOnUIThread(() =>
             {
-
-
-                if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "")
-                {
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBox.Show("You must enter values for box dimensions.", "", button, icon);
-                    return;
-                }
-
                 // Declare and initialize dimensions and paths based on glue screen fields
                 double aDim = double.Parse(GlueAParam.Text) / INCH_CONVERSION;
                 double bDim = double.Parse(GlueBParam.Text) / INCH_CONVERSION;
@@ -258,47 +324,189 @@ namespace ADCOPlugin
                 double eDim = double.Parse(GlueEParam.Text) / INCH_CONVERSION;
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
+                int errors;
 
-                // Copy and open the generic part
-                GlueOpen(destPath, sourcePath);
+                // Copy and open the template library
+                GlueOpen(true,-1,-1,-1);
 
-                // Get the active document as a Part and a Model
-                PartDoc part = (PartDoc) swApp.ActiveDoc;
-                ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
+                // Initialize index of part file in static array
+                int idx = 0;
+                int TYPE_PART = 0;
+                int TYPE_ASSEM = 1;
+                int COMPONENT_MAN = 0;
+                int COMPONENT_FP = 1;
 
-                // Get the part feature called exstrusionBase
-                Feature Feat = part.FeatureByName("extrusionBase");
+                // Cycle through mandrel parts
+                while (true)
+                {
+                    
 
-                // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
-                Feat.Select2(false, -1);
 
-                // Get dimension a of extrusionBase
-                Dimension swDim = (Dimension) Feat.Parameter("a");
+                    switch (idx)
+                    {
+                        case 0:
+                            //GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                            //swFeat = swPart.FeatureByName("Sketch1");
+                            //swFeat.Select2(false, -1);
+                            //swDim = (Dimension)swFeat.Parameter("A1");
+                            //errors = swDim.SetSystemValue3(aDim - 3 / INCH_CONVERSION * eDim - cDim / INCH_CONVERSION,(int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration,null);
+                            //swDim = (Dimension)swFeat.Parameter("B1");
+                            //errors = swDim.SetSystemValue3(bDim-0.125/INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swDim = (Dimension)swFeat.Parameter("C1");
+                            //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swDim = (Dimension)swFeat.Parameter("C2");
+                            //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swDim = (Dimension)swFeat.Parameter("D1");
+                            //errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swDim = (Dimension)swFeat.Parameter("E1");
+                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swDim = (Dimension)swFeat.Parameter("E2");
+                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swDim = (Dimension)swFeat.Parameter("E3");
+                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swDim = (Dimension)swFeat.Parameter("E4");
+                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //swPart.EditRebuild();
+                            //swModel.Save();
+                            //swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            idx = 6;
+                            break;
 
-                // Set the new value of a as the value from the read-in field
-                int errors = swDim.SetSystemValue3(aDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                        case 6:
+                            //MessageBox.Show("CASE 5");
+                            GlueOpen(false, TYPE_PART, idx,COMPONENT_MAN);
+                            swFeat = swPart.FeatureByName("Extrude1");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("MountLength");
+                            errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            idx++;
+                            break;
 
-                // Get dimension b of extrusionBase
-                swDim = (Dimension)Feat.Parameter("b");
+                        case 7:
+                            //MessageBox.Show("CASE 6");
+                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                            if (cDim <= 7.5/INCH_CONVERSION)
+                            {
+                                swFeat = swPart.FeatureByName("Cut-Extrude1");
+                                swFeat.Select2(false, -1);
+                                bool suppressionState = swModel.EditSuppress2();
+                            }
+                            swFeat = swPart.FeatureByName("Extrude1");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("SpreadLength");
+                            errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            idx = 9;
+                            break;
 
-                // Set the new value of b as the value from the read-in field
-                errors = swDim.SetSystemValue3(bDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                        case 9:
+                            //MessageBox.Show("CASE 8");
+                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                            swFeat = swPart.FeatureByName("Sketch1");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("MandrelSideWidth");
+                            errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
-                // Get the part feature called extrusion
-                Feat = part.FeatureByName("extrusion");
+                            swFeat = swPart.FeatureByName("Sketch3");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("MandrelSideHoles");
+                            double MandrelSideHolesdim = 0.5009 * (dDim - 9.1875 / INCH_CONVERSION) + 2.589 / INCH_CONVERSION;
+                            errors = swDim.SetSystemValue3(MandrelSideHolesdim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            idx = 10;
+                            break;
 
-                // Replace the current selection
-                Feat.Select2(false, -1);
+                        case 10:
+                            //MessageBox.Show("CASE 9");
+                            double PushPlateWidth = dDim - 1.406 * 2.0/INCH_CONVERSION; 
+                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                            if (PushPlateWidth <= 4.0/INCH_CONVERSION)
+                            {
+                                Debug.Print("Entered suppression if statement");
+                                swFeat = swPart.FeatureByName("Cut-Extrude3");
+                                swFeat.Select2(false, -1);
+                                swFeat = swPart.FeatureByName("Fillet2");
+                                swFeat.Select2(true, -2);
+                                swFeat = swPart.FeatureByName("Fillet3");
+                                swFeat.Select2(true, -3);
 
-                // Get dimension c of extrusion
-                swDim = (Dimension)Feat.Parameter("c");
+                                Debug.Print("Selected multiple parts");
+                                bool suppressionState = swModel.EditSuppress2();
+                            }
+                            Debug.Print("Made it past if statement");
+                            swFeat = swPart.FeatureByName("Base-Flange1");
+                            swFeat.Select2(false, -4);
+                            swDim = (Dimension)swFeat.Parameter("PushPlateWidth");
+                            errors = swDim.SetSystemValue3(PushPlateWidth, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
-                // Set the new value of c as the value from the read-in field
-                errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            swFeat = swPart.FeatureByName("Sketch1");
+                            swFeat.Select2(false, -4);
+                            swDim = (Dimension)swFeat.Parameter("PushPlateLength");
+                            double PushPlateLength = cDim - 0.828 * 2.0 / INCH_CONVERSION;
+                            errors = swDim.SetSystemValue3(PushPlateLength, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            idx = 11;
+                            break;
 
-                // Invoke all changes and rebuild the document, save afterwards
-                part.EditRebuild();
-                swModel.Save();
+                        default:
+                            MessageBox.Show("Something went wrong!");
+                            break;
+                    }
+
+                    if (idx == 11)
+                    {
+                        break;
+                    }
+                        
+                }
+
+                idx = glueMandrelAssemblies.Length - 1;
+                GlueOpen(false, TYPE_ASSEM, idx, COMPONENT_MAN);
+                //PartDoc part = (PartDoc) swApp.ActiveDoc;
+                ////ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
+
+                //// Get the part feature called exstrusionBase
+                //Feature Feat = part.FeatureByName("extrusionBase");
+
+                //// Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
+                //Feat.Select2(false, -1);
+
+                //// Get dimension a of extrusionBase
+                ////Dimension swDim = (Dimension) Feat.Parameter("a");
+
+                //// Set the new value of a as the value from the read-in field
+                ////int errors = swDim.SetSystemValue3(aDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                //// Get dimension b of extrusionBase
+                //swDim = (Dimension)Feat.Parameter("b");
+
+                //// Set the new value of b as the value from the read-in field
+                //errors = swDim.SetSystemValue3(bDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                //// Get the part feature called extrusion
+                //Feat = part.FeatureByName("extrusion");
+
+                //// Replace the current selection
+                //Feat.Select2(false, -1);
+
+                //// Get dimension c of extrusion
+                //swDim = (Dimension)Feat.Parameter("c");
+
+                //// Set the new value of c as the value from the read-in field
+                //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                //// Invoke all changes and rebuild the document, save afterwards
+                //part.EditRebuild();
+                //swModel.Save();
 
             });
             return;
@@ -667,13 +875,47 @@ namespace ADCOPlugin
         #region General Functions / WIP
 
         /// <summary>
-        /// WIP used to route file-selection/opening process depending on user-input parameters
+        /// Copy Directory and it's subdirectories to a specified path
         /// </summary>
-        private void FileHandling()
+        private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
-           
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            // If the destination directory doesn't exist, create it.
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location.
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
+            }
         }
 
+        ///
         #endregion
     }
 }
