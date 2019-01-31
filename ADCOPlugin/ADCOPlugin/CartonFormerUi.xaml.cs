@@ -322,6 +322,8 @@ namespace ADCOPlugin
                 double cDim = double.Parse(GlueCParam.Text) / INCH_CONVERSION;
                 double dDim = double.Parse(GlueDParam.Text) / INCH_CONVERSION;
                 double eDim = double.Parse(GlueEParam.Text) / INCH_CONVERSION;
+                double ThiccDim = double.Parse(BoxThickness.Text) / INCH_CONVERSION;
+
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
                 int errors;
@@ -346,10 +348,11 @@ namespace ADCOPlugin
                     switch (idx)
                     {
                         case 0:
-                            //GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
-                            //swFeat = swPart.FeatureByName("Sketch1");
-                            //swFeat.Select2(false, -1);
-                            //swDim = (Dimension)swFeat.Parameter("A1");
+                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                            swFeat = swPart.FeatureByName("Extrude1");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("Thicc");
+                            errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
                             //errors = swDim.SetSystemValue3(aDim - 3 / INCH_CONVERSION * eDim - cDim / INCH_CONVERSION,(int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration,null);
                             //swDim = (Dimension)swFeat.Parameter("B1");
                             //errors = swDim.SetSystemValue3(bDim-0.125/INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
@@ -367,9 +370,9 @@ namespace ADCOPlugin
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                             //swDim = (Dimension)swFeat.Parameter("E4");
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //swPart.EditRebuild();
-                            //swModel.Save();
-                            //swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
                             idx = 6;
                             break;
 

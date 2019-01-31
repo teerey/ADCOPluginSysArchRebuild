@@ -145,6 +145,10 @@
 
                         <!--Label for Source path -->
                         <TextBlock Margin="0 8 5 8" Text="Source" TextAlignment="Right"/>
+                        
+                        <!--Label for Box thickness -->
+                        <TextBlock Margin="0 8 5 8" Text="Box Thickness" TextAlignment="Right"/>
+
                     </StackPanel>
 
                     <!--Entry fields-->
@@ -164,6 +168,8 @@
 
                         <!--Dimension e entry-->
                         <TextBox Margin="0 5 0 5" x:Name="GlueEParam" Padding="2" IsReadOnly="False" Background="#eee"/>
+                        
+                        <!---->
 
                         <Grid>
 
@@ -180,6 +186,9 @@
                                 <!--Source file path display-->
                                 <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
 
+                                <!-- Box Thiccness input-->
+                                <TextBox Margin="0 5 0 5" x:Name="BoxThickness" Padding="2" IsReadOnly="False" Background="#eee"/>
+                                
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
@@ -191,8 +200,32 @@
                                 <Button x:Name="glueSourceBrowse" Content="Browse" Margin="5 6.5 0 6" Click="glueSourceBrowse_Click"/>
                             </StackPanel>
                         </Grid>
+                        <!--
+                        
+
+                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
+
+                                <TextBlock>
+                                    stuff
+                                </TextBlock>
+
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+
+                                <TextBox Margin="0 5 0 5" x:Name="BoxThickness" Padding="2" IsReadOnly="False"/>
+
+                            </StackPanel>
+                        </Grid>
+                        -->
+                        
                     </StackPanel>
+                    <StackPanel>
+                        
+                    </StackPanel>
+
                 </Grid>
+                
             </StackPanel>
 
             <!--Locking Carton Page-->
