@@ -73,7 +73,7 @@ namespace ADCOPlugin
         //Destination path to be set
         string destPath = destLibDEFAULT;
         string srcPath = glueSrcLibDEFAULT;
-        static string lockSrcPathDEFAULT = @"C:\Users\trent\Documents\";
+        static string lockSrcPathDEFAULT = @"C:\Users\TuJefa\Documents\";
 
         //Overarching SW variables
         // Declare a SolidWorks instance field
@@ -93,8 +93,8 @@ namespace ADCOPlugin
 
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
-        //static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
-        static string lockDestPathDEFAULT = @"C:\Users\trent\Documents\";
+        static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
+        static string lockDestPathDEFAULT = @"C:\Users\TuJefa\Documents\";
 
 
 
@@ -169,7 +169,7 @@ namespace ADCOPlugin
             {
                 destPath = $@"{destLibDEFAULT}\TESTCOPY";
             }
-
+            
             srcPath = $@"{glueSrcLibDEFAULT}\{formerType[0]}";
 
             // Change display to glue screen
@@ -251,7 +251,7 @@ namespace ADCOPlugin
             if (error == 0)
             {
                 GlueSet();
-                return (0);
+                return;
             }
         }
 
@@ -327,6 +327,7 @@ namespace ADCOPlugin
                 int errors;
 
                 // Copy and open the template library
+                // GlueOpen(bool copystate, float, float, float)
                 GlueOpen(true,-1,-1,-1);
 
                 // Initialize index of part file in static array

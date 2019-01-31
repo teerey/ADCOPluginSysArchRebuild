@@ -13,8 +13,8 @@
     <Border Padding="10" Margin="10,10,10,10">
         <Grid>
             <!--Initial/load-up page-->
-            <StackPanel x:Name="InitContent" Visibility="Visible">
-                
+            <StackPanel x:Name="InitContent" Visibility="Hidden">
+              
                 <!--ADCO logo-->
                 <Image Margin="5 0 0 40"  Source="pluginHeader.png" HorizontalAlignment="Center" Stretch="UniformToFill"/>
                 
@@ -84,7 +84,7 @@
             </StackPanel>
             
             <!--Glue-Formed Carton Page-->
-            <StackPanel x:Name="GlueContent" Visibility="Hidden">
+            <StackPanel x:Name="GlueContent" Visibility="Visible">
                 <!--Control button grid region-->
                 <Grid>
 
@@ -191,43 +191,6 @@
                                 <Button x:Name="glueSourceBrowse" Content="Browse" Margin="5 6.5 0 6" Click="glueSourceBrowse_Click"/>
                             </StackPanel>
                         </Grid>
-                    </StackPanel>
-                </Grid>
-                
-                <!--Board material selection-->
-                <Grid Width="250" Margin="10">
-                    
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0">
-                        
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-      
-                            <TextBlock Grid.Column="0" Text="Corrugated" HorizontalAlignment="Right"/>
-                            <CheckBox Grid.Column="1" x:Name="GlueCorrugated" Margin="5 0 0 0" Checked="GlueCorrugated_Checked"/>
-                        </Grid>
-
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1">
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Grid.Column="0" Text="Paperboard" HorizontalAlignment="Right"/>
-                            <CheckBox Grid.Column="1" x:Name="GluePaperboard" Margin="5 0 0 0" Checked="GluePaperboard_Checked"/>
-                        </Grid>
-
                     </StackPanel>
                 </Grid>
             </StackPanel>
