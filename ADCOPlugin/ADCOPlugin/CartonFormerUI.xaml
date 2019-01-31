@@ -140,14 +140,15 @@
                         <!--Label for Dimension e entry-->
                         <TextBlock Margin="0 8 5 8" Text="Dimension E" HorizontalAlignment="Right"/>
 
+                        <!--Label for Box thickness -->
+                        <TextBlock Margin="0 8 5 8" Text="Thickness" TextAlignment="Right"/>
+
                         <!--Label for Output path-->
                         <TextBlock Margin="0 8 5 8" Text="Destination" TextAlignment="Right"/>
 
                         <!--Label for Source path -->
                         <TextBlock Margin="0 8 5 8" Text="Source" TextAlignment="Right"/>
                         
-                        <!--Label for Box thickness -->
-                        <TextBlock Margin="0 8 5 8" Text="Box Thickness" TextAlignment="Right"/>
 
                     </StackPanel>
 
@@ -170,6 +171,8 @@
                         <TextBox Margin="0 5 0 5" x:Name="GlueEParam" Padding="2" IsReadOnly="False" Background="#eee"/>
                         
                         <!---->
+                        <!--Thiccness input-->
+                        <TextBox Margin="0 5 0 5" x:Name="Thickness" Padding="2" IsReadOnly="False" Background="#eee"/>
 
                         <Grid>
 
@@ -184,12 +187,9 @@
                                 <TextBox Margin="0 5 0 5" x:Name="glueDestPathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
 
                                 <!--Source file path display-->
-                                <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
+                        <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
 
-                                <!-- Box Thiccness input-->
-                                <TextBox Margin="0 5 0 5" x:Name="BoxThickness" Padding="2" IsReadOnly="False" Background="#eee"/>
-                                
-                            </StackPanel>
+                    </StackPanel>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
 

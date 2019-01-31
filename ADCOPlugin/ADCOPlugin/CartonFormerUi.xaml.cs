@@ -24,7 +24,6 @@ namespace ADCOPlugin
     /// </summary>
     public partial class MyAddinControl : UserControl
     {
-        // NOTE: CHANGE STRINGS SPECIFYING THE FILE LOCATIONS TO THOSE YOU WANT TO USE FOR YOUR MACHINE: I.E. C:\\USERS\\TRENT WILL NOT WORK ON YOUR COMPUTER
 
         #region Private Members
 
@@ -42,10 +41,6 @@ namespace ADCOPlugin
         // Error/warning handlers - Only to be used if OpenDoc method is updated to newer version
         // int fileerror;
         // int filewarning;
-
-        #endregion
-
-        #region Demo Variables
         
         //Get current windows user for proper default destination
         static string userName = System.Environment.UserName;
@@ -73,7 +68,7 @@ namespace ADCOPlugin
         //Destination path to be set
         string destPath = destLibDEFAULT;
         string srcPath = glueSrcLibDEFAULT;
-        static string lockSrcPathDEFAULT = @"C:\Users\TuJefa\Documents\";
+        static string lockSrcPathDEFAULT = $@"C:\Users\{userName}\Documents\";
 
         //Overarching SW variables
         // Declare a SolidWorks instance field
@@ -93,8 +88,8 @@ namespace ADCOPlugin
 
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
-        static string glueDestPathDEFAULT = @"C:\Users\trent\Documents\";
-        static string lockDestPathDEFAULT = @"C:\Users\TuJefa\Documents\";
+        static string glueDestPathDEFAULT = $@"C:\Users\{userName}\Documents\";
+        static string lockDestPathDEFAULT = $@"C:\Users\{userName}\Documents\";
 
 
 
@@ -257,7 +252,7 @@ namespace ADCOPlugin
 
         private int GlueRead()
         {
-            if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "")
+            if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "" || Thickness.Text == "")
             {
                 MessageBoxImage icon = MessageBoxImage.Warning;
                 MessageBoxButton button = MessageBoxButton.OK;
@@ -265,7 +260,15 @@ namespace ADCOPlugin
                 return (1);
             }
 
-            if(double.Parse(GlueAParam.Text) < 7 || double.Parse(GlueAParam.Text) > 30)
+            if(GlueAParam.Text.Contains("/") || GlueBParam.Text.Contains("/") || GlueCParam.Text.Contains("/") || GlueDParam.Text.Contains("/") || GlueEParam.Text.Contains("/") || Thickness.Text.Contains("/"))
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("Please enter decimal values, not fractional.", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(GlueAParam.Text) < 7 || double.Parse(GlueAParam.Text) > 30)
             {
                 MessageBoxImage icon = MessageBoxImage.Warning;
                 MessageBoxButton button = MessageBoxButton.OK;
@@ -322,7 +325,7 @@ namespace ADCOPlugin
                 double cDim = double.Parse(GlueCParam.Text) / INCH_CONVERSION;
                 double dDim = double.Parse(GlueDParam.Text) / INCH_CONVERSION;
                 double eDim = double.Parse(GlueEParam.Text) / INCH_CONVERSION;
-                double ThiccDim = double.Parse(BoxThickness.Text) / INCH_CONVERSION;
+                double ThiccDim = double.Parse(Thickness.Text) / INCH_CONVERSION;
 
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
