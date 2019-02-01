@@ -14,10 +14,10 @@
         <Grid>
             <!--Initial/load-up page-->
             <StackPanel x:Name="InitContent" Visibility="Hidden">
-              
+
                 <!--ADCO logo-->
                 <Image Margin="5 0 0 40"  Source="pluginHeader.png" HorizontalAlignment="Center" Stretch="UniformToFill"/>
-                
+
                 <!--Carton Type Selection Region-->
                 <Grid Width="250">
                     <!--Column sizing for carton selection region-->
@@ -25,10 +25,10 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <!--Glue button region-->
                     <StackPanel Grid.Column="0">
-                        
+
                         <TextBlock Text="Glue" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14"/>
 
                         <!--Glue button-->
@@ -36,7 +36,7 @@
                             <Button.Effect>
                                 <DropShadowEffect BlurRadius="1" ShadowDepth="2"/>
                             </Button.Effect>
-                            
+
                             <!--Button image-->
                             <Image Source="GlueSymbol.png" HorizontalAlignment="Center" Width="90" OpacityMask="White" Height="90" />
                         </Button>
@@ -46,19 +46,19 @@
                     <StackPanel Grid.Column="1">
 
                         <TextBlock Text="Lock" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14"/>
-                        
+
                         <!--Lock button-->
                         <Button x:Name="LockButton" Click="LockButton_Click" Width="100" Height="100" Background="#FFDDDDDD">
                             <Button.Effect>
                                 <DropShadowEffect BlurRadius="1" ShadowDepth="2"/>
                             </Button.Effect>
-                            
+
                             <!--Button image-->
                             <Image Source="LockSymbol.png" HorizontalAlignment="Center" Width="95" OpacityMask="White" Height="95" />
                         </Button>
                     </StackPanel>
                 </Grid>
-                
+
                 <!--Carton type selection prompt-->
                 <TextBlock Margin="10"  HorizontalAlignment="Center" Text="Select Carton Type" FontWeight="Bold" FontSize="18"/>
 
@@ -82,7 +82,7 @@
                 <TextBlock Text="Comments/Description:" Margin="0 10 0 0"/>
                 <TextBox x:Name="projectDescription" Padding="2" Background="#eee" TextWrapping="Wrap" Height="60" Margin="5"/>
             </StackPanel>
-            
+
             <!--Glue-Formed Carton Page-->
             <StackPanel x:Name="GlueContent" Visibility="Visible">
                 <!--Control button grid region-->
@@ -96,13 +96,13 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    
+
                     <!--Apply button for data acceptance-->
                     <Button x:Name="GlueApplyButton" Margin=" 0 0 10 0" Grid.Column="0" Content="Apply" Click="GlueApplyButton_Click"/>
-                    
+
                     <!--Reset button for data clear/default settings-->
                     <Button x:Name="GlueResetButton" Grid.Column="1" Content="Reset" Click="GlueResetButton_Click"/>
-                    
+
                     <!--Back button to return to previous screen-->
                     <Button x:Name="GlueBackButton" Margin="10 0 0 0" Grid.Column="2" Content="Back" Click="GlueBackButton_Click"/>
 
@@ -111,10 +111,10 @@
 
                 <!--Graphical Reference for Parameters-->
                 <Image  Margin="0 20 10 0" Source="ADCOglueTemplate.png" Stretch="None" HorizontalAlignment="Center" OpacityMask="White" />
-                
+
                 <!---Data entry header-->
                 <TextBlock Margin="0 10 0 10" Text="Glue-Formed Carton Parameters (inches)" FontSize="14" HorizontalAlignment="Center" FontWeight="DemiBold"/>
-                
+
                 <!--Data entry grid region-->
                 <Grid>
                     <!--2-Column Setup for data entry-->
@@ -148,8 +148,7 @@
 
                         <!--Label for Source path -->
                         <TextBlock Margin="0 8 5 8" Text="Source" TextAlignment="Right"/>
-
-                        <TextBlock Text="Symmetry" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Is the Carton Symmetric?" HorizontalAlignment="Right" Margin="0,0,-112,0" Height="16" Width="166"/>
                     </StackPanel>
 
                     <!--Entry fields-->
@@ -169,7 +168,7 @@
 
                         <!--Dimension e entry-->
                         <TextBox Margin="0 5 0 5" x:Name="GlueEParam" Padding="2" IsReadOnly="False" Background="#eee"/>
-                        
+
                         <!---->
                         <!--Thiccness input-->
                         <TextBox Margin="0 5 0 5" x:Name="Thickness" Padding="2" IsReadOnly="False" Background="#eee"/>
@@ -187,9 +186,9 @@
                                 <TextBox Margin="0 5 0 5" x:Name="glueDestPathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
 
                                 <!--Source file path display-->
-                        <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
+                                <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
 
-                    </StackPanel>
+                            </StackPanel>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
 
@@ -221,11 +220,11 @@
                         <CheckBox x:Name="isSymmetric" HorizontalAlignment="Right"/>
                     </StackPanel>
                     <StackPanel>
-                        
+
                     </StackPanel>
 
                 </Grid>
-                
+
             </StackPanel>
 
             <!--Locking Carton Page-->
@@ -325,7 +324,7 @@
                         </Grid>
                     </StackPanel>
                 </Grid>
-                
+
                 <!--Board material selection-->
                 <Grid Width="250" Margin="10">
 
