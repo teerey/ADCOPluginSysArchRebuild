@@ -148,8 +148,8 @@
 
                         <!--Label for Source path -->
                         <TextBlock Margin="0 8 5 8" Text="Source" TextAlignment="Right"/>
-                        
 
+                        <TextBlock Text="Symmetry" HorizontalAlignment="Center"/>
                     </StackPanel>
 
                     <!--Entry fields-->
@@ -218,7 +218,7 @@
                             </StackPanel>
                         </Grid>
                         -->
-                        
+                        <CheckBox x:Name="isSymmetric" HorizontalAlignment="Right"/>
                     </StackPanel>
                     <StackPanel>
                         
