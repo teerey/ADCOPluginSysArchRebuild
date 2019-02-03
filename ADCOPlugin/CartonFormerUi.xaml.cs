@@ -355,7 +355,7 @@ namespace ADCOPlugin
                             swFeat = swPart.FeatureByName("Extrude1");
                             swFeat.Select2(false, -1);
                             swDim = (Dimension)swFeat.Parameter("Thicc");
-                            errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
+                            errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                             //errors = swDim.SetSystemValue3(aDim - 3 / INCH_CONVERSION * eDim - cDim / INCH_CONVERSION,(int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration,null);
                             //swDim = (Dimension)swFeat.Parameter("B1");
                             //errors = swDim.SetSystemValue3(bDim-0.125/INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
@@ -521,7 +521,16 @@ namespace ADCOPlugin
 
         private void glueDestBrowse_Click(object sender, RoutedEventArgs e)
         {
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            if (folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //$@"{folderBrowserDialog1.SelectedPath}\{customer.Text}{projectID.Text}"
+                destPath = $@"{folderBrowserDialog1.SelectedPath}\{customer.Text}{projectID.Text}";
+                glueDestPathBox.Text = destPath;
 
+
+
+            }
         }
 
         private void glueSourceBrowse_Click(object sender, RoutedEventArgs e)
