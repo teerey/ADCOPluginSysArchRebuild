@@ -31,10 +31,6 @@ namespace ADCOPlugin
 
         #region Public Members
 
-        
-
-        
-
         // INCH CONVERSION NUMBER: NO. OF INCHES IN 1 M - Most API functions assume the unit is in meters
         double INCH_CONVERSION = 39.370079;
 
@@ -44,7 +40,6 @@ namespace ADCOPlugin
         
         //Get current windows user for proper default destination
         static string userName = System.Environment.UserName;
-        
 
         //Default routing for part/assembly files
         //Home folder of all template parts/assemblies
@@ -58,7 +53,10 @@ namespace ADCOPlugin
 
         //Part files in the glue mandrel domain
         static string[] glueMandrelParts = { "R&D5959 SHOW CARTON 5-30-18 LG.SLDPRT", "R&D15D350A.SLDPRT" , "R&D5086-21-108-H.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "R&D5634-15-108.SLDPRT", "R&D5959-11-104-H.SLDPRT","R&D5959-11-105-H.SLDPRT","R&D5959-11-106-3-H.SLDPRT","R&D5959-11-106-H.SLDPRT","R&D5959-11-107.SLDPRT","R&D5959-11-109-H.SLDPRT","R&D5959-11-110-H.SLDPRT","R&D06451-1062.sldprt","R&DAS2211FG-N01-07S.SLDPRT"};
-
+        
+        //Renaming example
+        //static string[] glueMandrelParts = { "carton_template.SLDPRT", "R&D15D350A.SLDPRT", "R&D5086-21-108-H.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "R&D5634-15-108.SLDPRT", "R&D5959-11-104-H.SLDPRT", "R&D5959-11-105-H.SLDPRT", "R&D5959-11-106-3-H.SLDPRT", "R&D5959-11-106-H.SLDPRT", "R&D5959-11-107.SLDPRT", "R&D5959-11-109-H.SLDPRT", "R&D5959-11-110-H.SLDPRT", "R&D06451-1062.sldprt", "R&DAS2211FG-N01-07S.SLDPRT" };
+        
         //Assembly files in the glue mandrel domain
         static string[] glueMandrelAssemblies = { "R&D5321-31 SMC MGPM20N-100.SLDASM", "R&DMGPM20N-100.SLDASM", "R&D5959-11-001.SLDASM" };
 
