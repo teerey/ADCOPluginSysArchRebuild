@@ -11,6 +11,7 @@ using static AngelSix.SolidDna.SolidWorksEnvironment;
 using AngelSix.SolidDna;
 using System;
 using System.Globalization;
+using System.Text;
 using SldWorks;
 using SwConst;
 
@@ -47,6 +48,17 @@ namespace ADCOPlugin
         //Home folder of all template parts/assemblies
         static string glueSrcLibDEFAULT = $@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";
 
+        //Default home folder of resulting project folder
+        static string destLibDEFAULT = $@"C:\Users\{userName}\Documents";
+
+        //Home folder of the archive
+        static string archLibDEFAULT = $@"C:\Users\{userName}\Documents\ADCO Carton Former Archive";
+
+        //Destination path to be set
+        string destPath = destLibDEFAULT;
+        string srcPath = glueSrcLibDEFAULT;
+        static string lockSrcPathDEFAULT = $@"C:\Users\{userName}\Documents\";
+
         //Type of carton (glue/lock)
         static string[] formerType = { "GLUE", "LOCK" };
 
@@ -61,14 +73,6 @@ namespace ADCOPlugin
         
         //Assembly files in the glue mandrel domain
         static string[] glueMandrelAssemblies = { "R&D5321-31 SMC MGPM20N-100.SLDASM", "R&DMGPM20N-100.SLDASM", "R&D5959-11-001.SLDASM" };
-
-        //Default home folder of resulting project folder
-        static string destLibDEFAULT = $@"C:\Users\{userName}\Documents";
-
-        //Destination path to be set
-        string destPath = destLibDEFAULT;
-        string srcPath = glueSrcLibDEFAULT;
-        static string lockSrcPathDEFAULT = $@"C:\Users\{userName}\Documents\";
 
         //Overarching SW variables
         // Declare a SolidWorks instance field
@@ -320,12 +324,9 @@ namespace ADCOPlugin
             ThreadHelpers.RunOnUIThread(() =>
             {
                 // Declare and initialize dimensions and paths based on glue screen fields
-                double aDim = double.Parse(GlueAParam.Text) / INCH_CONVERSION;
-                double bDim = double.Parse(GlueBParam.Text) / INCH_CONVERSION;
-                double cDim = double.Parse(GlueCParam.Text) / INCH_CONVERSION;
-                double dDim = double.Parse(GlueDParam.Text) / INCH_CONVERSION;
-                double eDim = double.Parse(GlueEParam.Text) / INCH_CONVERSION;
-                double ThiccDim = double.Parse(Thickness.Text) / INCH_CONVERSION;
+                string redundant = GlueArchive();
+
+                MessageBox.Show($@"Redundant in GlueSet: {redundant}");
 
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
@@ -342,25 +343,49 @@ namespace ADCOPlugin
                 int COMPONENT_MAN = 0;
                 int COMPONENT_FP = 1;
 
+                string aDimStr = GlueAParam.Text;
+                string bDimStr = GlueBParam.Text;
+                string cDimStr = GlueCParam.Text;
+                string dDimStr = GlueDParam.Text;
+                string eDimStr = GlueEParam.Text;
+                string ThiccDimStr = Thickness.Text;
+
+
+                double aDim = double.Parse(aDimStr) / INCH_CONVERSION;
+                double bDim = double.Parse(bDimStr) / INCH_CONVERSION;
+                double cDim = double.Parse(cDimStr) / INCH_CONVERSION;
+                double dDim = double.Parse(dDimStr) / INCH_CONVERSION;
+                double eDim = double.Parse(eDimStr) / INCH_CONVERSION;
+                double ThiccDim = double.Parse(ThiccDimStr) / INCH_CONVERSION;
+
                 // Cycle through mandrel parts
                 while (true)
                 {
-                    
-
 
                     switch (idx)
                     {
                         case 0:
-                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
-                            swFeat = swPart.FeatureByName("Extrude1");
-                            swFeat.Select2(false, -1);
-                            swDim = (Dimension)swFeat.Parameter("Thicc");
-                            errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //errors = swDim.SetSystemValue3(aDim - 3 / INCH_CONVERSION * eDim - cDim / INCH_CONVERSION,(int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration,null);
+                            //MessageBox.Show("Starting to edit the carton model", "", button, icon);
+                            //GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                            //swFeat = swPart.FeatureByName("Extrude1");
+                            //swFeat.Select2(false, -1);
+                            //MessageBox.Show("Editing Thicc", "", button, icon);
+                            //swDim = (Dimension)swFeat.Parameter("Thicc");
+                            //errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing A1", "", button, icon);
+                            //swDim = (Dimension)swFeat.Parameter("A1");
+                            //errors = swDim.SetSystemValue3(aDim * 0.5 - eDim * 1.5 - 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Finished editing A1", "", button, icon);
+                            //MessageBox.Show("Editing A2", "", button, icon);
+                            //swDim = (Dimension)swFeat.Parameter("A2");
+                            //errors = swDim.SetSystemValue3(aDim * 0.5 - eDim * 1.5 + 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing B1", "", button, icon);
                             //swDim = (Dimension)swFeat.Parameter("B1");
-                            //errors = swDim.SetSystemValue3(bDim-0.125/INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //errors = swDim.SetSystemValue3(bDim - 0.125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing C1", "", button, icon);
                             //swDim = (Dimension)swFeat.Parameter("C1");
                             //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing C2", "", button, icon);
                             //swDim = (Dimension)swFeat.Parameter("C2");
                             //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                             //swDim = (Dimension)swFeat.Parameter("D1");
@@ -373,9 +398,9 @@ namespace ADCOPlugin
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                             //swDim = (Dimension)swFeat.Parameter("E4");
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            swPart.EditRebuild();
-                            swModel.Save();
-                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            //swPart.EditRebuild();
+                            //swModel.Save();
+                            //swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
                             idx = 6;
                             break;
 
@@ -389,6 +414,11 @@ namespace ADCOPlugin
                             swPart.EditRebuild();
                             swModel.Save();
                             swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            if (redundant[6] == '0')
+                            {
+                                MessageBox.Show("6 is not redundant");
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr}",true);
+                            }
                             idx++;
                             break;
 
@@ -408,6 +438,10 @@ namespace ADCOPlugin
                             swPart.EditRebuild();
                             swModel.Save();
                             swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            if (redundant[7] == '0')
+                            {
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr}", true);
+                            }
                             idx = 9;
                             break;
 
@@ -427,6 +461,10 @@ namespace ADCOPlugin
                             swPart.EditRebuild();
                             swModel.Save();
                             swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            if (redundant[9] == '0')
+                            {
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} D{dDimStr}", true);
+                            }
                             idx = 10;
                             break;
 
@@ -461,6 +499,10 @@ namespace ADCOPlugin
                             swPart.EditRebuild();
                             swModel.Save();
                             swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            if (redundant[10] == '0')
+                            {
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr} D{dDimStr}",true);
+                            }
                             idx = 11;
                             break;
 
@@ -517,6 +559,80 @@ namespace ADCOPlugin
 
             });
             return;
+        }
+
+        string GlueArchive()
+        {
+            string line;
+            string redundant = "000000000000000";
+            StringBuilder stringBuilder = new StringBuilder(redundant);
+            string current = $@"{GlueAParam.Text}{GlueBParam.Text}{GlueCParam.Text}{GlueDParam.Text}{GlueEParam.Text}";
+            StreamReader streamReader = new StreamReader($@"{archLibDEFAULT}\archive.txt");
+
+            line = streamReader.ReadLine();
+
+            while (line!=null)
+            {
+                if(line == current)
+                {
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+                    MessageBoxButton button = MessageBoxButton.OK;
+                    MessageBox.Show("This tooling set has been made before.", "", button, icon);
+                    stringBuilder[0] = '1';
+                }
+
+                if(line[2] == current[2])
+                {
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+                    MessageBoxButton button = MessageBoxButton.OK;
+                    MessageBox.Show("Parts in this tooling set have been made before.", "", button, icon);
+                    stringBuilder[6] = '1';
+                    stringBuilder[7] = '1';
+
+                    if(line[3] == current[3])
+                    {
+                        MessageBox.Show("Parts in this tooling set have been made before.", "", button, icon);
+                        stringBuilder[10] = '1';
+                    }
+                }
+
+                if(line[4] == current[4])
+                {
+                    MessageBoxImage icon = MessageBoxImage.Warning;
+                    MessageBoxButton button = MessageBoxButton.OK;
+                    MessageBox.Show("Parts in this tooling set have been made before.", "", button, icon);
+                    stringBuilder[9] = '1';
+                }
+
+                line = streamReader.ReadLine();
+            }
+            streamReader.Close();
+            redundant = stringBuilder.ToString();
+            if(redundant[0] != '1')
+            {
+                try
+                {
+
+                    //Pass the filepath and filename to the StreamWriter Constructor
+                    StreamWriter streamwrite = new StreamWriter($@"{archLibDEFAULT}\archive.txt",true);
+
+                    //Write a line of text
+                    streamwrite.WriteLine($"{GlueAParam.Text}{GlueBParam.Text}{GlueCParam.Text}{GlueDParam.Text}{GlueEParam.Text}");
+
+                    //Close the file
+                    streamwrite.Close();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception: " + e.Message);
+                }
+                finally
+                {
+                    Console.WriteLine("Executing finally block.");
+                }
+            }
+            MessageBox.Show($@"Redundant in GlueArchive: {redundant}");
+            return redundant;
         }
 
         private void glueDestBrowse_Click(object sender, RoutedEventArgs e)
