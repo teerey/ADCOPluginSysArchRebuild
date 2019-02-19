@@ -300,7 +300,7 @@ namespace ADCOPlugin
             {
                 MessageBoxImage icon = MessageBoxImage.Warning;
                 MessageBoxButton button = MessageBoxButton.OK;
-                MessageBox.Show("Value of D must be between 7\" and 10\"", "", button, icon);
+                MessageBox.Show("Value of D must be between 6\" and 10\"", "", button, icon);
                 return (1);
             }
 
@@ -324,9 +324,10 @@ namespace ADCOPlugin
             ThreadHelpers.RunOnUIThread(() =>
             {
                 // Declare and initialize dimensions and paths based on glue screen fields
+                MessageBox.Show($@"Calling GlueArhive");
                 string redundant = GlueArchive();
 
-                MessageBox.Show($@"Redundant in GlueSet: {redundant}");
+                
 
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
@@ -365,37 +366,48 @@ namespace ADCOPlugin
                     switch (idx)
                     {
                         case 0:
-                            //MessageBox.Show("Starting to edit the carton model", "", button, icon);
+                            //ADD REDUNDANT PART CREATION PROTECTION
+                            //MessageBox.Show("Starting to edit the carton model");
                             //GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
                             //swFeat = swPart.FeatureByName("Extrude1");
                             //swFeat.Select2(false, -1);
-                            //MessageBox.Show("Editing Thicc", "", button, icon);
+                            ////MessageBox.Show("Editing Thicc");
                             //swDim = (Dimension)swFeat.Parameter("Thicc");
                             //errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing A1", "", button, icon);
+                            //swFeat = swPart.FeatureByName("Sketch1");
+                            //swFeat.Select2(false, -1);
+                            ////MessageBox.Show("Editing A1");
                             //swDim = (Dimension)swFeat.Parameter("A1");
+                            ////MessageBox.Show("Selected the Dimension");
                             //errors = swDim.SetSystemValue3(aDim * 0.5 - eDim * 1.5 - 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Finished editing A1", "", button, icon);
-                            //MessageBox.Show("Editing A2", "", button, icon);
+                            ////MessageBox.Show("Finished editing A1");
+                            ////MessageBox.Show("Editing A2");
                             //swDim = (Dimension)swFeat.Parameter("A2");
                             //errors = swDim.SetSystemValue3(aDim * 0.5 - eDim * 1.5 + 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing B1", "", button, icon);
+                            ////MessageBox.Show("Editing B1");
                             //swDim = (Dimension)swFeat.Parameter("B1");
                             //errors = swDim.SetSystemValue3(bDim - 0.125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing C1", "", button, icon);
-                            //swDim = (Dimension)swFeat.Parameter("C1");
+                            ////MessageBox.Show("Editing C1");
+                            ////swDim = (Dimension)swFeat.Parameter("C1");
                             //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing C2", "", button, icon);
+                            ////MessageBox.Show("Editing C2");
                             //swDim = (Dimension)swFeat.Parameter("C2");
+                            ////MessageBox.Show("Setting C2");
                             //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //swDim = (Dimension)swFeat.Parameter("D1");
-                            //errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            ////MessageBox.Show("Set C2");
+                            ////MessageBox.Show("Editing D1");
+                            ////swDim = (Dimension)swFeat.Parameter("D1");
+                            ////errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing E1");
                             //swDim = (Dimension)swFeat.Parameter("E1");
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing E2");
                             //swDim = (Dimension)swFeat.Parameter("E2");
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing E3");
                             //swDim = (Dimension)swFeat.Parameter("E3");
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                            //MessageBox.Show("Editing E4");
                             //swDim = (Dimension)swFeat.Parameter("E4");
                             //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                             //swPart.EditRebuild();
@@ -405,103 +417,102 @@ namespace ADCOPlugin
                             break;
 
                         case 6:
-                            //MessageBox.Show("CASE 5");
-                            GlueOpen(false, TYPE_PART, idx,COMPONENT_MAN);
-                            swFeat = swPart.FeatureByName("Extrude1");
-                            swFeat.Select2(false, -1);
-                            swDim = (Dimension)swFeat.Parameter("MountLength");
-                            errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            swPart.EditRebuild();
-                            swModel.Save();
-                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                            if (redundant[6] == '0')
+                            if(redundant[6] == '0')
                             {
-                                MessageBox.Show("6 is not redundant");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr}",true);
+                                //MessageBox.Show("CASE 5");
+                                GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                                swFeat = swPart.FeatureByName("Extrude1");
+                                swFeat.Select2(false, -1);
+                                swDim = (Dimension)swFeat.Parameter("MountLength");
+                                errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                swPart.EditRebuild();
+                                swModel.Save();
+                                swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr}", true);
                             }
                             idx++;
                             break;
 
                         case 7:
-                            //MessageBox.Show("CASE 6");
-                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
-                            if (cDim <= 7.5/INCH_CONVERSION)
-                            {
-                                swFeat = swPart.FeatureByName("Cut-Extrude1");
-                                swFeat.Select2(false, -1);
-                                bool suppressionState = swModel.EditSuppress2();
-                            }
-                            swFeat = swPart.FeatureByName("Extrude1");
-                            swFeat.Select2(false, -1);
-                            swDim = (Dimension)swFeat.Parameter("SpreadLength");
-                            errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            swPart.EditRebuild();
-                            swModel.Save();
-                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
                             if (redundant[7] == '0')
                             {
+                                //MessageBox.Show("CASE 6");
+                                GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                                if (cDim <= 7.5 / INCH_CONVERSION)
+                                {
+                                    swFeat = swPart.FeatureByName("Cut-Extrude1");
+                                    swFeat.Select2(false, -1);
+                                    bool suppressionState = swModel.EditSuppress2();
+                                }
+                                swFeat = swPart.FeatureByName("Extrude1");
+                                swFeat.Select2(false, -1);
+                                swDim = (Dimension)swFeat.Parameter("SpreadLength");
+                                errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                swPart.EditRebuild();
+                                swModel.Save();
+                                swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
                                 File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr}", true);
                             }
                             idx = 9;
                             break;
 
                         case 9:
-                            //MessageBox.Show("CASE 8");
-                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
-                            swFeat = swPart.FeatureByName("Sketch1");
-                            swFeat.Select2(false, -1);
-                            swDim = (Dimension)swFeat.Parameter("MandrelSideWidth");
-                            errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                            swFeat = swPart.FeatureByName("Sketch3");
-                            swFeat.Select2(false, -1);
-                            swDim = (Dimension)swFeat.Parameter("MandrelSideHoles");
-                            double MandrelSideHolesdim = 0.5009 * (dDim - 9.1875 / INCH_CONVERSION) + 2.589 / INCH_CONVERSION;
-                            errors = swDim.SetSystemValue3(MandrelSideHolesdim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            swPart.EditRebuild();
-                            swModel.Save();
-                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
                             if (redundant[9] == '0')
                             {
+                                //MessageBox.Show("CASE 8");
+                                GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                                swFeat = swPart.FeatureByName("Sketch1");
+                                swFeat.Select2(false, -1);
+                                swDim = (Dimension)swFeat.Parameter("MandrelSideWidth");
+                                errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                                swFeat = swPart.FeatureByName("Sketch3");
+                                swFeat.Select2(false, -1);
+                                swDim = (Dimension)swFeat.Parameter("MandrelSideHoles");
+                                double MandrelSideHolesdim = 0.5009 * (dDim - 9.1875 / INCH_CONVERSION) + 2.589 / INCH_CONVERSION;
+                                errors = swDim.SetSystemValue3(MandrelSideHolesdim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                swPart.EditRebuild();
+                                swModel.Save();
+                                swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
                                 File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} D{dDimStr}", true);
                             }
                             idx = 10;
                             break;
 
                         case 10:
-                            //MessageBox.Show("CASE 9");
-                            double PushPlateWidth = dDim - 1.406 * 2.0/INCH_CONVERSION; 
-                            GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
-                            if (PushPlateWidth <= 4.0/INCH_CONVERSION)
-                            {
-                                Debug.Print("Entered suppression if statement");
-                                swFeat = swPart.FeatureByName("Cut-Extrude3");
-                                swFeat.Select2(false, -1);
-                                swFeat = swPart.FeatureByName("Fillet2");
-                                swFeat.Select2(true, -2);
-                                swFeat = swPart.FeatureByName("Fillet3");
-                                swFeat.Select2(true, -3);
-
-                                Debug.Print("Selected multiple parts");
-                                bool suppressionState = swModel.EditSuppress2();
-                            }
-                            Debug.Print("Made it past if statement");
-                            swFeat = swPart.FeatureByName("Base-Flange1");
-                            swFeat.Select2(false, -4);
-                            swDim = (Dimension)swFeat.Parameter("PushPlateWidth");
-                            errors = swDim.SetSystemValue3(PushPlateWidth, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                            swFeat = swPart.FeatureByName("Sketch1");
-                            swFeat.Select2(false, -4);
-                            swDim = (Dimension)swFeat.Parameter("PushPlateLength");
-                            double PushPlateLength = cDim - 0.828 * 2.0 / INCH_CONVERSION;
-                            errors = swDim.SetSystemValue3(PushPlateLength, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            swPart.EditRebuild();
-                            swModel.Save();
-                            swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
                             if (redundant[10] == '0')
                             {
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr} D{dDimStr}",true);
+                                //MessageBox.Show("CASE 9");
+                                double PushPlateWidth = dDim - 1.406 * 2.0 / INCH_CONVERSION;
+                                GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                                if (PushPlateWidth <= 4.0 / INCH_CONVERSION)
+                                {
+                                    Debug.Print("Entered suppression if statement");
+                                    swFeat = swPart.FeatureByName("Cut-Extrude3");
+                                    swFeat.Select2(false, -1);
+                                    swFeat = swPart.FeatureByName("Fillet2");
+                                    swFeat.Select2(true, -2);
+                                    swFeat = swPart.FeatureByName("Fillet3");
+                                    swFeat.Select2(true, -3);
+
+                                    Debug.Print("Selected multiple parts");
+                                    bool suppressionState = swModel.EditSuppress2();
+                                }
+                                Debug.Print("Made it past if statement");
+                                swFeat = swPart.FeatureByName("Base-Flange1");
+                                swFeat.Select2(false, -4);
+                                swDim = (Dimension)swFeat.Parameter("PushPlateWidth");
+                                errors = swDim.SetSystemValue3(PushPlateWidth, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                                swFeat = swPart.FeatureByName("Sketch1");
+                                swFeat.Select2(false, -4);
+                                swDim = (Dimension)swFeat.Parameter("PushPlateLength");
+                                double PushPlateLength = cDim - 0.828 * 2.0 / INCH_CONVERSION;
+                                errors = swDim.SetSystemValue3(PushPlateLength, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                swPart.EditRebuild();
+                                swModel.Save();
+                                swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr} D{dDimStr}", true);
                             }
                             idx = 11;
                             break;
@@ -517,6 +528,9 @@ namespace ADCOPlugin
                     }
                         
                 }
+
+
+                GlueArchSub(destPath, aDimStr, bDimStr, cDimStr, dDimStr, eDimStr, redundant);
 
                 idx = glueMandrelAssemblies.Length - 1;
                 GlueOpen(false, TYPE_ASSEM, idx, COMPONENT_MAN);
@@ -554,10 +568,74 @@ namespace ADCOPlugin
                 //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                 //// Invoke all changes and rebuild the document, save afterwards
-                //part.EditRebuild();
+                //swPart.EditRebuild();
                 //swModel.Save();
 
             });
+            return;
+        }
+
+        void GlueArchSub(string destPath, string aDimStr, string bDimStr, string cDimStr, string dDimStr, string eDimStr, string redundant)
+        {
+            int idx = 0;
+            int COMPONENT_MAN = 0;
+            int COMPONENT_FP = 1;
+
+            string partName;
+            string newPartName;
+            string aCritDim = $"A{aDimStr}";
+            string bCritDim = $"B{bDimStr}";
+            string cCritDim = $"C{cDimStr}";
+            string dCritDim = $"D{dDimStr}";
+            string eCritDim = $"E{eDimStr}";
+
+
+            while (idx<=(redundant.Length-1))
+            {
+                switch (redundant[idx])
+                {
+                    case '0': break;
+
+                    case '1':
+                        switch (idx)
+                        {
+                            case 0:
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {aCritDim} {bCritDim} {cCritDim} {dCritDim} {eCritDim}";
+                                newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
+                                File.Copy(partName, newPartName, true);
+                                break;
+                            case 6:
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {cCritDim}";
+                                newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
+                                File.Copy(partName, newPartName, true);
+                                break;
+                            case 7:
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {cCritDim}";
+                                newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
+                                File.Copy(partName, newPartName, true);
+                                break;
+                            case 9:
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {dCritDim}";
+                                newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
+                                File.Copy(partName, newPartName, true);
+                                break;
+                            case 10:
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {cCritDim} {dCritDim}";
+                                newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
+                                File.Copy(partName, newPartName, true);
+                                break;
+                        }
+                        break;
+
+                    default:
+                        MessageBox.Show("Something went wrong!");
+                        break;
+                }
+
+                idx++;
+
+            }
+
             return;
         }
 
@@ -596,7 +674,7 @@ namespace ADCOPlugin
                     }
                 }
 
-                if(line[4] == current[4])
+                if(line[3] == current[3])
                 {
                     MessageBoxImage icon = MessageBoxImage.Warning;
                     MessageBoxButton button = MessageBoxButton.OK;
@@ -606,8 +684,10 @@ namespace ADCOPlugin
 
                 line = streamReader.ReadLine();
             }
+
             streamReader.Close();
             redundant = stringBuilder.ToString();
+
             if(redundant[0] != '1')
             {
                 try
@@ -617,7 +697,7 @@ namespace ADCOPlugin
                     StreamWriter streamwrite = new StreamWriter($@"{archLibDEFAULT}\archive.txt",true);
 
                     //Write a line of text
-                    streamwrite.WriteLine($"{GlueAParam.Text}{GlueBParam.Text}{GlueCParam.Text}{GlueDParam.Text}{GlueEParam.Text}");
+                    streamwrite.WriteLine(current);
 
                     //Close the file
                     streamwrite.Close();
@@ -673,16 +753,6 @@ namespace ADCOPlugin
         {
             // When the back button is clicked, send the UI back to the previous page (initial screen)
             initScreen();
-        }
-
-        private void GluePaperboard_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void GlueCorrugated_Checked(object sender, RoutedEventArgs e)
-        {
-
         }
 
         #endregion
