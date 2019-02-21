@@ -326,8 +326,9 @@ namespace ADCOPlugin
                 // Declare and initialize dimensions and paths based on glue screen fields
                 MessageBox.Show($@"Calling GlueArhive");
                 string redundant = GlueArchive();
+                MessageBox.Show("Something went wrong!");
 
-                
+
 
                 string destPath = glueDestPathBox.Text;
                 string sourcePath = glueSourcePathBox.Text;
@@ -589,9 +590,7 @@ namespace ADCOPlugin
             string dCritDim = $"D{dDimStr}";
             string eCritDim = $"E{eDimStr}";
 
-
-            while (idx<=(redundant.Length-1))
-            {
+            do{
                 switch (redundant[idx])
                 {
                     case '0': break;
@@ -627,15 +626,15 @@ namespace ADCOPlugin
                         }
                         break;
 
-                    default:
-                        MessageBox.Show("Something went wrong!");
-                        break;
+                    //default:
+                    //    MessageBox.Show("Something went wrong!");
+                    //    break;
                 }
 
                 idx++;
 
-            }
-
+            } while(idx <= (redundant.Length - 1)) ;
+            
             return;
         }
 
