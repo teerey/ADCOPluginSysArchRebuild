@@ -367,53 +367,55 @@ namespace ADCOPlugin
                     switch (idx)
                     {
                         case 0:
-                            //ADD REDUNDANT PART CREATION PROTECTION
-                            //MessageBox.Show("Starting to edit the carton model");
-                            //GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
-                            //swFeat = swPart.FeatureByName("Extrude1");
-                            //swFeat.Select2(false, -1);
-                            ////MessageBox.Show("Editing Thicc");
-                            //swDim = (Dimension)swFeat.Parameter("Thicc");
-                            //errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //swFeat = swPart.FeatureByName("Sketch1");
-                            //swFeat.Select2(false, -1);
-                            ////MessageBox.Show("Editing A1");
-                            //swDim = (Dimension)swFeat.Parameter("A1");
-                            ////MessageBox.Show("Selected the Dimension");
-                            //errors = swDim.SetSystemValue3(aDim * 0.5 - eDim * 1.5 - 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            ////MessageBox.Show("Finished editing A1");
-                            ////MessageBox.Show("Editing A2");
-                            //swDim = (Dimension)swFeat.Parameter("A2");
-                            //errors = swDim.SetSystemValue3(aDim * 0.5 - eDim * 1.5 + 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            ////MessageBox.Show("Editing B1");
-                            //swDim = (Dimension)swFeat.Parameter("B1");
-                            //errors = swDim.SetSystemValue3(bDim - 0.125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            ////MessageBox.Show("Editing C1");
-                            ////swDim = (Dimension)swFeat.Parameter("C1");
-                            //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            ////MessageBox.Show("Editing C2");
-                            //swDim = (Dimension)swFeat.Parameter("C2");
-                            ////MessageBox.Show("Setting C2");
-                            //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            ////MessageBox.Show("Set C2");
-                            ////MessageBox.Show("Editing D1");
-                            ////swDim = (Dimension)swFeat.Parameter("D1");
-                            ////errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing E1");
-                            //swDim = (Dimension)swFeat.Parameter("E1");
-                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing E2");
-                            //swDim = (Dimension)swFeat.Parameter("E2");
-                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing E3");
-                            //swDim = (Dimension)swFeat.Parameter("E3");
-                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //MessageBox.Show("Editing E4");
-                            //swDim = (Dimension)swFeat.Parameter("E4");
-                            //errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                            //swPart.EditRebuild();
-                            //swModel.Save();
-                            //swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                            if (redundant[0] == '0')
+                            {
+                                //ADD REDUNDANT PART CREATION PROTECTION
+                                MessageBox.Show("Starting to edit the carton model");
+                                GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
+                                swFeat = swPart.FeatureByName("Extrude1");
+                                swFeat.Select2(false, -1);
+                                //MessageBox.Show("Editing Thicc");
+                                swDim = (Dimension)swFeat.Parameter("Thicc");
+                                errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                swFeat = swPart.FeatureByName("Sketch1");
+                                swFeat.Select2(false, -1);
+                                //MessageBox.Show("Editing A1");
+                                swDim = (Dimension)swFeat.Parameter("A1");
+                                //MessageBox.Show("Selected the Dimension");
+                                errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                //MessageBox.Show("Finished editing A1");
+                                //MessageBox.Show("Editing A2");
+                                swDim = (Dimension)swFeat.Parameter("A2");
+                                errors = swDim.SetSystemValue3(dDim + 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                //MessageBox.Show("Editing B1");
+                                //swDim = (Dimension)swFeat.Parameter("B1");
+                                //errors = swDim.SetSystemValue3(bDim - 0.125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                //MessageBox.Show("Editing C1");
+                                swDim = (Dimension)swFeat.Parameter("C1");
+                                errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                //MessageBox.Show("Editing C2");
+                                swDim = (Dimension)swFeat.Parameter("C2");
+                                //MessageBox.Show("Setting C2");
+                                errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                //MessageBox.Show("Set C2");
+                                MessageBox.Show("Editing E1");
+                                swDim = (Dimension)swFeat.Parameter("E1");
+                                errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                MessageBox.Show("Editing E2");
+                                swDim = (Dimension)swFeat.Parameter("E2");
+                                errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                MessageBox.Show("Editing E3");
+                                swDim = (Dimension)swFeat.Parameter("E3");
+                                errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                MessageBox.Show("Editing E4");
+                                swDim = (Dimension)swFeat.Parameter("E4");
+                                errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                swPart.EditRebuild();
+                                swModel.Save();
+                                swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} A{aDimStr} B{bDimStr} C{cDimStr} D{dDimStr} E{eDimStr}", true);
+                                
+                            }
                             idx = 6;
                             break;
 
