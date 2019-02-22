@@ -87,9 +87,10 @@ namespace ADCOPlugin
         public Dimension swDim;
         // Declare a Solidworks assembly doc field
         public AssemblyDoc swAssem;
-        // Declarea a model document extension field
+        // Declare a model document extension field
         public ModelDocExtension modelExt;
-
+        // Declare a Drawing Document
+        public DrawingDoc swDrawing;
 
         // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
         static string glueDestPathDEFAULT = $@"C:\Users\{userName}\Documents\";
@@ -192,7 +193,7 @@ namespace ADCOPlugin
             glueDestPathBox.Text = destPath;
 
         }
-
+       
         /// <summary>
         /// Copy the template file and load the copied file to the SW screen
         /// </summary>
@@ -369,45 +370,30 @@ namespace ADCOPlugin
                         case 0:
                             if (redundant[0] == '0')
                             {
-                                //ADD REDUNDANT PART CREATION PROTECTION
                                 MessageBox.Show("Starting to edit the carton model");
                                 GlueOpen(false, TYPE_PART, idx, COMPONENT_MAN);
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
-                                //MessageBox.Show("Editing Thicc");
                                 swDim = (Dimension)swFeat.Parameter("Thicc");
                                 errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
-                                //MessageBox.Show("Editing A1");
                                 swDim = (Dimension)swFeat.Parameter("A1");
-                                //MessageBox.Show("Selected the Dimension");
                                 errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                //MessageBox.Show("Finished editing A1");
-                                //MessageBox.Show("Editing A2");
                                 swDim = (Dimension)swFeat.Parameter("A2");
                                 errors = swDim.SetSystemValue3(dDim + 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                //MessageBox.Show("Editing B1");
                                 //swDim = (Dimension)swFeat.Parameter("B1");
                                 //errors = swDim.SetSystemValue3(bDim - 0.125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                //MessageBox.Show("Editing C1");
                                 swDim = (Dimension)swFeat.Parameter("C1");
                                 errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                //MessageBox.Show("Editing C2");
                                 swDim = (Dimension)swFeat.Parameter("C2");
-                                //MessageBox.Show("Setting C2");
                                 errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                //MessageBox.Show("Set C2");
-                                MessageBox.Show("Editing E1");
                                 swDim = (Dimension)swFeat.Parameter("E1");
                                 errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                MessageBox.Show("Editing E2");
                                 swDim = (Dimension)swFeat.Parameter("E2");
                                 errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                MessageBox.Show("Editing E3");
                                 swDim = (Dimension)swFeat.Parameter("E3");
                                 errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                MessageBox.Show("Editing E4");
                                 swDim = (Dimension)swFeat.Parameter("E4");
                                 errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                                 swPart.EditRebuild();
@@ -521,7 +507,7 @@ namespace ADCOPlugin
                             break;
 
                         default:
-                            MessageBox.Show("Something went wrong!");
+                            //MessageBox.Show("Something went wrong!");
                             break;
                     }
 
@@ -537,6 +523,8 @@ namespace ADCOPlugin
 
                 idx = glueMandrelAssemblies.Length - 1;
                 GlueOpen(false, TYPE_ASSEM, idx, COMPONENT_MAN);
+                //swDrawing = (DrawingDoc)swApp.ActiveDoc;
+
                 //PartDoc part = (PartDoc) swApp.ActiveDoc;
                 ////ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
 
