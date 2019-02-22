@@ -66,7 +66,7 @@ namespace ADCOPlugin
         static string[] formerElement = { "MANDREL", "FORMER PLATE" };
 
         //Part files in the glue mandrel domain
-        static string[] glueMandrelParts = { "CARTON TEMPLATE.SLDPRT", "WASHER ECCENT.SLDPRT" , "CYLINDER PUSHER MOUNT.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "EJECT CYLINDER CLAMP PLATE", "MANDREL CENTER MOUNT BAR", "MANDREL SPREADER.SLDPRT", "MANDREL SIDE PLATE.SLDPRT", "MANDREL SIDE PLATE 2.SLDPRT", "PUSHER PLATE.SLDPRT", "MANDREL STEM.SLDPRT", "MANDREL MNT.SLDPRT", "ORANGE HANDLE.sldprt", "ELBOW.SLDPRT"};
+        static string[] glueMandrelParts = { "CARTON TEMPLATE.SLDPRT", "WASHER ECCENT.SLDPRT" , "CYLINDER PUSHER MOUNT.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "EJECT CYLINDER CLAMP PLATE", "MANDREL CENTER MOUNT BAR.SLDPRT", "MANDREL SPREADER.SLDPRT", "MANDREL SIDE PLATE.SLDPRT", "MANDREL SIDE PLATE 2.SLDPRT", "PUSHER PLATE.SLDPRT", "MANDREL STEM.SLDPRT", "MANDREL MNT.SLDPRT", "ORANGE HANDLE.SLDPRT", "ELBOW.SLDPRT"};
         
         //Assembly files in the glue mandrel domain
         static string[] glueMandrelAssemblies = { "CYLINDER ASSEMBLY.SLDASM", "COMPACT GUIDE CYLINDER.SLDASM", "MANDREL ASSEMBLY.SLDASM" };
@@ -204,7 +204,7 @@ namespace ADCOPlugin
 
             if(copystate == false && type == 0)
             {
-                //MessageBox.Show($@"{destPath}\{formerElement[component]}\{glueMandrelParts[idx]}");
+                MessageBox.Show($@"{destPath}\{formerElement[component]}\{glueMandrelParts[idx]}");
                 swModel = swApp.OpenDoc($@"{destPath}\{formerElement[component]}\{glueMandrelParts[idx]}", (int)swDocumentTypes_e.swDocPART);
                 swPart = (PartDoc)swApp.ActiveDoc;
             }
@@ -322,9 +322,9 @@ namespace ADCOPlugin
             ThreadHelpers.RunOnUIThread(() =>
             {
                 // Declare and initialize dimensions and paths based on glue screen fields
-                MessageBox.Show($@"Calling GlueArhive");
+                //MessageBox.Show($@"Calling GlueArhive");
                 string redundant = GlueArchive();
-                MessageBox.Show("Something went wrong!");
+                //MessageBox.Show("Something went wrong!");
 
 
 
@@ -396,7 +396,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} A{aDimStr} B{bDimStr} C{cDimStr} D{dDimStr} E{eDimStr}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\A{aDimStr} B{bDimStr} C{cDimStr} D{dDimStr} E{eDimStr} {glueMandrelParts[idx]}", true);
                                 
                             }
                             idx = 6;
@@ -414,7 +414,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx++;
                             break;
@@ -437,7 +437,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx = 9;
                             break;
@@ -460,7 +460,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} D{dDimStr}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\D{dDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx = 10;
                             break;
@@ -498,7 +498,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} C{cDimStr} D{dDimStr}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} D{dDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx = 11;
                             break;
@@ -586,27 +586,27 @@ namespace ADCOPlugin
                         switch (idx)
                         {
                             case 0:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {aCritDim} {bCritDim} {cCritDim} {dCritDim} {eCritDim}";
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{aCritDim} {bCritDim} {cCritDim} {dCritDim} {eCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 6:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {cCritDim}";
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 7:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {cCritDim}";
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 9:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {dCritDim}";
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{dCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 10:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]} {cCritDim} {dCritDim}";
+                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {dCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
@@ -627,6 +627,7 @@ namespace ADCOPlugin
 
         string GlueArchive()
         {
+            bool flag = false;
             string line;
             string redundant = "000000000000000";
             StringBuilder stringBuilder = new StringBuilder(redundant);
@@ -639,42 +640,48 @@ namespace ADCOPlugin
             {
                 if(line == current)
                 {
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBox.Show("This tooling set has been made before.", "", button, icon);
+                    MessageBoxImage icon1 = MessageBoxImage.Warning;
+                    MessageBoxButton button1 = MessageBoxButton.OK;
+                    MessageBox.Show($@"This exact tooling set has been made before. A{GlueAParam.Text} B{GlueBParam.Text} C{GlueCParam.Text} D{GlueDParam.Text} E{GlueEParam.Text}", "", button1, icon1);
                     stringBuilder[0] = '1';
                 }
 
                 if(line[2] == current[2])
                 {
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBox.Show("Parts in this tooling set have been made before.", "", button, icon);
+                    flag = true;
                     stringBuilder[6] = '1';
                     stringBuilder[7] = '1';
 
                     if(line[3] == current[3])
                     {
-                        MessageBox.Show("Parts in this tooling set have been made before.", "", button, icon);
                         stringBuilder[10] = '1';
                     }
                 }
 
                 if(line[3] == current[3])
                 {
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBox.Show("Parts in this tooling set have been made before.", "", button, icon);
+                    flag = true;
                     stringBuilder[9] = '1';
                 }
 
                 line = streamReader.ReadLine();
             }
-
             streamReader.Close();
             redundant = stringBuilder.ToString();
+            if (flag && redundant[1]==0)
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("Parts in this tooling set have been made before.", "", button, icon);
+            }
+            else
+            {
+                MessageBoxImage icon = MessageBoxImage.Warning;
+                MessageBoxButton button = MessageBoxButton.OK;
+                MessageBox.Show("All parts in this tooling set are new.", "", button, icon);
+            }
 
-            if(redundant[0] != '1')
+            if (redundant[0] != '1')
             {
                 try
                 {
@@ -697,7 +704,7 @@ namespace ADCOPlugin
                     Console.WriteLine("Executing finally block.");
                 }
             }
-            MessageBox.Show($@"Redundant in GlueArchive: {redundant}");
+            //MessageBox.Show($@"Redundant in GlueArchive: {redundant}");
             return redundant;
         }
 
