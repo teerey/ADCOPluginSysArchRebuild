@@ -173,8 +173,4 @@ namespace ADCOPlugin
         #endregion
     }
 }
-<<<<<<< HEAD
 // Dr Nguyen owes us pizza
-=======
-}
->>>>>>> returning to normal
