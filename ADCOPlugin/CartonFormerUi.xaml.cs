@@ -46,28 +46,25 @@ namespace ADCOPlugin
 
         //Default routing for part/assembly files
         //Home folder of all template parts/assemblies
-        static string glueSrcLibDEFAULT = $@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";
-
-        //Default home folder of resulting project folder
-        static string destLibDEFAULT = $@"C:\Users\{userName}\Documents";
+        static string TemplateLib = $@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";
 
         //Home folder of the archive
-        static string archLibDEFAULT = $@"C:\Users\{userName}\Documents\ADCO Carton Former Archive";
+        static string ArchiveLib = $@"C:\Users\{userName}\Documents\ADCO Carton Former Archive";
 
-        //Destination path to be set
-        string destPath = destLibDEFAULT;
-        string srcPath = glueSrcLibDEFAULT;
+        string TemplatePath = TemplateLib;
+        string ArchivePath = ArchiveLib;
         static string lockSrcPathDEFAULT = $@"C:\Users\{userName}\Documents\";
 
         //Type of carton (glue/lock)
-        static string[] formerType = { "GLUE", "LOCK" };
+        static string[] formerType = {"GLUE", "LOCK" };
 
         //Overall component folder names
         static string[] formerElement = { "MANDREL", "FORMER PLATE" };
 
         //Part files in the glue mandrel domain
-        static string[] glueMandrelParts = { "CARTON TEMPLATE.SLDPRT", "WASHER ECCENT.SLDPRT" , "CYLINDER PUSHER MOUNT.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "EJECT CYLINDER CLAMP PLATE", "MANDREL CENTER MOUNT BAR.SLDPRT", "MANDREL SPREADER.SLDPRT", "MANDREL SIDE PLATE.SLDPRT", "MANDREL SIDE PLATE 2.SLDPRT", "PUSHER PLATE.SLDPRT", "MANDREL STEM.SLDPRT", "MANDREL MNT.SLDPRT", "ORANGE HANDLE.SLDPRT", "ELBOW.SLDPRT"};
-        
+        static string[] glueMandrelParts = { "CARTON TEMPLATE.SLDPRT", "WASHER ECCENT.SLDPRT" , "CYLINDER PUSHER MOUNT.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDPRT", "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDPRT", "EJECT CYLINDER CLAMP PLATE.SLDPRT", "MANDREL CENTER MOUNT BAR.SLDPRT", "MANDREL SPREADER.SLDPRT", "MANDREL SIDE PLATE.SLDPRT", "MANDREL SIDE PLATE 2.SLDPRT", "PUSHER PLATE.SLDPRT", "MANDREL STEM.SLDPRT", "MANDREL MNT.SLDPRT", "ORANGE HANDLE.SLDPRT", "ELBOW.SLDPRT"};
+        static string[] glueMandrelLogs = { "CARTON TEMPLATE LOG.csv", "WASHER ECCENT LOG.csv", "CYLINDER PUSHER MOUNT LOG.csv", "R&D5321-31 SMC MGPM20N-100_MGPRod LOG.csv", "R&D5321-31 SMC MGPM20N-100_MGPTube LOG.csv", "EJECT CYLINDER CLAMP PLATE LOG.csv", "MANDREL CENTER MOUNT BAR LOG.csv", "MANDREL SPREADER LOG.csv", "MANDREL SIDE PLATE LOG.csv", "MANDREL SIDE PLATE 2 LOG.csv", "PUSHER PLATE LOG.csv", "MANDREL STEM LOG.csv", "MANDREL MNT LOG.csv", "ORANGE HANDLE LOG.csv", "ELBOW LOG.csv" };
+
         //Assembly files in the glue mandrel domain
         static string[] glueMandrelAssemblies = { "CYLINDER ASSEMBLY.SLDASM", "COMPACT GUIDE CYLINDER.SLDASM", "MANDREL ASSEMBLY.SLDASM" };
 
@@ -158,16 +155,16 @@ namespace ADCOPlugin
             // Before switching screens, checks to see if the user entered a project ID or customer name
             // If so, then the project ID will be the name of the actual part file and is appended to the default home path
             // If not, then some preset name is set
-            if (projectID.Text != "" || customer.Text != "")
-            {
-                destPath = $@"{destLibDEFAULT}\{customer.Text}{projectID.Text}";
-            }
-            else
-            {
-                destPath = $@"{destLibDEFAULT}\TESTCOPY";
-            }
+            //if (projectID.Text != "" || customer.Text != "")
+            //{
+            //    destPath = $@"{destLibDEFAULT}\{customer.Text}{projectID.Text}";
+            //}
+            //else
+            //{
+            //    destPath = $@"{destLibDEFAULT}\TESTCOPY";
+            //}
             
-            srcPath = $@"{glueSrcLibDEFAULT}\{formerType[0]}";
+            TemplatePath = $@"{TemplateLib}\{formerType[0]}";
 
             // Change display to glue screen
             GlueScreen();
@@ -186,8 +183,8 @@ namespace ADCOPlugin
             GlueContent.Visibility = System.Windows.Visibility.Visible;
             InitContent.Visibility = System.Windows.Visibility.Hidden;
             LockContent.Visibility = System.Windows.Visibility.Hidden;
-            glueSourcePathBox.Text = srcPath;
-            glueDestPathBox.Text = destPath;
+            //glueSourcePathBox.Text = TemplatePath;
+            //glueDestPathBox.Text = destPath;
 
         }
        
@@ -199,7 +196,7 @@ namespace ADCOPlugin
             if (copystate == true && !Directory.Exists(destPath))
             {
                 // Source, Destination, Copy Subdirectories?
-                DirectoryCopy(srcPath, destPath, true);
+                DirectoryCopy(TemplatePath, destPath, true);
             }
 
             if(copystate == false && type == 0)
@@ -254,58 +251,47 @@ namespace ADCOPlugin
 
         private int GlueRead()
         {
+            MessageBoxImage icon = MessageBoxImage.Warning;
+            MessageBoxButton button = MessageBoxButton.OK;
+
             if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "" || Thickness.Text == "")
             {
-                MessageBoxImage icon = MessageBoxImage.Warning;
-                MessageBoxButton button = MessageBoxButton.OK;
                 MessageBox.Show("You must enter values for all box dimensions.", "", button, icon);
                 return (1);
             }
 
             if(GlueAParam.Text.Contains("/") || GlueBParam.Text.Contains("/") || GlueCParam.Text.Contains("/") || GlueDParam.Text.Contains("/") || GlueEParam.Text.Contains("/") || Thickness.Text.Contains("/"))
             {
-                MessageBoxImage icon = MessageBoxImage.Warning;
-                MessageBoxButton button = MessageBoxButton.OK;
                 MessageBox.Show("Please enter decimal values, not fractional.", "", button, icon);
                 return (1);
             }
 
             if (double.Parse(GlueAParam.Text) < 7 || double.Parse(GlueAParam.Text) > 30)
             {
-                MessageBoxImage icon = MessageBoxImage.Warning;
-                MessageBoxButton button = MessageBoxButton.OK;
                 MessageBox.Show("Value of A must be between 7\" and 30\"", "", button, icon);
                 return (1);
             }
 
             if (double.Parse(GlueBParam.Text) < 7 || double.Parse(GlueBParam.Text) > 26)
             {
-                MessageBoxImage icon = MessageBoxImage.Warning;
-                MessageBoxButton button = MessageBoxButton.OK;
                 MessageBox.Show("Value of B must be between 7\" and 26\"", "", button, icon);
                 return (1);
             }
 
             if (double.Parse(GlueCParam.Text) < 7 || double.Parse(GlueCParam.Text) > 19)
             {
-                MessageBoxImage icon = MessageBoxImage.Warning;
-                MessageBoxButton button = MessageBoxButton.OK;
                 MessageBox.Show("Value of C must be between 7\" and 19\"", "", button, icon);
                 return (1);
             }
 
             if (double.Parse(GlueDParam.Text) < 5.5 || double.Parse(GlueDParam.Text) > 10)
             {
-                MessageBoxImage icon = MessageBoxImage.Warning;
-                MessageBoxButton button = MessageBoxButton.OK;
                 MessageBox.Show("Value of D must be between 6\" and 10\"", "", button, icon);
                 return (1);
             }
 
             if (double.Parse(GlueEParam.Text) < 1 || double.Parse(GlueEParam.Text) > 6)
             {
-                MessageBoxImage icon = MessageBoxImage.Warning;
-                MessageBoxButton button = MessageBoxButton.OK;
                 MessageBox.Show("Value of E must be between 1\" and 6\"", "", button, icon);
                 return (1);
             }
@@ -326,10 +312,6 @@ namespace ADCOPlugin
                 string redundant = GlueArchive();
                 //MessageBox.Show("Something went wrong!");
 
-
-
-                string destPath = glueDestPathBox.Text;
-                string sourcePath = glueSourcePathBox.Text;
                 int errors;
 
                 // Copy and open the template library
@@ -396,7 +378,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\A{aDimStr} B{bDimStr} C{cDimStr} D{dDimStr} E{eDimStr} {glueMandrelParts[idx]}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\A{aDimStr} B{bDimStr} C{cDimStr} D{dDimStr} E{eDimStr} {glueMandrelParts[idx]}", true);
                                 
                             }
                             idx = 6;
@@ -414,7 +396,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} {glueMandrelParts[idx]}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx++;
                             break;
@@ -437,7 +419,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} {glueMandrelParts[idx]}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx = 9;
                             break;
@@ -460,7 +442,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\D{dDimStr} {glueMandrelParts[idx]}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\D{dDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx = 10;
                             break;
@@ -498,7 +480,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}");
-                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} D{dDimStr} {glueMandrelParts[idx]}", true);
+                                File.Copy($@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}", $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\C{cDimStr} D{dDimStr} {glueMandrelParts[idx]}", true);
                             }
                             idx = 11;
                             break;
@@ -520,45 +502,6 @@ namespace ADCOPlugin
 
                 idx = glueMandrelAssemblies.Length - 1;
                 GlueOpen(false, TYPE_ASSEM, idx, COMPONENT_MAN);
-                //swDrawing = (DrawingDoc)swApp.ActiveDoc;
-
-                //PartDoc part = (PartDoc) swApp.ActiveDoc;
-                ////ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
-
-                //// Get the part feature called exstrusionBase
-                //Feature Feat = part.FeatureByName("extrusionBase");
-
-                //// Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
-                //Feat.Select2(false, -1);
-
-                //// Get dimension a of extrusionBase
-                ////Dimension swDim = (Dimension) Feat.Parameter("a");
-
-                //// Set the new value of a as the value from the read-in field
-                ////int errors = swDim.SetSystemValue3(aDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                //// Get dimension b of extrusionBase
-                //swDim = (Dimension)Feat.Parameter("b");
-
-                //// Set the new value of b as the value from the read-in field
-                //errors = swDim.SetSystemValue3(bDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                //// Get the part feature called extrusion
-                //Feat = part.FeatureByName("extrusion");
-
-                //// Replace the current selection
-                //Feat.Select2(false, -1);
-
-                //// Get dimension c of extrusion
-                //swDim = (Dimension)Feat.Parameter("c");
-
-                //// Set the new value of c as the value from the read-in field
-                //errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                //// Invoke all changes and rebuild the document, save afterwards
-                //swPart.EditRebuild();
-                //swModel.Save();
-
             });
             return;
         }
@@ -586,27 +529,27 @@ namespace ADCOPlugin
                         switch (idx)
                         {
                             case 0:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{aCritDim} {bCritDim} {cCritDim} {dCritDim} {eCritDim} {glueMandrelParts[idx]}";
+                                partName = $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{aCritDim} {bCritDim} {cCritDim} {dCritDim} {eCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 6:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {glueMandrelParts[idx]}";
+                                partName = $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 7:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {glueMandrelParts[idx]}";
+                                partName = $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 9:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{dCritDim} {glueMandrelParts[idx]}";
+                                partName = $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{dCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
                             case 10:
-                                partName = $@"{archLibDEFAULT}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {dCritDim} {glueMandrelParts[idx]}";
+                                partName = $@"{ArchiveLib}\{formerType[0]}\{formerElement[COMPONENT_MAN]}\{cCritDim} {dCritDim} {glueMandrelParts[idx]}";
                                 newPartName = $@"{destPath}\{formerElement[COMPONENT_MAN]}\{glueMandrelParts[idx]}";
                                 File.Copy(partName, newPartName, true);
                                 break;
@@ -632,7 +575,7 @@ namespace ADCOPlugin
             string redundant = "000000000000000";
             StringBuilder stringBuilder = new StringBuilder(redundant);
             string current = $@"{GlueAParam.Text}{GlueBParam.Text}{GlueCParam.Text}{GlueDParam.Text}{GlueEParam.Text}";
-            StreamReader streamReader = new StreamReader($@"{archLibDEFAULT}\archive.txt");
+            StreamReader streamReader = new StreamReader($@"{ArchiveLib}\archive.txt");
 
             line = streamReader.ReadLine();
 
@@ -687,7 +630,7 @@ namespace ADCOPlugin
                 {
 
                     //Pass the filepath and filename to the StreamWriter Constructor
-                    StreamWriter streamwrite = new StreamWriter($@"{archLibDEFAULT}\archive.txt",true);
+                    StreamWriter streamwrite = new StreamWriter($@"{ArchiveLib}\archive.txt",true);
 
                     //Write a line of text
                     streamwrite.WriteLine(current);

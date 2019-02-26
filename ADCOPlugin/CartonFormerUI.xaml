@@ -143,12 +143,12 @@
                         <!--Label for Box thickness -->
                         <TextBlock Margin="0 8 5 8" Text="Thickness" TextAlignment="Right"/>
 
-                        <!--Label for Output path-->
+                        <!--Label for Output path--><!--
                         <TextBlock Margin="0 8 5 8" Text="Destination" TextAlignment="Right"/>
 
-                        <!--Label for Source path -->
+                        --><!--Label for Source path --><!--
                         <TextBlock Margin="0 8 5 8" Text="Source" TextAlignment="Right"/>
-                        <TextBlock Text="Is the Carton Symmetric?" HorizontalAlignment="Right" Margin="0,0,-112,0" Height="16" Width="166"/>
+                        <TextBlock Text="Is the Carton Symmetric?" HorizontalAlignment="Right" Margin="0,0,-112,0" Height="16" Width="166"/>-->
                     </StackPanel>
 
                     <!--Entry fields-->
@@ -173,7 +173,7 @@
                         <!--Thiccness input-->
                         <TextBox Margin="0 5 0 5" x:Name="Thickness" Padding="2" IsReadOnly="False" Background="#eee"/>
 
-                        <Grid>
+                        <!--<Grid>
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2.5*"/>
@@ -182,24 +182,24 @@
 
                             <StackPanel Grid.Column="0" VerticalAlignment="Top">
 
-                                <!--Destination file path entry-->
+                                --><!--Destination file path entry--><!--
                                 <TextBox Margin="0 5 0 5" x:Name="glueDestPathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
 
-                                <!--Source file path display-->
+                                --><!--Source file path display--><!--
                                 <TextBox Margin="0 5 0 5" x:Name="glueSourcePathBox" Padding="2" IsReadOnly="False" Background="#eee"/>
 
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
 
-                                <!--Destination file path browse button-->
+                                --><!--Destination file path browse button--><!--
                                 <Button x:Name="glueDestBrowse" Content="Browse" Margin="5 5.5 0 6" Click="glueDestBrowse_Click"/>
 
-                                <!--Source file path browse button-->
+                                --><!--Source file path browse button--><!--
                                 <Button x:Name="glueSourceBrowse" Content="Browse" Margin="5 6.5 0 6" Click="glueSourceBrowse_Click"/>
                             </StackPanel>
                         </Grid>
-                        <!--
+                        --><!--
                         
 
                             <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
@@ -216,13 +216,9 @@
 
                             </StackPanel>
                         </Grid>
-                        -->
-                        <CheckBox x:Name="isSymmetric" HorizontalAlignment="Right"/>
+                        --><!--
+                        <CheckBox x:Name="isSymmetric" HorizontalAlignment="Right"/>-->
                     </StackPanel>
-                    <StackPanel>
-
-                    </StackPanel>
-
                 </Grid>
 
             </StackPanel>
