@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FileHelpers, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\FileHelpers.dll</HintPath>
+    </Reference>
     <Reference Include="SolidWorks.Interop.sldworks, Version=26.0.1.1, Culture=neutral, PublicKeyToken=7c4797c3e4eeac03, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -110,6 +114,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="pluginHeader.png" />
+    <Content Include="References\FileHelpers.dll" />
     <Content Include="References\SolidWorks.Interop.sldworks.dll" />
     <Content Include="References\SolidWorks.Interop.sw3dprinter.dll" />
     <Content Include="References\SolidWorks.Interop.swcommands.dll" />
