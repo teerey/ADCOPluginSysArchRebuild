@@ -13,7 +13,7 @@
     <Border Padding="10" Margin="10,10,10,10">
         <Grid>
             <!--Initial/load-up page-->
-            <StackPanel x:Name="InitContent" Visibility="Hidden">
+            <StackPanel x:Name="InitContent" Visibility="Visible">
 
                 <!--ADCO logo-->
                 <Image Margin="5 0 0 40"  Source="pluginHeader.png" HorizontalAlignment="Center" Stretch="UniformToFill"/>
@@ -62,7 +62,7 @@
                 <!--Carton type selection prompt-->
                 <TextBlock Margin="10"  HorizontalAlignment="Center" Text="Select Carton Type" FontWeight="Bold" FontSize="18"/>
 
-                <Grid Width="250" Margin="0 40 0 0">
+                <!--<Grid Width="250" Margin="0 40 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1.5*"/>
                         <ColumnDefinition Width="4*"/>
@@ -80,11 +80,11 @@
                 </Grid>
 
                 <TextBlock Text="Comments/Description:" Margin="0 10 0 0"/>
-                <TextBox x:Name="projectDescription" Padding="2" Background="#eee" TextWrapping="Wrap" Height="60" Margin="5"/>
+                <TextBox x:Name="projectDescription" Padding="2" Background="#eee" TextWrapping="Wrap" Height="60" Margin="5"/>-->
             </StackPanel>
 
             <!--Glue-Formed Carton Page-->
-            <StackPanel x:Name="GlueContent" Visibility="Visible">
+            <StackPanel x:Name="GlueContent" Visibility="Hidden">
                 <!--Control button grid region-->
                 <Grid>
 
