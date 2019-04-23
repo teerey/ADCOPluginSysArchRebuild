@@ -315,9 +315,9 @@ namespace ADCOPlugin
                 return (1);
             }
 
-            if (double.Parse(GlueCParam.Text) < 7 || double.Parse(GlueCParam.Text) > 19)
+            if (double.Parse(GlueCParam.Text) < 9.25 || double.Parse(GlueCParam.Text) > 19)
             {
-                MessageBox.Show("Value of C must be between 7\" and 19\"", "", button, icon);
+                MessageBox.Show("Value of C must be between 9.25\" and 19\"", "", button, icon);
                 return (1);
             }
 
@@ -413,7 +413,7 @@ namespace ADCOPlugin
                         switch (idx)
                         {
                         case 1:
-                            #region Part 1
+                            #region Part 1 FOLDING PLATE BOTTOM
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -421,12 +421,6 @@ namespace ADCOPlugin
                                         true);
                                 GlueOpen(FILE_PART);
 
-                                if (cDim + 4 * ThiccDim - 0.15625 < 11)
-                                {
-                                    swFeat = swPart.FeatureByName("Cut-Extrude6");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState = swModel.EditSuppress2();
-                                }
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("FPB");
@@ -446,7 +440,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 2:
-                            #region Part 1
+                            #region Part 2 FOLDING PLATE LEFT
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -455,22 +449,7 @@ namespace ADCOPlugin
 
                                 GlueOpen(FILE_PART);
 
-                                if (dDim + 2 * ThiccDim - 1 < 6.25)
-                                {
-                                    swFeat = swPart.FeatureByName("Sketch5");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState1 = swModel.EditSuppress2();
-
-                                    swFeat = swPart.FeatureByName("Cut-Extrude5");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState2 = swModel.EditSuppress2(); ;
-
-                                    swFeat = swPart.FeatureByName("Cut-Revolve3");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState3 = swModel.EditUnsuppress2();
-                                }
-
-                                swFeat = swPart.FeatureByName("Sketch1");
+                                swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("FPL");
                                 errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim - 1 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
@@ -484,7 +463,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 3:
-                            #region Part 1
+                            #region Part 3 FOLDING PLATE RIGHT
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -493,24 +472,7 @@ namespace ADCOPlugin
 
                                 GlueOpen(FILE_PART);
 
-                                if (dDim + 2 * ThiccDim - 1 < 6.25)
-                                {
-
-                                    swFeat = swPart.FeatureByName("Sketch5");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState1 = swModel.EditSuppress2();
-
-                                    swFeat = swPart.FeatureByName("Cut-Extrude5");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState2 = swModel.EditSuppress2();
-
-                                    swFeat = swPart.FeatureByName("Cut-Revolve1");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState3 = swModel.EditUnsuppress();
-
-                                }
-
-                                swFeat = swPart.FeatureByName("Sketch1");
+                                swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("FPR");
                                 errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim - 1 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
@@ -524,7 +486,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 4:
-                            #region Part 1
+                            #region Part 4 FOLDING PLATE TOP
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -547,7 +509,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 6:
-                            #region Part 1
+                            #region Part 6 GUIDE RAIL
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -570,7 +532,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 7:
-                            #region Part 1
+                            #region Part 7 MAIN PLATE
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -578,13 +540,6 @@ namespace ADCOPlugin
                                         true);
 
                                 GlueOpen(FILE_PART);
-                                if (dDim + 2 * ThiccDim - 1 < 6.25)
-                                {
-                                    swFeat = swPart.FeatureByName("Cut-Extrude10");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState1 = swModel.EditSuppress2();
-
-                                }
 
                                 swFeat = swPart.FeatureByName("Sketch10");
                                 swFeat.Select2(false, -1);
@@ -603,7 +558,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 9:
-                            #region Part 1
+                            #region Part 9 MOUNT LEFT
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -624,7 +579,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 10:
-                            #region Part 1
+                            #region Part 10 MOUNT RIGHT
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -644,40 +599,8 @@ namespace ADCOPlugin
                             break;
                         #endregion
 
-                        case 11:
-                            #region Part 1
-                            if (redundantCav[idx] == '0')
-                            {
-                                File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
-                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
-                                        true);
-
-                                GlueOpen(FILE_PART);
-                                if (dDim + 2 * ThiccDim - 1 < 6.25)
-                                {
-                                    swFeat = swPart.FeatureByName("M6x1.0 Tapped Hole1");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState1 = swModel.EditSuppress2();
-
-                                    swFeat = swPart.FeatureByName("M6x1.0 Tapped Hole2");
-                                    swFeat.Select2(false, -1);
-                                    bool suppressionState3 = swModel.EditUnsuppress();
-
-                                }
-                                swFeat = swPart.FeatureByName("Extrude1");
-                                swFeat.Select2(false, -1);
-                                swDim = (Dimension)swFeat.Parameter("NP");
-                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim - 4.6875 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-                                swPart.EditRebuild();
-                                swModel.Save();
-                                swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
-                            }
-
-                            break;
-                        #endregion
-
                         case 12:
-                            #region Part 1
+                            #region Part 12 NUTPLATE TOP
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -700,7 +623,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 19:
-                            #region Part 1
+                            #region Part 19 SPREADER BOTTOM
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -722,7 +645,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 20:
-                            #region Part 1
+                            #region Part 20 SPREADER TOP
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -744,7 +667,7 @@ namespace ADCOPlugin
                             #endregion
 
                         case 21:
-                            #region Part 1
+                            #region Part 21 STOP RAIL
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
