@@ -37,10 +37,10 @@ namespace ADCOPlugin
 
         //Default routing for part/assembly files
         //Home folder of all template parts/assemblies
-        static string TemplateLib = $@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";
+        static string TemplateLib = $@"Z:\ADCO Carton Former Templates";//$@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";
 
         //Home folder of the archive
-        static string ArchiveLib = $@"C:\Users\{userName}\Documents\ADCO Carton Former Archive";
+        static string ArchiveLib = $@"Z:\ADCO Carton Former Archive";//$@"C:\Users\{userName}\Documents\ADCO Carton Former Archive";
 
         string TemplatePath = TemplateLib;
         string ArchivePath = ArchiveLib;
