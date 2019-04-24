@@ -110,6 +110,7 @@ namespace ADCOPlugin
 
         static int FILE_PART = 0;
         static int FILE_ASSEM = 1;
+        static int FILE_DRW = 2;
         static int TYPE_GLUE = 0;
         static int TYPE_LOCK = 1;
         static int COMPONENT_MAN = 0;
@@ -1539,6 +1540,402 @@ namespace ADCOPlugin
 
             #endregion
 
+            #region Part Drawing File Handling
+
+            if (fileType == FILE_PART)
+            {
+                Debug.Print("Line 637");
+                #region Part Important Dimension Set
+
+                if (component == COMPONENT_MAN)
+                {
+                    // List of strings defining which dimensions each part is dependent on
+                    // The string number corresponds to the part defined in glueMandrelParts string array
+                    string[] checkLoc = {  "03456",
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        "03",
+                                        "03",
+                                        "04",
+                                        "04",
+                                        "034",
+                                        "",
+                                        "",
+                                        "",
+                                        ""};
+
+                    // Specify a particular dependency string in checkLoc for the current part
+                    checkStr = checkLoc[PartNum];
+                }
+                else
+                {
+                    string[] checkLoc = {  "",//0
+                                        "036",//1
+                                        "046",//2
+                                        "046",//3
+                                        "036",//4
+                                        "",//5
+                                        "046",//6
+                                        "0346",//7
+                                        "",//8
+                                        "046",//9
+                                        "046",//10
+                                        "046",//11
+                                        "036",//12
+                                        "",//13
+                                        "",//14
+                                        "",//15
+                                        "",//16
+                                        "",//17
+                                        "",//18
+                                        "036",//19
+                                        "036",//20
+                                        "036"};//21
+
+                    // Specify a particular dependency string in checkLoc for the current part
+                    checkStr = checkLoc[PartNum];
+                }
+
+
+
+                #endregion
+
+
+                if (checkStr != "")
+                {
+                    Debug.Print("Line 661");
+                    #region Glue Archive Part CSV Parsing Setup
+                    // Rename the file that will be searched for in the archive (search for csv instead of solidworks file)
+                    PartName = PartName.Replace(".SLDPRT", " LOG.csv");
+
+                    // Create an object that will be used to read from the csv file
+                    StreamReader reader = new StreamReader(File.OpenRead($@"{ArchivePath}\{PartName}"));
+
+                    // Read in csv lists
+                    List<string> idx = new List<string>();
+                    List<string> A = new List<string>();
+                    List<string> B = new List<string>();
+                    List<string> C = new List<string>();
+                    List<string> D = new List<string>();
+                    List<string> E = new List<string>();
+                    List<string> t = new List<string>();
+
+                    #endregion
+
+
+                    #region Glue Archive Part CSV Parsing
+
+                    // If the file isn't blank, do the following:
+                    if (!reader.EndOfStream)
+                    {
+                        // Do the following until the end of the csv file is reached
+                        while (!reader.EndOfStream)
+                        {
+                            // Read in a line from the csv file
+                            line = reader.ReadLine();
+
+                            // If the string in each position is not empty, read in each value to the corresponding variable list
+                            if (!String.IsNullOrWhiteSpace(line))
+                            {
+                                values = line.Split(',');
+                                idx.Add(values[0]);
+                                A.Add(values[1]);
+                                B.Add(values[2]);
+                                C.Add(values[3]);
+                                D.Add(values[4]);
+                                E.Add(values[5]);
+                                t.Add(values[6]);
+                            }
+                        }
+                        // Close the file
+                        reader.Close();
+
+                        // Convert the list objects to standard string arrays
+                        string[] listidx = idx.ToArray();
+                        string[] listA = A.ToArray();
+                        string[] listB = B.ToArray();
+                        string[] listC = C.ToArray();
+                        string[] listD = D.ToArray();
+                        string[] listE = E.ToArray();
+                        string[] listt = t.ToArray();
+
+                        // Recombine each string array to form a standardized, 2-D string matrix
+                        string[][] strList = new string[][] { listidx, listA, listB, listC, listD, listE, listt };
+
+                        //  2-D matrix is designed as follows:
+                        //  Entry history direction ==>>
+                        //  ________________________
+                        //  | idx0 | idx1  | idx2  | <-- Row 0
+                        //  |______|_______|_______|
+                        //  | A0   | A1    | A2    | <-- Row 1
+                        //  |______|_______|_______|
+                        //  | B0   | B1    | B2    | <-- Row 2
+                        //  |______|_______|_______|
+                        //  | C0   | C1    | C2    | <-- Row 3
+                        //  |______|_______|_______|
+                        //  | D0   | D1    | D2    | <-- Row 4
+                        //  |______|_______|_______|
+                        //  | E0   | E1    | E2    | <-- Row 5
+                        //  |______|_______|_______|
+                        //  | t0   | t1    | t2    | <-- Row 6
+                        //  |__.___|__.____|__.____|
+                        //    /|\    /|\     /|\
+                        //     |      |       |
+                        //   Col 0  Col 1    Col 2
+
+                        #endregion
+
+                        #region Glue Archive Redundancy Checking Loops
+                        // Each column represents an entry set, so cycle through columns after each row is checked (establish column first)
+                        for (int col = 0; col < listA.Length; col++)
+                        {
+                            flag = false;
+                            // For the current column, cycle through and check each row as indexed by the checkStr
+                            for (int check = 1; check < checkStr.Length; check++)
+                            {
+                                // If the value in the row being checked does not match the input dimension set, then mark it with the flag and proceed to the next column
+                                if (strList[(int)Char.GetNumericValue(checkStr[check])][col] != DimStrs[(int)Char.GetNumericValue(checkStr[check]) - 1])
+                                {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            // If all important values are the same, then flag will remain false and the following code will be executed
+                            if (!flag)
+                            {
+                                lastNum = strList[0][col];
+                                redundant = "1";
+                                //MessageBox.Show("This part has been made before");
+                                break;
+                            }
+                        }
+
+                        #endregion
+
+                        #region Uniqueness and 1st entry Set Cases
+                        // If flag is true after loops are executed, then no previous entry sets match the input, and the new index is the length of the list (or the last index value + 1)
+                        if (flag)
+                        {
+                            lastNum = listA.Length.ToString();
+                            redundant = "0";
+                            string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
+                            TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
+                            writer.WriteLine(append);
+                            writer.Close();
+                        }
+                        Debug.Print("Line 784");
+                        // Return the index of either the matching parts (if identical) or the new index added (if unique)
+                        return new string[] { lastNum, redundant };
+                    }
+                    // If the file is blank, do the following:
+                    else
+                    {
+                        reader.Close();
+                        Debug.Print("Line 791");
+                        lastNum = "0";
+                        redundant = "0";
+                        string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
+                        Debug.Print("Line 795");
+                        Debug.Print($@"{ArchivePath}\{PartName}");
+                        TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
+                        Debug.Print("Line 798");
+                        writer.WriteLine(append);
+                        writer.Close();
+                        Debug.Print("Line 799");
+                        return new string[] { lastNum, redundant };
+                    }
+                    #endregion
+                }
+                else
+                {
+                    lastNum = "0";
+                    redundant = "2";
+                    return new string[] { lastNum, redundant };
+                }
+
+            }
+
+            #endregion
+
+            #region Assembly Drawing File Handling
+            if (fileType == FILE_ASSEM)
+            {
+                #region Part Important Dimension Set
+
+                if (component == COMPONENT_MAN)
+                {
+                    // List of strings defining which dimensions each part is dependent on
+                    // The string number corresponds to the part defined in glueMandrelParts string array
+                    string[] checkLoc = {  "",//0
+                                       "034" };//1
+                    // Specify a particular dependency string in checkLoc for the current part
+                    checkStr = checkLoc[PartNum];
+                }
+                else
+                {
+                    string[] checkLoc = { "0346" };//0
+                    // Specify a particular dependency string in checkLoc for the current part
+                    checkStr = checkLoc[PartNum];
+                }
+
+
+
+
+                if (checkStr != "")
+                {
+
+                    PartName = PartName.Replace(".SLDASM", " LOG.csv");
+
+                    // Create an object that will be used to read from the csv file
+                    StreamReader reader = new StreamReader(File.OpenRead($@"{ArchivePath}\{PartName}"));
+
+                    // Read in csv lists
+                    List<string> idx = new List<string>();
+                    List<string> A = new List<string>();
+                    List<string> B = new List<string>();
+                    List<string> C = new List<string>();
+                    List<string> D = new List<string>();
+                    List<string> E = new List<string>();
+                    List<string> t = new List<string>();
+
+                    #endregion
+
+
+                    #region Glue Archive Part CSV Parsing
+
+                    // If the file isn't blank, do the following:
+                    if (!reader.EndOfStream)
+                    {
+                        // Do the following until the end of the csv file is reached
+                        while (!reader.EndOfStream)
+                        {
+                            // Read in a line from the csv file
+                            line = reader.ReadLine();
+
+                            // If the string in each position is not empty, read in each value to the corresponding variable list
+                            if (!String.IsNullOrWhiteSpace(line))
+                            {
+                                values = line.Split(',');
+                                idx.Add(values[0]);
+                                A.Add(values[1]);
+                                B.Add(values[2]);
+                                C.Add(values[3]);
+                                D.Add(values[4]);
+                                E.Add(values[5]);
+                                t.Add(values[6]);
+                            }
+                        }
+                        // Close the file
+                        reader.Close();
+
+                        // Convert the list objects to standard string arrays
+                        string[] listidx = idx.ToArray();
+                        string[] listA = A.ToArray();
+                        string[] listB = B.ToArray();
+                        string[] listC = C.ToArray();
+                        string[] listD = D.ToArray();
+                        string[] listE = E.ToArray();
+                        string[] listt = t.ToArray();
+
+                        // Recombine each string array to form a standardized, 2-D string matrix
+                        string[][] strList = new string[][] { listidx, listA, listB, listC, listD, listE, listt };
+
+                        //  2-D matrix is designed as follows:
+                        //  Entry history direction ==>>
+                        //  ________________________
+                        //  | idx0 | idx1  | idx2  | <-- Row 0
+                        //  |______|_______|_______|
+                        //  | A0   | A1    | A2    | <-- Row 1
+                        //  |______|_______|_______|
+                        //  | B0   | B1    | B2    | <-- Row 2
+                        //  |______|_______|_______|
+                        //  | C0   | C1    | C2    | <-- Row 3
+                        //  |______|_______|_______|
+                        //  | D0   | D1    | D2    | <-- Row 4
+                        //  |______|_______|_______|
+                        //  | E0   | E1    | E2    | <-- Row 5
+                        //  |______|_______|_______|
+                        //  | t0   | t1    | t2    | <-- Row 6
+                        //  |__.___|__.____|__.____|
+                        //    /|\    /|\     /|\
+                        //     |      |       |
+                        //   Col 0  Col 1    Col 2
+
+                        #endregion
+
+                        #region Glue Archive Redundancy Checking Loops
+                        // Each column represents an entry set, so cycle through columns after each row is checked (establish column first)
+                        for (int col = 0; col < listA.Length; col++)
+                        {
+                            flag = false;
+                            // For the current column, cycle through and check each row as indexed by the checkStr
+                            for (int check = 1; check < checkStr.Length; check++)
+                            {
+                                // If the value in the row being checked does not match the input dimension set, then mark it with the flag and proceed to the next column
+                                if (strList[(int)Char.GetNumericValue(checkStr[check])][col] != DimStrs[(int)Char.GetNumericValue(checkStr[check]) - 1])
+                                {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            // If all important values are the same, then flag will remain false and the following code will be executed
+                            if (!flag)
+                            {
+                                lastNum = strList[0][col];
+                                redundant = "1";
+                                //MessageBox.Show("This part has been made before");
+                                break;
+                            }
+                        }
+
+                        #endregion
+
+                        #region Uniqueness and 1st entry Set Cases
+                        // If flag is true after loops are executed, then no previous entry sets match the input, and the new index is the length of the list (or the last index value + 1)
+                        if (flag)
+                        {
+                            lastNum = listA.Length.ToString();
+                            redundant = "0";
+                            string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
+                            TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
+                            writer.WriteLine(append);
+                            writer.Close();
+                        }
+                        Debug.Print("Line 1018");
+                        // Return the index of either the matching parts (if identical) or the new index added (if unique)
+                        return new string[] { lastNum, redundant };
+                    }
+                    // If the file is blank, do the following:
+                    else
+                    {
+                        reader.Close();
+                        Debug.Print("Line 1026");
+                        lastNum = "0";
+                        redundant = "0";
+                        string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
+                        Debug.Print("Line 795");
+                        Debug.Print($@"{ArchivePath}\{PartName}");
+                        TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
+                        Debug.Print("Line 798");
+                        writer.WriteLine(append);
+                        writer.Close();
+                        Debug.Print("Line 799");
+                        return new string[] { lastNum, redundant };
+                    }
+                    #endregion
+                }
+                else
+                {
+                    lastNum = "0";
+                    redundant = "2";
+                    return new string[] { lastNum, redundant };
+                }
+            }
+
+            #endregion
             // Exception catch
             return new string[] { "", "" };
         }
