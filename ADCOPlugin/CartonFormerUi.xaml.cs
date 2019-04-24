@@ -426,11 +426,6 @@ namespace ADCOPlugin
                                 swDim = (Dimension)swFeat.Parameter("FPB");
                                 errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim - 0.15625 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
-                                swFeat = swPart.FeatureByName("Cut-Extrude4");
-                                swFeat.Select2(false, -1);
-                                swDim = (Dimension)swFeat.Parameter("D1");
-                                errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim - 6.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
