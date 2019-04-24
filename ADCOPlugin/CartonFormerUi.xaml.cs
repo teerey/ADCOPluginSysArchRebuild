@@ -37,10 +37,10 @@ namespace ADCOPlugin
 
         //Default routing for part/assembly files
         //Home folder of all template parts/assemblies
-        static string TemplateLib = $@"Z:\ADCO Carton Former Templates";//$@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";
+        static string TemplateLib = $@"C:\Users\{userName}\Documents\ADCO Carton Former Templates";//$@"Z:\ADCO Carton Former Templates";
 
         //Home folder of the archive
-        static string ArchiveLib = $@"Z:\ADCO Carton Former Archive";//$@"C:\Users\{userName}\Documents\ADCO Carton Former Archive";
+        static string ArchiveLib = $@"C:\Users\{userName}\Documents\ADCO Carton Former Archive";//$@"Z:\ADCO Carton Former Archive";
 
         string TemplatePath = TemplateLib;
         string ArchivePath = ArchiveLib;
@@ -333,6 +333,12 @@ namespace ADCOPlugin
                 return (1);
             }
 
+            if(double.Parse(GlueBParam.Text) < double.Parse(GlueCParam.Text))
+            {
+                MessageBox.Show("Value of B must be larger than C, please remeasure the carton", "", button, icon);
+                return (1);
+            }
+
             #endregion
 
             return (0);
@@ -365,6 +371,7 @@ namespace ADCOPlugin
                 }
 
                 string redundantCav = "0000000000000000000000";
+                string redundantCavAssem = "0";
                 StringBuilder stringBuilder = new StringBuilder(redundantCav, redundantCav.Length);
 
                 // Initialize index of part file in static array
@@ -700,6 +707,7 @@ namespace ADCOPlugin
 
 
                 string redundantMan = "000000000000000";
+                string redundantManAssem = "00";
                 stringBuilder = new StringBuilder(redundantMan, redundantMan.Length);
 
                 FILENAME[4] = COMPONENT_MAN.ToString()[0];
@@ -735,36 +743,36 @@ namespace ADCOPlugin
                                     swFeat = swPart.FeatureByName("Extrude1");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("Thicc");
-                                    errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swFeat = swPart.FeatureByName("Sketch1");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("A1");
-                                    errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swDim = (Dimension)swFeat.Parameter("A2");
-                                    errors = swDim.SetSystemValue3(dDim + 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(dDim + 0.03125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
-                                    //swDim = (Dimension)swFeat.Parameter("B1");
-                                    //errors = swDim.SetSystemValue3(bDim - 0.125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    swDim = (Dimension)swFeat.Parameter("B1");
+                                    errors = swDim.SetSystemValue3(bDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swDim = (Dimension)swFeat.Parameter("C1");
-                                    errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swDim = (Dimension)swFeat.Parameter("C2");
-                                    errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swDim = (Dimension)swFeat.Parameter("E1");
-                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swDim = (Dimension)swFeat.Parameter("E2");
-                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swDim = (Dimension)swFeat.Parameter("E3");
-                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
 
                                     swDim = (Dimension)swFeat.Parameter("E4");
-                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(eDim, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
                                 
 
                                     swPart.EditRebuild();
@@ -950,8 +958,7 @@ namespace ADCOPlugin
                 #region Cavity Assemblies
                 FILENAME[4] = COMPONENT_CAV.ToString()[0];
                 string[] CAVITYASSEMBLIES = new string[(int)glueCavityAssemblies.GetLength(0)];
-                redundantCav = "0";
-                stringBuilder = new StringBuilder(redundantCav, redundantCav.Length);
+                stringBuilder = new StringBuilder(redundantCavAssem, redundantCavAssem.Length);
                 for (int i = 0; i < CAVITYASSEMBLIES.Length; i++)
                 {
                     CAVITYASSEMBLIES[i] = glueCavityAssemblies[i];
@@ -965,7 +972,7 @@ namespace ADCOPlugin
                     FILENAME[6] = idx.ToString("D2")[1];
                     checkReturn = GlueRedundant(ArchivePath, glueCavityAssemblies[idx], idx, dimStrs, FILE_ASSEM, COMPONENT_CAV);
                     stringBuilder[idx] = checkReturn[1][0];
-                    redundantCav = stringBuilder.ToString();
+                    redundantCavAssem = stringBuilder.ToString();
                     lastNum = checkReturn[0];
                     for (int i = 0; i < lastNum.Length; i++)
                     {
@@ -973,10 +980,11 @@ namespace ADCOPlugin
                     }
                     CAVITYASSEMBLIES[idx] = $"{new string(FILENAME)}.SLDASM";
                     Debug.Print(CAVITYASSEMBLIES[idx]);
+                    Debug.Print(redundantCavAssem);
                     switch (idx)
                     {
                         case 0:
-                            if (redundantCav[idx] == '0')
+                            if (redundantCavAssem[idx] == '0')
                             {
                                 Debug.Print($@"Cavity Switch: {TemplatePath}\{glueCavityAssemblies[idx]}");
                                 Debug.Print($@"Cavity Switch: {ArchivePath}\{CAVITYASSEMBLIES[idx]}");
@@ -992,11 +1000,11 @@ namespace ADCOPlugin
                                     }
                                 }
                             }
-                            else
-                            {
-                                // Carton substitution even if different carton than was first used to generate tooling
-                                output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}", $@"{TemplatePath}\{glueCavityParts[0]}", $@"{ArchivePath}\{CAVITYPARTS[0]}");
-                            }
+                            //else
+                            //{
+                            //    // Carton substitution even if different carton than was first used to generate tooling
+                            //    output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}", $@"{TemplatePath}\{glueCavityParts[0]}", $@"{ArchivePath}\{CAVITYPARTS[0]}");
+                            //}
                             break;
 
                         default:
@@ -1012,19 +1020,35 @@ namespace ADCOPlugin
                     }
                 }
 
+                //Open the assembly
                 GlueOpen(FILE_ASSEM);
+
+                // Get the first feature in the tree (which is actually the first component), in this case, it is the carton
+                Feature feature = swModel.FirstFeature() as Feature;
+
+                // Get path of reference part from the assembly file
+                string cartonFile = FindComponentsFromFeatures(feature, 0);
+
+                // Close the assembly document so reference replacement can be done
+                swApp.CloseDoc($@"{ArchivePath}\{CAVITYASSEMBLIES[glueCavityAssemblies.Length - 1]}");
+
+                // Substitute the current carton with whatever carton was made for the current job
+                output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[glueCavityAssemblies.Length-1]}", cartonFile, $@"{ArchivePath}\{MANDRELPARTS[0]}");
+
+                //Reopen the assembly
+                GlueOpen(FILE_ASSEM);
+
+
                 output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
                 swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
                 output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
-                swApp.CloseDoc($@"{ArchivePath}\{CAVITYASSEMBLIES[glueCavityAssemblies.Length - 1]}");
-                GlueOpen(FILE_ASSEM);
+               
                 #endregion
 
                 #region Mandrel Assemblies
                 FILENAME[4] = COMPONENT_MAN.ToString()[0];
                 string[] MANDRELASSEMBLIES = new string[(int)glueMandrelAssemblies.GetLength(0)];
-                redundantMan = "00";
-                stringBuilder = new StringBuilder(redundantMan, redundantMan.Length);
+                stringBuilder = new StringBuilder(redundantManAssem, redundantManAssem.Length);
                 for (int i = 0; i < MANDRELASSEMBLIES.Length; i++)
                 {
                     MANDRELASSEMBLIES[i] = glueMandrelAssemblies[i];
@@ -1038,7 +1062,7 @@ namespace ADCOPlugin
                     FILENAME[6] = idx.ToString("D2")[1];
                     checkReturn = GlueRedundant(ArchivePath, glueMandrelAssemblies[idx], idx, dimStrs, FILE_ASSEM, COMPONENT_MAN);
                     stringBuilder[idx] = checkReturn[1][0];
-                    redundantMan = stringBuilder.ToString();
+                    redundantManAssem = stringBuilder.ToString();
                     lastNum = checkReturn[0];
                     for (int i = 0; i < lastNum.Length; i++)
                     {
@@ -1049,14 +1073,14 @@ namespace ADCOPlugin
                     switch (idx)
                     {
                         case 1:
-                            if (redundantMan[idx] == '0')
+                            if (redundantManAssem[idx] == '0')
                             {
 
                                 File.Copy($@"{TemplatePath}\{glueMandrelAssemblies[idx]}",
                                     $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
                                     true);
 
-                                for (int idx2 = 1; idx2 < glueMandrelParts.Length; idx2++)
+                                for (int idx2 = 0; idx2 < glueMandrelParts.Length; idx2++)
                                 {
                                     if (idx2 != 3)
                                     {
@@ -1078,11 +1102,6 @@ namespace ADCOPlugin
                                     }
                                 }
                             }
-                            else
-                            {
-                                // Carton substitution even if different carton than was first used to generate tooling
-                                output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{glueMandrelParts[0]}", $@"{ArchivePath}\{MANDRELPARTS[0]}");
-                            }
                             break;
 
                         default:
@@ -1100,8 +1119,12 @@ namespace ADCOPlugin
 
                 GlueOpen(FILE_ASSEM);
                 output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
-                swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
-                output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
+                //Feature feature = swModel.FirstFeature();
+                //swApp.CloseDoc($@"{ArchivePath}\{MANDRELASSEMBLIES[glueMandrelAssemblies.Length - 1]}");
+                //string initCarton = feature.Name;
+                //output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[1]}", $@"{ArchivePath}\{initCarton}", $@"{ArchivePath}\{CAVITYPARTS[0]}");
+                //GlueOpen(FILE_ASSEM);
+                //output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
                 //swApp.CloseDoc($@"{ArchivePath}\{MANDRELASSEMBLIES[glueMandrelAssemblies.Length-1]}");
                 #endregion
 
@@ -1355,8 +1378,7 @@ namespace ADCOPlugin
                 }
                 else
                 {
-                    string[] checkLoc = {  "",//0
-                                       "034" };//1
+                    string[] checkLoc = {  "0346" };//0
                     // Specify a particular dependency string in checkLoc for the current part
                     checkStr = checkLoc[PartNum];
                 }
@@ -1897,6 +1919,27 @@ namespace ADCOPlugin
                     DirectoryCopy(subdir.FullName, temppath, copySubDirs);
                 }
             }
+        }
+
+        private string FindComponentsFromFeatures(Feature swFeature, int depth)
+        {
+            String indent = new String(' ', depth + 4);
+
+            while (swFeature != null)
+            {
+                if (swFeature.GetTypeName2() == "Reference")
+                {
+                    Component2 swComponent = swFeature.GetSpecificFeature2() as Component2;
+                    Debug.Print(indent + swComponent.GetPathName());
+                    return (swComponent.GetPathName());
+
+
+                    Feature swChildFeature = swComponent.FirstFeature();
+                    FindComponentsFromFeatures(swChildFeature, depth + 1);
+                }
+                swFeature = swFeature.GetNextFeature() as Feature;
+            }
+            return ("");
         }
 
         #endregion
