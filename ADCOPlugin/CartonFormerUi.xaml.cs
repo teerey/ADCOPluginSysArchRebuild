@@ -26,7 +26,7 @@ namespace ADCOPlugin
         #region Public Members
 
         // INCH CONVERSION NUMBER: NO. OF INCHES IN 1 M - Most API functions assume the unit is in meters
-        double INCH_CONVERSION = 39.370079;
+        double INCH_CONVERSION = 39.3700787402;
 
         // Error/warning handlers - Only to be used if OpenDoc method is updated to newer version
         // int fileerror;
@@ -433,18 +433,18 @@ namespace ADCOPlugin
                 string[] dimStrs = { aDimStr, bDimStr, cDimStr, dDimStr, eDimStr, ThiccDimStr };
 
 
-                double aDim = Math.Round(double.Parse(aDimStr) / INCH_CONVERSION,4);
-                double bDim = Math.Round(double.Parse(bDimStr) / INCH_CONVERSION, 4);
-                double cDim = Math.Round(double.Parse(cDimStr) / INCH_CONVERSION, 4);
-                double dDim = Math.Round(double.Parse(dDimStr) / INCH_CONVERSION, 4);
-                double eDim = Math.Round(double.Parse(eDimStr) / INCH_CONVERSION, 4);
-                double ThiccDim = Math.Round(double.Parse(ThiccDimStr) / INCH_CONVERSION,5);
+                double aDim = double.Parse(aDimStr) / INCH_CONVERSION;
+                double bDim = double.Parse(bDimStr) / INCH_CONVERSION;
+                double cDim = double.Parse(cDimStr) / INCH_CONVERSION;
+                double dDim = double.Parse(dDimStr) / INCH_CONVERSION;
+                double eDim = double.Parse(eDimStr) / INCH_CONVERSION;
+                double ThiccDim = double.Parse(ThiccDimStr) / INCH_CONVERSION;
 
-            #endregion
+                #endregion
 
                 #region Glue Part Redimensioning
-                    #region Cavity Parts
-                    FILENAME[4] = COMPONENT_CAV.ToString()[0];
+                #region Cavity Parts
+                FILENAME[4] = COMPONENT_CAV.ToString()[0];
                     for (int idx = 0; idx < glueCavityParts.Length; idx++)
                     {
                         Debug.Print("GlueSet Cavity:" + idx.ToString());
@@ -591,7 +591,7 @@ namespace ADCOPlugin
                         #endregion
 
                         case 5:
-                            #region Part 6 GUIDE RAIL MIRROR
+                            #region Part 5 GUIDE RAIL MIRROR
                             if (redundantCav[idx] == '0')
                             {
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
@@ -645,6 +645,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                                
                             }
 
                             break;
@@ -673,7 +674,12 @@ namespace ADCOPlugin
                                 errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                 swDim = (Dimension)swFeat.Parameter("MainD");
-                                errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                                swFeat = swPart.FeatureByName("Sketch9");
+                                swFeat.Select2(false, -1);
+                                swDim = (Dimension)swFeat.Parameter("D3");
+                                errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim - 3.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                 swPart.EditRebuild();
                                 swModel.Save();
@@ -789,7 +795,7 @@ namespace ADCOPlugin
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("SpreadWidthB");
-                                errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim + 10.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(cDim  + 10.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
@@ -818,7 +824,7 @@ namespace ADCOPlugin
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("SpreadWidthT");
-                                errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim + 10.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(cDim + 10.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
@@ -847,7 +853,7 @@ namespace ADCOPlugin
                                 swFeat = swPart.FeatureByName("Base-Flange1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("D2");
-                                errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim - 4.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(cDim - 4.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
@@ -871,7 +877,7 @@ namespace ADCOPlugin
                 #region Mandrel Parts
                 // Cycle through mandrel parts
 
-
+                
                 string redundantMan = "000000000000000";
                 string redundantManAssem = "00";
                 stringBuilder = new StringBuilder(redundantMan, redundantMan.Length);
@@ -1049,7 +1055,7 @@ namespace ADCOPlugin
                                     swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
                                 }
                                 break;
-                            #endregion
+                                #endregion
 
                             case 9:
                                 #region Part 9 MANDREL SIDE PLATE 2
@@ -1199,7 +1205,7 @@ namespace ADCOPlugin
 
                                 for (int idx2 = 0; idx2 < glueCavityParts.Length; idx2++)
                                 {
-                                    if (idx2 != 0 && idx2 != 5 && idx2 != 8 && idx2 != 13 && idx2 != 14 && idx2 != 15 && idx2 != 16 && idx2 != 17 && idx2 != 18)
+                                    if (idx2 != 0 && idx2 != 8 && idx2 != 13 && idx2 != 14 && idx2 != 15 && idx2 != 16 && idx2 != 17 && idx2 != 18)
                                     {
                                         output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}", $@"{TemplatePath}\{glueCavityParts[idx2]}", $@"{ArchivePath}\{CAVITYPARTS[idx2]}");
                                     }
@@ -1227,6 +1233,7 @@ namespace ADCOPlugin
 
                 //Open the assembly
                 GlueOpen(FILE_ASSEM);
+                swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
 
                 // Get the first feature in the tree (which is actually the first component), in this case, it is the carton
                 Feature feature = swModel.FirstFeature() as Feature;
@@ -1243,9 +1250,8 @@ namespace ADCOPlugin
                 //Reopen the assembly
                 GlueOpen(FILE_ASSEM);
 
-
-                output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
                 swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
+                
                 output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
                
                 #endregion
@@ -1384,7 +1390,7 @@ namespace ADCOPlugin
                                         "046",//2
                                         "046",//3
                                         "036",//4
-                                        "",//5
+                                        "046",//5
                                         "046",//6
                                         "0346",//7
                                         "",//8
