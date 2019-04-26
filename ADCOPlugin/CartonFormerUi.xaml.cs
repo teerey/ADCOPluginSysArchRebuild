@@ -433,12 +433,12 @@ namespace ADCOPlugin
                 string[] dimStrs = { aDimStr, bDimStr, cDimStr, dDimStr, eDimStr, ThiccDimStr };
 
 
-                double aDim = double.Parse(aDimStr) / INCH_CONVERSION;
-                double bDim = double.Parse(bDimStr) / INCH_CONVERSION;
-                double cDim = double.Parse(cDimStr) / INCH_CONVERSION;
-                double dDim = double.Parse(dDimStr) / INCH_CONVERSION;
-                double eDim = double.Parse(eDimStr) / INCH_CONVERSION;
-                double ThiccDim = double.Parse(ThiccDimStr) / INCH_CONVERSION;
+                double aDim = Math.Round(double.Parse(aDimStr) / INCH_CONVERSION,4);
+                double bDim = Math.Round(double.Parse(bDimStr) / INCH_CONVERSION, 4);
+                double cDim = Math.Round(double.Parse(cDimStr) / INCH_CONVERSION, 4);
+                double dDim = Math.Round(double.Parse(dDimStr) / INCH_CONVERSION, 4);
+                double eDim = Math.Round(double.Parse(eDimStr) / INCH_CONVERSION, 4);
+                double ThiccDim = Math.Round(double.Parse(ThiccDimStr) / INCH_CONVERSION,5);
 
             #endregion
 
