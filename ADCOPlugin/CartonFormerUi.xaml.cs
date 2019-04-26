@@ -71,6 +71,22 @@ namespace ADCOPlugin
                                             "ORANGE HANDLE.SLDPRT",//13
                                             "ELBOW.SLDPRT" };//14 x2
 
+        static string[] glueMandrelPartsDRW = {"CARTON TEMPLATE.SLDDRW",//0
+                                            "WASHER ECCENT.SLDDRW" ,//1 x2
+                                            "CYLINDER PUSHER MOUNT.SLDDRW",//2
+                                            "R&D5321-31 SMC MGPM20N-100_MGPRod.SLDDRW",//3
+                                            "R&D5321-31 SMC MGPM20N-100_MGPTube.SLDDRW",//4
+                                            "EJECT CYLINDER CLAMP PLATE.SLDDRW",//5
+                                            "MANDREL CENTER MOUNT BAR.SLDDRW",//6
+                                            "MANDREL SPREADER.SLDDRW",//7 x2
+                                            "MANDREL SIDE PLATE.SLDDRW",//8
+                                            "MANDREL SIDE PLATE 2.SLDDRW",//9
+                                            "PUSHER PLATE.SLDDRW",//10
+                                            "MANDREL STEM.SLDDRW",//11
+                                            "MANDREL MNT.SLDDRW",//12
+                                            "ORANGE HANDLE.SLDDRW",//13
+                                            "ELBOW.SLDDRW" };//14 x2
+
         //Part files in the glue forming plate domain
         static string[] glueCavityParts = {"BOLT MOUNT.SLDPRT",//0
                                                 "FOLDING PLATE BOTTOM.SLDPRT",//1
@@ -95,12 +111,40 @@ namespace ADCOPlugin
                                                 "SPREADER TOP.SLDPRT",//20
                                                 "STOP RAIL.SLDPRT" };//21
 
+        static string[] glueCavityPartsDRW =  {"BOLT MOUNT.SLDDRW",//0
+                                                "FOLDING PLATE BOTTOM.SLDDRW",//1
+                                                "FOLDING PLATE LEFT.SLDDRW",//2
+                                                "FOLDING PLATE RIGHT.SLDDRW",//3
+                                                "FOLDING PLATE TOP.SLDDRW",//4
+                                                "GUIDE RAIL MIRROR.SLDDRW",//5
+                                                "GUIDE RAIL.SLDDRW",//6
+                                                "MAIN PLATE.SLDDRW",//7
+                                                "MINOR PLATE.SLDDRW",//8
+                                                "MOUNT LEFT.SLDDRW",//9
+                                                "MOUNT RIGHT.SLDDRW",//10
+                                                "NUTPLATE LEFT AND RIGHT.SLDDRW",//11
+                                                "NUTPLATE TOP.SLDDRW",//12
+                                                "NUTPLATE1.SLDDRW",//13
+                                                "SIDE GUIDE LEFT.SLDDRW",//14
+                                                "SIDE GUIDE RIGHT.SLDDRW",//15
+                                                "SPACER.SLDDRW",//16
+                                                "SPACER1.SLDDRW",//17
+                                                "SPACER2.SLDDRW",//18
+                                                "SPREADER BOTTOM.SLDDRW",//19
+                                                "SPREADER TOP.SLDDRW",//20
+                                                "STOP RAIL.SLDDRW" };//21
+
         //Assembly files in the glue mandrel domain
         static string[] glueMandrelAssemblies = { "CYLINDER ASSEMBLY.SLDASM",//0
                                                   "MANDREL ASSEMBLY.SLDASM" };//1
 
+        static string[] glueMandrelAssembliesDRW = { "CYLINDER ASSEMBLY.SLDDRW",//0
+                                                  "MANDREL ASSEMBLY.SLDDRW" };//1
+
         //Assembly files in the forming plate mandrel domain
         static string[] glueCavityAssemblies = { "FORMER PLATE ASSEMBLY.SLDASM" }; //0
+
+        static string[] glueCavityAssembliesDRW = { "FORMER PLATE ASSEMBLY.SLDDRW" }; //0
 
         #endregion
 
@@ -110,7 +154,8 @@ namespace ADCOPlugin
 
         static int FILE_PART = 0;
         static int FILE_ASSEM = 1;
-        static int FILE_DRW = 2;
+        static int FILE_ASSEMDRW = 2;
+        static int FILE_PARTDRW = 3;
         static int TYPE_GLUE = 0;
         static int TYPE_LOCK = 1;
         static int COMPONENT_MAN = 0;
@@ -424,9 +469,18 @@ namespace ADCOPlugin
                             #region Part 1 FOLDING PLATE BOTTOM
                             if (redundantCav[idx] == '0')
                             {
+
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                                 GlueOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
@@ -437,6 +491,8 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+                                
                             }
 
                             break;
@@ -446,9 +502,17 @@ namespace ADCOPlugin
                             #region Part 2 FOLDING PLATE LEFT
                             if (redundantCav[idx] == '0')
                             {
+
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 GlueOpen(FILE_PART);
 
@@ -460,6 +524,7 @@ namespace ADCOPlugin
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                             }
 
                             break;
@@ -472,6 +537,13 @@ namespace ADCOPlugin
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 GlueOpen(FILE_PART);
 
@@ -496,12 +568,49 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                                 GlueOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("FPT");
                                 errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim - 0.15625 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+
+                                swPart.EditRebuild();
+                                swModel.Save();
+                                swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                            }
+
+                            break;
+                        #endregion
+
+                        case 5:
+                            #region Part 6 GUIDE RAIL MIRROR
+                            if (redundantCav[idx] == '0')
+                            {
+                                File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
+                                            $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
+                                            true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+                                GlueOpen(FILE_PART);
+
+                                swFeat = swPart.FeatureByName("Base-Flange1");
+                                swFeat.Select2(false, -1);
+                                swDim = (Dimension)swFeat.Parameter("GRail");
+                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim + 9.8125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                 swPart.EditRebuild();
                                 swModel.Save();
@@ -518,6 +627,13 @@ namespace ADCOPlugin
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                             $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                             true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 GlueOpen(FILE_PART);
 
@@ -541,6 +657,13 @@ namespace ADCOPlugin
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 GlueOpen(FILE_PART);
 
@@ -568,6 +691,13 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                                 GlueOpen(FILE_PART);
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
@@ -589,6 +719,13 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                                 GlueOpen(FILE_PART);
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
@@ -609,6 +746,13 @@ namespace ADCOPlugin
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 GlueOpen(FILE_PART);
 
@@ -633,6 +777,13 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                                 GlueOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
@@ -655,6 +806,13 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                                 GlueOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
@@ -676,6 +834,13 @@ namespace ADCOPlugin
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
+
+                                File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
+                                       $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                       true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 GlueOpen(FILE_PART);
 
@@ -729,7 +894,7 @@ namespace ADCOPlugin
                         switch (idx)
                         {
                             case 0:
-                                #region Part 0
+                                #region Part 0 CARTON TEMPLATE
                                 if (redundantMan[idx] == '0')
                                 {
                                     Debug.Print("Line 370");
@@ -784,7 +949,7 @@ namespace ADCOPlugin
                             #endregion
 
                             case 6:
-                                #region Part 6
+                                #region Part 6 MANDREL CENTER MOUNT BAR
 
                                 if (redundantMan[6] == '0')
                                 {
@@ -792,7 +957,14 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
-                                    GlueOpen(FILE_PART);
+                                    File.Copy($@"{TemplatePath}\{glueMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                    bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+                                GlueOpen(FILE_PART);
 
                                     swFeat = swPart.FeatureByName("Extrude1");
                                     swFeat.Select2(false, -1);
@@ -807,7 +979,7 @@ namespace ADCOPlugin
                             #endregion
 
                             case 7:
-                                #region Part 7
+                                #region Part 7 MANDREL SPREADER
 
                                 if (redundantMan[7] == '0')
                                 {
@@ -815,7 +987,14 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
-                                    GlueOpen(FILE_PART);
+                                    File.Copy($@"{TemplatePath}\{glueMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                    bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+                                GlueOpen(FILE_PART);
 
                                     if (cDim <= 7.5 / INCH_CONVERSION)
                                     {
@@ -837,14 +1016,22 @@ namespace ADCOPlugin
                             #endregion
 
                             case 8:
-                                #region Part 8
+                                #region Part 8 MANDREL SIDE PLATE
                                 if (redundantMan[8] == '0')
                                 {
                                     File.Copy($@"{TemplatePath}\{glueMandrelParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
-                                    GlueOpen(FILE_PART);
+                                    File.Copy($@"{TemplatePath}\{glueMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                    bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+
+                                GlueOpen(FILE_PART);
 
                                     swFeat = swPart.FeatureByName("Sketch1");
                                     swFeat.Select2(false, -1);
@@ -865,7 +1052,7 @@ namespace ADCOPlugin
                             #endregion
 
                             case 9:
-                                #region Part 9
+                                #region Part 9 MANDREL SIDE PLATE 2
 
                                 if (redundantMan[9] == '0')
                                 {
@@ -873,7 +1060,15 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
-                                    GlueOpen(FILE_PART);
+                                    File.Copy($@"{TemplatePath}\{glueMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                    bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+
+                                GlueOpen(FILE_PART);
 
                                     swFeat = swPart.FeatureByName("Sketch1");
                                     swFeat.Select2(false, -1);
@@ -894,7 +1089,7 @@ namespace ADCOPlugin
                             #endregion
 
                             case 10:
-                                #region Part 10
+                                #region Part 10 PUSHER PLATE
 
                                 if (redundantMan[10] == '0')
                                 {
@@ -903,7 +1098,15 @@ namespace ADCOPlugin
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
 
-                                    GlueOpen(FILE_PART);
+                                    File.Copy($@"{TemplatePath}\{glueMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+   
+                                    bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+
+                                GlueOpen(FILE_PART);
 
                                     double PushPlateWidth = dDim - 1.406 * 2.0 / INCH_CONVERSION;
 
@@ -944,7 +1147,8 @@ namespace ADCOPlugin
                             default:
                                 if (!File.Exists($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT"))
                                 {
-                                    File.Copy($@"{TemplatePath}\{glueMandrelParts[idx]}",
+                                        Debug.Print("glueMandrel Part" + glueMandrelParts[idx]);
+                                        File.Copy($@"{TemplatePath}\{glueMandrelParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
                                 }
@@ -1541,8 +1745,8 @@ namespace ADCOPlugin
             #endregion
 
             #region Part Drawing File Handling
-
-            if (fileType == FILE_PART)
+            /*
+            if (fileType == FILE_PARTDRW)
             {
                 Debug.Print("Line 637");
                 #region Part Important Dimension Set
@@ -1609,7 +1813,7 @@ namespace ADCOPlugin
                     Debug.Print("Line 661");
                     #region Glue Archive Part CSV Parsing Setup
                     // Rename the file that will be searched for in the archive (search for csv instead of solidworks file)
-                    PartName = PartName.Replace(".SLDPRT", " LOG.csv");
+                    PartName = PartName.Replace(".SLDDRW", "DRW LOG.csv");
 
                     // Create an object that will be used to read from the csv file
                     StreamReader reader = new StreamReader(File.OpenRead($@"{ArchivePath}\{PartName}"));
@@ -1757,11 +1961,12 @@ namespace ADCOPlugin
                 }
 
             }
-
+            */
             #endregion
 
             #region Assembly Drawing File Handling
-            if (fileType == FILE_ASSEM)
+            /*
+            if (fileType == FILE_ASSEMDRW)
             {
                 #region Part Important Dimension Set
 
@@ -1787,7 +1992,7 @@ namespace ADCOPlugin
                 if (checkStr != "")
                 {
 
-                    PartName = PartName.Replace(".SLDASM", " LOG.csv");
+                    PartName = PartName.Replace(".SLDDRW", "DRW LOG.csv");
 
                     // Create an object that will be used to read from the csv file
                     StreamReader reader = new StreamReader(File.OpenRead($@"{ArchivePath}\{PartName}"));
@@ -1934,8 +2139,10 @@ namespace ADCOPlugin
                     return new string[] { lastNum, redundant };
                 }
             }
+            */
 
             #endregion
+
             // Exception catch
             return new string[] { "", "" };
         }
