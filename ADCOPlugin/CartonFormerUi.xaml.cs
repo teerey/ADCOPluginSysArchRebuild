@@ -537,14 +537,14 @@ namespace ADCOPlugin
                                 File.Copy($@"{TemplatePath}\{glueCavityParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
-
+                                /*       
                                 File.Copy($@"{TemplatePath}\{glueCavityPartsDRW[idx]}",
                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                        true);
 
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
-
+                                */
                                 GlueOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Extrude1");
@@ -671,10 +671,10 @@ namespace ADCOPlugin
                                 swFeat = swPart.FeatureByName("Sketch10");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("MainC");
-                                errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim - 0.0625 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                 swDim = (Dimension)swFeat.Parameter("MainD");
-                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(dDim + 4* ThiccDim - 0.06875 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                 swFeat = swPart.FeatureByName("Sketch9");
                                 swFeat.Select2(false, -1);
@@ -975,7 +975,7 @@ namespace ADCOPlugin
                                     swFeat = swPart.FeatureByName("Extrude1");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("MountLength");
-                                    errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(cDim - (0.375 * 2.0 + 0.0625) / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                     swPart.EditRebuild();
                                     swModel.Save();
@@ -1012,7 +1012,7 @@ namespace ADCOPlugin
                                     swFeat = swPart.FeatureByName("Extrude1");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("SpreadLength");
-                                    errors = swDim.SetSystemValue3(cDim - 0.375 * 2.0 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(cDim - (0.375 * 2.0 + 0.0625) / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                     swPart.EditRebuild();
                                     swModel.Save();
@@ -1042,12 +1042,12 @@ namespace ADCOPlugin
                                     swFeat = swPart.FeatureByName("Sketch1");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("MandrelSideWidth");
-                                    errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(dDim - 0.0625 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                     swFeat = swPart.FeatureByName("Sketch3");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("MandrelSideHoles");
-                                    double MandrelSideHolesdim = 0.5009 * (dDim - 9.1875 / INCH_CONVERSION) + 2.589 / INCH_CONVERSION;
+                                    double MandrelSideHolesdim = 0.5009 * (dDim - (9.1875 + 0.0625) / INCH_CONVERSION) + 2.589 / INCH_CONVERSION;
                                     errors = swDim.SetSystemValue3(MandrelSideHolesdim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                     swPart.EditRebuild();
@@ -1079,12 +1079,12 @@ namespace ADCOPlugin
                                     swFeat = swPart.FeatureByName("Sketch1");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("MandrelSideWidth");
-                                    errors = swDim.SetSystemValue3(dDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                    errors = swDim.SetSystemValue3(dDim - 0.0625 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                     swFeat = swPart.FeatureByName("Sketch3");
                                     swFeat.Select2(false, -1);
                                     swDim = (Dimension)swFeat.Parameter("MandrelSideHoles");
-                                    double MandrelSideHolesdim = 0.5009 * (dDim - 9.1875 / INCH_CONVERSION) + 2.589 / INCH_CONVERSION;
+                                    double MandrelSideHolesdim = 0.5009 * (dDim - (9.1875 + 0.0625) / INCH_CONVERSION) + 2.589 / INCH_CONVERSION;
                                     errors = swDim.SetSystemValue3(MandrelSideHolesdim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                     swPart.EditRebuild();
