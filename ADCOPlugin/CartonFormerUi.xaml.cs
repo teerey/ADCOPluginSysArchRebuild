@@ -54,7 +54,7 @@ namespace ADCOPlugin
 
         #region Template Part/Assembly File Names
 
-        //Part files in the glue mandrel domain
+        //Part files in the mandrel domain
         static string[] glueMandrelParts = {"CARTON TEMPLATE.SLDPRT",//0
                                             "WASHER ECCENT.SLDPRT" ,//1 x2
                                             "CYLINDER PUSHER MOUNT.SLDPRT",//2
@@ -86,6 +86,16 @@ namespace ADCOPlugin
                                             "MANDREL MNT.SLDDRW",//12
                                             "ORANGE HANDLE.SLDDRW",//13
                                             "ELBOW.SLDDRW" };//14 x2
+
+        static string[] lockMandrelParts = { "FSU5424-CARTON 7.0 x 5.0 x 1.75.SLDPRT",//0
+                                             "FSU5424-41-100.SLDPRT",//1 x2
+                                             "FSU5424-41-101.SLDPRT",//2
+                                             "FSU5424-41 SPACER A10-H-0.500-C4-4.437-C4.SLDPRT",//3 x2
+                                             "FSU5424-41-102.SLDPRT",//4 x2
+                                             "FSU5424-41-107.SLDPRT",//5 x2
+                                             "FSUW169PL-4-1",//6 x4,
+                                             "FSU5424-41-111.SLDPRT",//7
+                                             "FSU5424-41-110C.SLDPRT"};//8
 
         //Part files in the glue forming plate domain
         static string[] glueCavityParts = {"BOLT MOUNT.SLDPRT",//0
@@ -135,11 +145,19 @@ namespace ADCOPlugin
                                                 "STOP RAIL.SLDDRW" };//21
 
         //Assembly files in the glue mandrel domain
+<<<<<<< HEAD
         static string[] glueMandrelAssemblies = { "AIR CYLINDER ASSEMBLY.SLDASM",//0
+=======
+        static string[] glueMandrelAssemblies = { "CYLINDER ASSEMBLY.SLDASM",//0
+>>>>>>> Beginnings of lock implementation
                                                   "MANDREL ASSEMBLY.SLDASM" };//1
 
         static string[] glueMandrelAssembliesDRW = { "AIR CYLINDER ASSEMBLY.SLDDRW",//0
                                                   "MANDREL ASSEMBLY.SLDDRW" };//1
+
+        static string[] lockMandrelAssemblies = {"FSU5424-41-002.SLDASM",//0
+                                                 "FSU5424-41-108.SLDASM",//1
+                                                 "FSU5424-41-001 PLUNGER ASSY.SLDASM"};//2
 
         //Assembly files in the forming plate mandrel domain
         static string[] glueCavityAssemblies = { "FORMER PLATE ASSEMBLY.SLDASM" }; //0
@@ -185,10 +203,6 @@ namespace ADCOPlugin
         public DrawingDoc swDrawing;
 
         #endregion
-
-        // Destination path for copied file - will be dynamic/user-inputted in final iteration of the package
-        static string glueDestPathDEFAULT = $@"C:\Users\{userName}\Documents\";
-        static string lockDestPathDEFAULT = $@"C:\Users\{userName}\Documents\";
 
 
 
@@ -270,26 +284,6 @@ namespace ADCOPlugin
             LockContent.Visibility = System.Windows.Visibility.Hidden;
         }
 
-        private void GlueOpen(int type)
-        {
-
-            if (type == FILE_PART)
-            {
-                swModel = swApp.OpenDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT", (int)swDocumentTypes_e.swDocPART);
-                swPart = (PartDoc)swApp.ActiveDoc;
-            }
-
-            if (type == FILE_ASSEM)
-            {
-                Debug.Print($@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
-                swModel = swApp.OpenDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDASM", (int)swDocumentTypes_e.swDocASSEMBLY);
-                swAssem = (AssemblyDoc)swApp.ActiveDoc;
-                modelExt = (ModelDocExtension)swModel.Extension;
-            }
-
-            return;
-        }
-
         /// <summary>
         /// Fired when the apply button on the glue page is clicked
         /// </summary>
@@ -301,18 +295,21 @@ namespace ADCOPlugin
 
             while (true)
             {
-                if (error == 0 && !File.Exists($@"{ArchivePath}\~app.lock"))
+                if(error == 0)
                 {
-                    using (FileStream fs = File.Create($@"{ArchivePath}\~app.lock")) { }
-                    GlueSet();
-                    Debug.Print($@"{ArchivePath}\~app.lock");
-                    File.Delete($@"{ArchivePath}\~app.lock");
-                    Debug.Print("Deleted File");
-                    break;
-                }
-                else
-                {
-                    MessageBox.Show("Glue archive is currently being altered. Press OK to check again.");
+                    if (!File.Exists($@"{ArchivePath}\~app.lock"))
+                    {
+                        using (FileStream fs = File.Create($@"{ArchivePath}\~app.lock")) { }
+                        GlueSet();
+                        Debug.Print($@"{ArchivePath}\~app.lock");
+                        File.Delete($@"{ArchivePath}\~app.lock");
+                        Debug.Print("Deleted File");
+                        break;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Glue archive is currently being altered. Press OK to check again.");
+                    }
                 }
             }
             return;
@@ -329,7 +326,7 @@ namespace ADCOPlugin
 
             #region Glue Blank Entry Check
 
-            if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "" || Thickness.Text == "")
+            if (GlueAParam.Text == "" || GlueBParam.Text == "" || GlueCParam.Text == "" || GlueDParam.Text == "" || GlueEParam.Text == "" || GlueThickness.Text == "")
             {
                 MessageBox.Show("You must enter values for all box dimensions.", "", button, icon);
                 return (1);
@@ -339,7 +336,7 @@ namespace ADCOPlugin
 
             #region Glue Entry Decimal Formatting Check
 
-            if (GlueAParam.Text.Contains("/") || GlueBParam.Text.Contains("/") || GlueCParam.Text.Contains("/") || GlueDParam.Text.Contains("/") || GlueEParam.Text.Contains("/") || Thickness.Text.Contains("/"))
+            if (GlueAParam.Text.Contains("/") || GlueBParam.Text.Contains("/") || GlueCParam.Text.Contains("/") || GlueDParam.Text.Contains("/") || GlueEParam.Text.Contains("/") || GlueThickness.Text.Contains("/"))
             {
                 MessageBox.Show("Please enter decimal values, not fractional.", "", button, icon);
                 return (1);
@@ -429,7 +426,7 @@ namespace ADCOPlugin
                 string cDimStr = GlueCParam.Text;
                 string dDimStr = GlueDParam.Text;
                 string eDimStr = GlueEParam.Text;
-                string ThiccDimStr = Thickness.Text;
+                string ThiccDimStr = GlueThickness.Text;
                 string[] dimStrs = { aDimStr, bDimStr, cDimStr, dDimStr, eDimStr, ThiccDimStr };
 
 
@@ -481,7 +478,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
@@ -514,7 +511,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
@@ -545,7 +542,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
                                 */
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
@@ -575,7 +572,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
@@ -605,7 +602,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Base-Flange1");
                                 swFeat.Select2(false, -1);
@@ -635,7 +632,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Base-Flange1");
                                 swFeat.Select2(false, -1);
@@ -666,7 +663,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch10");
                                 swFeat.Select2(false, -1);
@@ -704,7 +701,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("MountL");
@@ -732,7 +729,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("MountR");
@@ -760,7 +757,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Extrude1");
                                 swFeat.Select2(false, -1);
@@ -790,7 +787,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
@@ -819,7 +816,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Sketch1");
                                 swFeat.Select2(false, -1);
@@ -848,7 +845,7 @@ namespace ADCOPlugin
                                 bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                     $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                 swFeat = swPart.FeatureByName("Base-Flange1");
                                 swFeat.Select2(false, -1);
@@ -909,7 +906,7 @@ namespace ADCOPlugin
                                         true);
 
                                     Debug.Print("Line 375");
-                                    GlueOpen(FILE_PART);
+                                    FileOpen(FILE_PART);
                                     Debug.Print("Line 377");
 
                                     swFeat = swPart.FeatureByName("Extrude1");
@@ -970,7 +967,7 @@ namespace ADCOPlugin
                                     bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                         $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                     swFeat = swPart.FeatureByName("Extrude1");
                                     swFeat.Select2(false, -1);
@@ -1000,7 +997,7 @@ namespace ADCOPlugin
                                     bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                         $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                     if (cDim <= 7.5 / INCH_CONVERSION)
                                     {
@@ -1037,7 +1034,7 @@ namespace ADCOPlugin
                                         $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                     swFeat = swPart.FeatureByName("Sketch1");
                                     swFeat.Select2(false, -1);
@@ -1074,7 +1071,7 @@ namespace ADCOPlugin
                                         $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                     swFeat = swPart.FeatureByName("Sketch1");
                                     swFeat.Select2(false, -1);
@@ -1112,7 +1109,7 @@ namespace ADCOPlugin
                                         $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
 
-                                GlueOpen(FILE_PART);
+                                FileOpen(FILE_PART);
 
                                     double PushPlateWidth = dDim - 1.406 * 2.0 / INCH_CONVERSION;
 
@@ -1178,7 +1175,7 @@ namespace ADCOPlugin
                 // Manipulate cavity assembly
                 for (int idx = 0; idx < glueCavityAssemblies.Length; idx++)
                 {
-                    Debug.Print($@"Assembly Mainpulation: {idx.ToString()}");
+                    Debug.Print($@"Cavity Assembly Mainpulation: {idx.ToString()}");
                     FILENAME[5] = idx.ToString("D2")[0];
                     FILENAME[6] = idx.ToString("D2")[1];
                     checkReturn = GlueRedundant(ArchivePath, glueCavityAssemblies[idx], idx, dimStrs, FILE_ASSEM, COMPONENT_CAV);
@@ -1240,7 +1237,7 @@ namespace ADCOPlugin
                 }
 
                 //Open the assembly
-                GlueOpen(FILE_ASSEM);
+                FileOpen(FILE_ASSEM);
                 swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
 
                 // Get the first feature in the tree (which is actually the first component), in this case, it is the carton
@@ -1256,7 +1253,7 @@ namespace ADCOPlugin
                 output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[glueCavityAssemblies.Length-1]}", cartonFile, $@"{ArchivePath}\{MANDRELPARTS[0]}");
 
                 //Reopen the assembly
-                GlueOpen(FILE_ASSEM);
+                FileOpen(FILE_ASSEM);
 
                 swModel.Rebuild((int)swRebuildOptions_e.swRebuildAll);
                 
@@ -1288,6 +1285,7 @@ namespace ADCOPlugin
                         FILENAME[14 - i] = (char)lastNum[i];
                     }
                     MANDRELASSEMBLIES[idx] = $"{new string(FILENAME)}.SLDASM";
+                    Debug.Print($@"{TemplatePath}\{glueMandrelAssemblies[idx]}");
                     Debug.Print(MANDRELASSEMBLIES[idx]);
                     switch (idx)
                     {
@@ -1343,13 +1341,13 @@ namespace ADCOPlugin
                     }
                 }
 
-                GlueOpen(FILE_ASSEM);
+                FileOpen(FILE_ASSEM);
                 output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
                 //Feature feature = swModel.FirstFeature();
                 //swApp.CloseDoc($@"{ArchivePath}\{MANDRELASSEMBLIES[glueMandrelAssemblies.Length - 1]}");
                 //string initCarton = feature.Name;
                 //output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[1]}", $@"{ArchivePath}\{initCarton}", $@"{ArchivePath}\{CAVITYPARTS[0]}");
-                //GlueOpen(FILE_ASSEM);
+                //FileOpen(FILE_ASSEM);
                 //output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
                 //swApp.CloseDoc($@"{ArchivePath}\{MANDRELASSEMBLIES[glueMandrelAssemblies.Length-1]}");
                 #endregion
@@ -1372,7 +1370,6 @@ namespace ADCOPlugin
 
             if (fileType == FILE_PART)
             {
-                Debug.Print("Line 637");
                 #region Part Important Dimension Set
 
                 if (component == COMPONENT_MAN)
@@ -1434,7 +1431,6 @@ namespace ADCOPlugin
 
                 if (checkStr != "")
                 {
-                    Debug.Print("Line 661");
                     #region Glue Archive Part CSV Parsing Setup
                     // Rename the file that will be searched for in the archive (search for csv instead of solidworks file)
                     PartName = PartName.Replace(".SLDPRT", " LOG.csv");
@@ -1562,17 +1558,12 @@ namespace ADCOPlugin
                     else
                     {
                         reader.Close();
-                        Debug.Print("Line 791");
                         lastNum = "0";
                         redundant = "0";
                         string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
-                        Debug.Print("Line 795");
-                        Debug.Print($@"{ArchivePath}\{PartName}");
                         TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
-                        Debug.Print("Line 798");
                         writer.WriteLine(append);
                         writer.Close();
-                        Debug.Print("Line 799");
                         return new string[] { lastNum, redundant };
                     }
                     #endregion
@@ -1732,7 +1723,7 @@ namespace ADCOPlugin
                             writer.WriteLine(append);
                             writer.Close();
                         }
-                        Debug.Print("Line 1018");
+
                         // Return the index of either the matching parts (if identical) or the new index added (if unique)
                         return new string[] { lastNum, redundant };
                     }
@@ -1740,17 +1731,12 @@ namespace ADCOPlugin
                     else
                     {
                         reader.Close();
-                        Debug.Print("Line 1026");
                         lastNum = "0";
                         redundant = "0";
                         string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
-                        Debug.Print("Line 795");
-                        Debug.Print($@"{ArchivePath}\{PartName}");
                         TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
-                        Debug.Print("Line 798");
                         writer.WriteLine(append);
                         writer.Close();
-                        Debug.Print("Line 799");
                         return new string[] { lastNum, redundant };
                     }
                     #endregion
@@ -1765,32 +1751,375 @@ namespace ADCOPlugin
 
             #endregion
 
-            #region Part Drawing File Handling
-            /*
-            if (fileType == FILE_PARTDRW)
+            // Exception catch
+            return new string[] { "", "" };
+        }
+
+        /// <summary>
+        /// Fired when the reset button on the glue page is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GlueResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            GlueAParam.Text = "";
+            GlueBParam.Text = "";
+            GlueCParam.Text = "";
+            GlueDParam.Text = "";
+            GlueEParam.Text = "";
+            GlueThickness.Text = "";
+        }
+
+        /// <summary>
+        /// Fired when the back button on the glue page is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GlueBackButton_Click(object sender, RoutedEventArgs e)
+        {
+            // When the back button is clicked, send the UI back to the previous page (initial screen)
+            initScreen();
+        }
+        #endregion
+
+        #region Lock-Formed Carton Functions
+
+        /// <summary>
+        /// Fired when the lock button on the initial page is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            TemplatePath = $@"{TemplateLib}\{formerType[TYPE_LOCK]}";
+            ArchivePath = $@"{ArchiveLib}\{formerType[TYPE_LOCK]}";
+            FILENAME[3] = TYPE_LOCK.ToString()[0];
+
+            // Change display to lock screen
+            LockScreen();
+        }
+
+        private void LockScreen()
+        {
+            GlueContent.Visibility = System.Windows.Visibility.Hidden;
+            InitContent.Visibility = System.Windows.Visibility.Hidden;
+            LockContent.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void LockApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            int error = LockRead();
+
+            while (true)
             {
-                Debug.Print("Line 637");
+                if (error == 0)
+                {
+                    if (!File.Exists($@"{ArchivePath}\~app.lock"))
+                    {
+                        using (FileStream fs = File.Create($@"{ArchivePath}\~app.lock")) { }
+                        GlueSet();
+                        Debug.Print($@"{ArchivePath}\~app.lock");
+                        File.Delete($@"{ArchivePath}\~app.lock");
+                        Debug.Print("Deleted File");
+                        break;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Glue archive is currently being altered. Press OK to check again.");
+                    }
+                }
+            }
+            return;
+        }
+
+        private int LockRead()
+        {
+            MessageBoxImage icon = MessageBoxImage.Warning;
+            MessageBoxButton button = MessageBoxButton.OK;
+
+            #region Lock Blank Entry Check
+
+            if (LockAParam.Text == "" || LockBParam.Text == "" || LockCParam.Text == "" || LockDParam.Text == "" || LockEParam.Text == "" || LockThickness.Text == "")
+            {
+                MessageBox.Show("You must enter values for all box dimensions.", "", button, icon);
+                return (1);
+            }
+
+            #endregion
+
+            #region Lock Entry Decimal Formatting Check
+
+            if (LockAParam.Text.Contains("/") || LockBParam.Text.Contains("/") || LockCParam.Text.Contains("/") || LockDParam.Text.Contains("/") || LockEParam.Text.Contains("/") || LockThickness.Text.Contains("/"))
+            {
+                MessageBox.Show("Please enter decimal values, not fractional.", "", button, icon);
+                return (1);
+            }
+
+            #endregion
+
+            #region Lock Dimension Range Check
+
+            if (double.Parse(LockAParam.Text) < 7.5 || double.Parse(LockAParam.Text) > 29)
+            {
+                MessageBox.Show("Value of A must be between 7.5\" and 29\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(LockBParam.Text) < 5 || double.Parse(LockBParam.Text) > 26)
+            {
+                MessageBox.Show("Value of B must be between 5\" and 26\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(LockCParam.Text) < 3 || double.Parse(LockCParam.Text) > 19)
+            {
+                MessageBox.Show("Value of C must be between 3\" and 19\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(LockDParam.Text) < 3 || double.Parse(LockDParam.Text) > 10)
+            {
+                MessageBox.Show("Value of D must be between 3\" and 10\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(LockEParam.Text) < 4.5 || double.Parse(LockEParam.Text) > 6)
+            {
+                MessageBox.Show("Value of E must be between 4.5\" and 6\"", "", button, icon);
+                return (1);
+            }
+
+            if (double.Parse(LockBParam.Text) < double.Parse(LockCParam.Text))
+            {
+                MessageBox.Show("Value of B must be larger than C, please remeasure the carton", "", button, icon);
+                return (1);
+            }
+
+            #endregion
+
+            return (0);
+        }
+
+        private void LockSet()
+        {
+            string lastNum;
+            int errors = 0;
+            int warnings = 0;
+            bool output;
+            string[] checkReturn;
+            string redundantMan = "000000000";
+            string redundantManAssem = "00";
+            StringBuilder stringBuilder = new StringBuilder(redundantMan, redundantMan.Length);
+
+            string[] MANDRELPARTS = new string[(int)glueMandrelParts.GetLength(0)];
+            for (int i = 0; i < MANDRELPARTS.Length; i++)
+            {
+                MANDRELPARTS[i] = glueMandrelParts[i];
+            }
+
+            #region Lock Input Handling
+
+            string aDimStr = GlueAParam.Text;
+            string bDimStr = GlueBParam.Text;
+            string cDimStr = GlueCParam.Text;
+            string dDimStr = GlueDParam.Text;
+            string eDimStr = GlueEParam.Text;
+            string ThiccDimStr = GlueThickness.Text;
+            string[] dimStrs = { aDimStr, bDimStr, cDimStr, dDimStr, eDimStr, ThiccDimStr };
+
+
+            double aDim = double.Parse(aDimStr) / INCH_CONVERSION;
+            double bDim = double.Parse(bDimStr) / INCH_CONVERSION;
+            double cDim = double.Parse(cDimStr) / INCH_CONVERSION;
+            double dDim = double.Parse(dDimStr) / INCH_CONVERSION;
+            double eDim = double.Parse(eDimStr) / INCH_CONVERSION;
+            double ThiccDim = double.Parse(ThiccDimStr) / INCH_CONVERSION;
+
+            #endregion
+
+            #region Mandrel Parts
+            // Cycle through mandrel parts
+
+            FILENAME[4] = COMPONENT_MAN.ToString()[0];
+            for (int idx = 0; idx < glueMandrelParts.Length; idx++)
+            {
+                Debug.Print("GlueSet:" + idx.ToString());
+                FILENAME[5] = idx.ToString("D2")[0];
+                FILENAME[6] = idx.ToString("D2")[1];
+                checkReturn = GlueRedundant(ArchivePath, glueMandrelParts[idx], idx, dimStrs, FILE_PART, COMPONENT_MAN);
+                stringBuilder[idx] = checkReturn[1][0];
+                redundantMan = stringBuilder.ToString();
+                lastNum = checkReturn[0];
+                for (int i = 0; i < lastNum.Length; i++)
+                {
+                    FILENAME[14 - i] = (char)lastNum[i];
+                }
+                MANDRELPARTS[idx] = $"{new string(FILENAME)}.SLDPRT";
+                switch (idx)
+                {
+                    case 1:
+                        #region Part 1
+                        if (redundantMan[idx] == '0')
+                        {
+                            File.Copy($@"{TemplatePath}\{glueMandrelParts[idx]}",
+                                $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
+                                true);
+
+                            FileOpen(FILE_PART);
+
+                            swFeat = swPart.FeatureByName("Extrude1");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("Length");
+                            errors = swDim.SetSystemValue3(dDim - 0.062 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
+
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                        }
+                        break;
+                    #endregion
+
+                    case 2:
+                        #region Part 2 BLOCK - PLUNGER BASE
+                        if (redundantMan[idx] == '0')
+                        {
+                            File.Copy($@"{TemplatePath}\{glueMandrelParts[idx]}",
+                                $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
+                                true);
+
+                            FileOpen(FILE_PART);
+
+                            swFeat = swPart.FeatureByName("Extrude1");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("Length");
+                            errors = swDim.SetSystemValue3(dDim - 0.062/INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
+
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                        }
+                        break;
+                    #endregion
+
+                    default:
+                        if (!File.Exists($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT"))
+                        {
+                            Debug.Print("glueMandrel Part" + glueMandrelParts[idx]);
+                            File.Copy($@"{TemplatePath}\{glueMandrelParts[idx]}",
+                            $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
+                            true);
+                        }
+                        break;
+                }
+            }
+            #endregion
+
+            #region Mandrel Assemblies
+            FILENAME[4] = COMPONENT_MAN.ToString()[0];
+            string[] MANDRELASSEMBLIES = new string[(int)glueMandrelAssemblies.GetLength(0)];
+            stringBuilder = new StringBuilder(redundantManAssem, redundantManAssem.Length);
+            for (int i = 0; i < MANDRELASSEMBLIES.Length; i++)
+            {
+                MANDRELASSEMBLIES[i] = glueMandrelAssemblies[i];
+            }
+
+            // Manipulate mandrel assembly
+            for (int idx = 0; idx < glueMandrelAssemblies.Length; idx++)
+            {
+                Debug.Print($@"Assembly Mainpulation: {idx.ToString()}");
+                FILENAME[5] = idx.ToString("D2")[0];
+                FILENAME[6] = idx.ToString("D2")[1];
+                checkReturn = GlueRedundant(ArchivePath, glueMandrelAssemblies[idx], idx, dimStrs, FILE_ASSEM, COMPONENT_MAN);
+                stringBuilder[idx] = checkReturn[1][0];
+                redundantManAssem = stringBuilder.ToString();
+                lastNum = checkReturn[0];
+                for (int i = 0; i < lastNum.Length; i++)
+                {
+                    FILENAME[14 - i] = (char)lastNum[i];
+                }
+                MANDRELASSEMBLIES[idx] = $"{new string(FILENAME)}.SLDASM";
+                Debug.Print($@"{TemplatePath}\{glueMandrelAssemblies[idx]}");
+                Debug.Print(MANDRELASSEMBLIES[idx]);
+                switch (idx)
+                {
+                    case 1:
+                        if (redundantManAssem[idx] == '0')
+                        {
+
+                            File.Copy($@"{TemplatePath}\{glueMandrelAssemblies[idx]}",
+                                $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
+                                true);
+
+                            for (int idx2 = 0; idx2 < glueMandrelParts.Length; idx2++)
+                            {
+                                if (idx2 != 3)
+                                {
+                                    Debug.Print("If Statement");
+                                    Debug.Print($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}");
+                                    Debug.Print($@"{TemplatePath}\{glueMandrelParts[idx2]}");
+                                    Debug.Print($@"{ArchivePath}\{MANDRELPARTS[idx2]}");
+                                    output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{glueMandrelParts[idx2]}", $@"{ArchivePath}\{MANDRELPARTS[idx2]}");
+                                    Debug.Print(idx2.ToString());
+                                }
+                                else if (idx2 == 3)  // Assembly Substitution
+                                {
+                                    Debug.Print("Else Statement");
+                                    Debug.Print($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}");
+                                    Debug.Print($@"{TemplatePath}\{glueMandrelAssemblies[0]}");
+                                    Debug.Print($@"{ArchivePath}\{MANDRELASSEMBLIES[0]}");
+                                    output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{glueMandrelAssemblies[0]}", $@"{ArchivePath}\{MANDRELASSEMBLIES[0]}");
+                                    idx2++;
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+                        if (!File.Exists($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}"))
+                        {
+                            File.Copy($@"{TemplatePath}\{glueMandrelAssemblies[idx]}",
+                               $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
+                               true);
+                        }
+                        output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{glueMandrelParts[3]}", $@"{ArchivePath}\{MANDRELPARTS[3]}");
+                        output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{glueMandrelParts[4]}", $@"{ArchivePath}\{MANDRELPARTS[4]}");
+                        break;
+                }
+            }
+
+            FileOpen(FILE_ASSEM);
+            output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
+            #endregion
+        }
+
+        string[] LockRedundant(string ArchivePath, string PartName, int PartNum, string[] DimStrs, int fileType, int component)
+        {
+            bool flag = false;
+            string line;
+            string checkStr;
+            string[] values;
+            string lastNum = "";
+            string redundant = "";
+
+            #region Part File Handling
+
+            if (fileType == FILE_PART)
+            {
                 #region Part Important Dimension Set
 
                 if (component == COMPONENT_MAN)
                 {
                     // List of strings defining which dimensions each part is dependent on
                     // The string number corresponds to the part defined in glueMandrelParts string array
-                    string[] checkLoc = {  "03456",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "03",
-                                        "03",
-                                        "04",
+                    string[] checkLoc = {  "0123456",
                                         "04",
                                         "034",
+                                        "03",
                                         "",
                                         "",
                                         "",
-                                        ""};
+                                        "",
+                                        "04"};
 
                     // Specify a particular dependency string in checkLoc for the current part
                     checkStr = checkLoc[PartNum];
@@ -1802,7 +2131,7 @@ namespace ADCOPlugin
                                         "046",//2
                                         "046",//3
                                         "036",//4
-                                        "",//5
+                                        "046",//5
                                         "046",//6
                                         "0346",//7
                                         "",//8
@@ -1820,7 +2149,7 @@ namespace ADCOPlugin
                                         "036",//20
                                         "036"};//21
 
-                    // Specify a particular dependency string in checkLoc for the current part
+                    //// Specify a particular dependency string in checkLoc for the current part
                     checkStr = checkLoc[PartNum];
                 }
 
@@ -1831,10 +2160,9 @@ namespace ADCOPlugin
 
                 if (checkStr != "")
                 {
-                    Debug.Print("Line 661");
                     #region Glue Archive Part CSV Parsing Setup
                     // Rename the file that will be searched for in the archive (search for csv instead of solidworks file)
-                    PartName = PartName.Replace(".SLDDRW", "DRW LOG.csv");
+                    PartName = PartName.Replace(".SLDPRT", " LOG.csv");
 
                     // Create an object that will be used to read from the csv file
                     StreamReader reader = new StreamReader(File.OpenRead($@"{ArchivePath}\{PartName}"));
@@ -1959,17 +2287,12 @@ namespace ADCOPlugin
                     else
                     {
                         reader.Close();
-                        Debug.Print("Line 791");
                         lastNum = "0";
                         redundant = "0";
                         string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
-                        Debug.Print("Line 795");
-                        Debug.Print($@"{ArchivePath}\{PartName}");
                         TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
-                        Debug.Print("Line 798");
                         writer.WriteLine(append);
                         writer.Close();
-                        Debug.Print("Line 799");
                         return new string[] { lastNum, redundant };
                     }
                     #endregion
@@ -1982,12 +2305,11 @@ namespace ADCOPlugin
                 }
 
             }
-            */
+
             #endregion
 
-            #region Assembly Drawing File Handling
-            /*
-            if (fileType == FILE_ASSEMDRW)
+            #region Assembly File Handling
+            if (fileType == FILE_ASSEM)
             {
                 #region Part Important Dimension Set
 
@@ -1996,7 +2318,8 @@ namespace ADCOPlugin
                     // List of strings defining which dimensions each part is dependent on
                     // The string number corresponds to the part defined in glueMandrelParts string array
                     string[] checkLoc = {  "",//0
-                                       "034" };//1
+                                        "04",//1
+                                       "034" };//2
                     // Specify a particular dependency string in checkLoc for the current part
                     checkStr = checkLoc[PartNum];
                 }
@@ -2013,7 +2336,7 @@ namespace ADCOPlugin
                 if (checkStr != "")
                 {
 
-                    PartName = PartName.Replace(".SLDDRW", "DRW LOG.csv");
+                    PartName = PartName.Replace(".SLDASM", " LOG.csv");
 
                     // Create an object that will be used to read from the csv file
                     StreamReader reader = new StreamReader(File.OpenRead($@"{ArchivePath}\{PartName}"));
@@ -2130,7 +2453,7 @@ namespace ADCOPlugin
                             writer.WriteLine(append);
                             writer.Close();
                         }
-                        Debug.Print("Line 1018");
+
                         // Return the index of either the matching parts (if identical) or the new index added (if unique)
                         return new string[] { lastNum, redundant };
                     }
@@ -2138,17 +2461,12 @@ namespace ADCOPlugin
                     else
                     {
                         reader.Close();
-                        Debug.Print("Line 1026");
                         lastNum = "0";
                         redundant = "0";
                         string append = lastNum + "," + DimStrs[0] + "," + DimStrs[1] + "," + DimStrs[2] + "," + DimStrs[3] + "," + DimStrs[4] + "," + DimStrs[5];
-                        Debug.Print("Line 795");
-                        Debug.Print($@"{ArchivePath}\{PartName}");
                         TextWriter writer = new StreamWriter($@"{ArchivePath}\{PartName}", true);
-                        Debug.Print("Line 798");
                         writer.WriteLine(append);
                         writer.Close();
-                        Debug.Print("Line 799");
                         return new string[] { lastNum, redundant };
                     }
                     #endregion
@@ -2160,7 +2478,6 @@ namespace ADCOPlugin
                     return new string[] { lastNum, redundant };
                 }
             }
-            */
 
             #endregion
 
@@ -2168,323 +2485,15 @@ namespace ADCOPlugin
             return new string[] { "", "" };
         }
 
-        /// <summary>
-        /// Fired when the reset button on the glue page is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GlueResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            GlueAParam.Text = "";
-            GlueBParam.Text = "";
-            GlueCParam.Text = "";
-            GlueDParam.Text = "";
-            GlueEParam.Text = "";
-            Thickness.Text = "";
-        }
-
-        /// <summary>
-        /// Fired when the back button on the glue page is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GlueBackButton_Click(object sender, RoutedEventArgs e)
+        private void LockBackButton_Click(object sender, RoutedEventArgs e)
         {
             // When the back button is clicked, send the UI back to the previous page (initial screen)
             initScreen();
         }
-        #endregion
 
-        #region Lock-Formed Carton Functions
+        
 
-        /// <summary>
-        /// Fired when the lock button on the initial page is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LockButton_Click(object sender, RoutedEventArgs e)
-        {
-            LockSourcePathBox.Text = $@"{lockSrcPathDEFAULT}\lockTemplate";
-
-            LockScreen();
-        }
-
-        private void LockScreen()
-        {
-            GlueContent.Visibility = System.Windows.Visibility.Hidden;
-            InitContent.Visibility = System.Windows.Visibility.Hidden;
-            LockContent.Visibility = System.Windows.Visibility.Visible;
-        }
-
-        private void LockBackButton_Click(object sender, RoutedEventArgs e)
-        {
-            initScreen();
-        }
-
-        private void LockApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-            lockRead();
-            lockSet();
-
-        }
-
-        private void lockSet()
-        {
-            ThreadHelpers.RunOnUIThread(() =>
-            {
-
-
-                if (LockAParam.Text == "" || LockBParam.Text == "" || LockCParam.Text == "")
-                {
-                    MessageBoxImage icon = MessageBoxImage.Warning;
-                    MessageBoxButton button = MessageBoxButton.OK;
-                    MessageBox.Show("You must enter values for box dimensions.", "", button, icon);
-                    return;
-                }
-
-                // Declare and initialize dimensions and paths based on glue screen fields
-                double aDim = double.Parse(LockAParam.Text) / INCH_CONVERSION;
-                double bDim = double.Parse(LockBParam.Text) / INCH_CONVERSION;
-                double cDim = double.Parse(LockCParam.Text) / INCH_CONVERSION;
-                string destPath = LockDestPathBox.Text;
-                string sourcePath = LockSourcePathBox.Text;
-                string Component1 = "Block1.SLDPRT";
-                string Component2 = "Block2.SLDPRT";
-                string Component3 = "Cylinder.SLDPRT";
-
-                MessageBox.Show("STARTING ON 1ST PART");
-
-                #region 1st Part
-
-                // Copy and open the generic block1 part
-
-                LockOpen($"{destPath}{Component1}", $"{sourcePath}{Component1}");
-
-                // Get the active document as a Part and a Model
-                PartDoc part = swApp.ActiveDoc as PartDoc;
-                ModelDoc2 swModel = swApp.ActiveDoc as ModelDoc2;
-
-                // Get the part feature called exstrusionBase
-                Feature Feat = part.FeatureByName("rectSketch");
-
-                // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
-                Feat.Select2(false, -1);
-
-                // Get dimension a of extrusionBase
-                Dimension swDim = (Dimension)Feat.Parameter("a");
-
-                // Set the new value of a as the value from the read-in field
-                int errors = swDim.SetSystemValue3(aDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                // Get dimension b of extrusionBase
-                swDim = (Dimension)Feat.Parameter("b");
-
-                // Set the new value of b as the value from the read-in field
-                errors = swDim.SetSystemValue3(bDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                // Get the part feature called extrusion
-                Feat = part.FeatureByName("Extrude");
-
-                // Replace the current selection
-                Feat.Select2(false, -1);
-
-                // Get dimension c of extrusion
-                swDim = (Dimension)Feat.Parameter("c");
-
-                // Set the new value of c as the value from the read-in field
-                errors = swDim.SetSystemValue3(cDim, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                // Invoke all changes and rebuild the document, save afterwards
-                part.EditRebuild();
-                swModel.Save();
-                swApp.CloseDoc($"{ destPath}{Component1}");
-
-
-                #endregion
-
-                MessageBox.Show("Beginning Second Part");
-
-                #region 2nd Part
-
-                double part2a = aDim * 2.0;
-                double part2b = bDim / 2.0;
-                double part2c = cDim * 3.0;
-
-                // Copy and open the generic block1 part
-                LockOpen($"{destPath}{Component2}", $"{sourcePath}{Component2}");
-
-                // Get the active document as a Part and a Model
-                part = swApp.ActiveDoc as PartDoc;
-                swModel = swApp.ActiveDoc as ModelDoc2;
-
-                // Get the part feature called exstrusionBase
-                Feat = part.FeatureByName("rectSketch");
-
-                // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
-                Feat.Select2(false, -1);
-
-                // Get dimension a of extrusionBase
-                swDim = (Dimension)Feat.Parameter("a");
-
-                // Set the new value of a as the value from the read-in field
-                errors = swDim.SetSystemValue3(part2a, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                // Get dimension b of extrusionBase
-                swDim = (Dimension)Feat.Parameter("b");
-
-                // Set the new value of b as the value from the read-in field
-                errors = swDim.SetSystemValue3(part2b, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                // Get the part feature called extrusion
-                Feat = part.FeatureByName("Extrude");
-
-                // Replace the current selection
-                Feat.Select2(false, -1);
-
-                // Get dimension c of extrusion
-                swDim = (Dimension)Feat.Parameter("c");
-
-                // Set the new value of c as the value from the read-in field
-                errors = swDim.SetSystemValue3(part2c, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                // Invoke all changes and rebuild the document, save afterwards
-                part.EditRebuild();
-                swModel.Save();
-                swApp.CloseDoc($"{destPath}{Component2}");
-
-                #endregion
-
-                MessageBox.Show("Beginning 3rd Part");
-
-                #region 3rd Part
-
-                double part3a = aDim * 2;
-                double part3b = bDim * 0.5;
-                double part3c = cDim / 0.2;
-
-                // Copy and open the generic block1 part
-                LockOpen($"{destPath}{Component3}", $"{sourcePath}{Component3}");
-
-                // Get the active document as a Part and a Model
-                part = swApp.ActiveDoc as PartDoc;
-                swModel = swApp.ActiveDoc as ModelDoc2;
-
-                // Get the part feature called exstrusionBase
-                Feat = part.FeatureByName("cylSketch");
-
-                // Select the feature extrusionBase - Replace current selection (normal click, not ctrl-click)
-                Feat.Select2(false, -1);
-
-                // Get dimension a of extrusionBase
-                swDim = (Dimension)Feat.Parameter("a");
-
-                // Set the new value of a as the value from the read-in field
-                errors = swDim.SetSystemValue3(part3a, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-                Feat = part.FeatureByName("cylExtrude");
-
-                // Get dimension b of extrusionBase
-                swDim = (Dimension)Feat.Parameter("b");
-
-                // Set the new value of b as the value from the read-in field
-                errors = swDim.SetSystemValue3(part3b, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
-
-
-                // Get the part feature called extrusion
-                Feat = part.FeatureByName("holeCut");
-
-                Debug.Print("Beginning to mess with the extruded cut");
-
-                // Replace the current selection
-                ExtrudeFeatureData swCutFeatureData = default(ExtrudeFeatureData);
-                swCutFeatureData = (ExtrudeFeatureData)Feat.GetDefinition();
-
-                Debug.Print("Made Some Data Objects");
-                if (aDim >= 0.25)
-                {
-                    Debug.Print("Attempting to edit entity");
-                    Entity ent = (Entity)part.GetEntityByName("endingFace", (int)swSelectType_e.swSelFACES);
-                    if (ent != null)
-                    {
-                        Debug.Print("Attempting to Select a Face");
-                        ent.Select4(false, null);
-                    }
-                    swCutFeatureData.SetEndCondition(true, (int)swEndConditions_e.swEndCondUpToSelection);
-                }
-                //else
-                //{
-                //    Debug.Print("Attempting to Suppress Feature");
-                //    Feat.SetSuppression((int)swFeatureSuppressionAction_e.swSuppressFeature);
-                //}
-
-                // Invoke all changes and rebuild the document, save afterwards
-                part.EditRebuild();
-                swModel.Save();
-                swApp.CloseDoc($"{destPath}{Component3}");
-
-                //LockOpen($"{destPath}Assembly.SLDASM", $"{sourcePath}Assembly.SLDASM");\
-                Debug.Print("Opening the Assembly File");
-                if (!File.Exists($"{destPath}Assembly.SLDASM"))
-                {
-                    File.Copy($"{sourcePath}Assembly.SLDASM", $"{destPath}Assembly.SLDASM");
-                }
-                swPart = swApp.OpenDoc($"{destPath}Assembly.SLDASM", (int)swDocumentTypes_e.swDocASSEMBLY);
-                Debug.Print("Setting Model and Assembly Variables");
-                ModelDoc2 model = (ModelDoc2)swApp.ActiveDoc;
-                ModelDocExtension modelExt = (ModelDocExtension)model.Extension;
-                AssemblyDoc swAssem = (AssemblyDoc)model;
-                Component component = default(Component);
-                bool isSelected = modelExt.SelectByID2("lockTemplateBlock1-1@Copy of lockTemplateAssembly", "COMPONENT", 0, 0, 0, false, -1, (Callout)null, (int)swSelectOption_e.swSelectOptionDefault);
-                bool returnVal = swAssem.ReplaceComponents($"{destPath}{Component1}", "", true, true);
-                isSelected = modelExt.SelectByID2("lockTemplateBlock2-1@Copy of lockTemplateAssembly", "COMPONENT", 0, 0, 0, false, -1, (Callout)null, (int)swSelectOption_e.swSelectOptionDefault);
-                returnVal = swAssem.ReplaceComponents($"{destPath}{Component2}", "", true, true);
-                isSelected = modelExt.SelectByID2("lockTemplateCylinder-1@Copy of lockTemplateAssembly", "COMPONENT", 0, 0, 0, false, -1, (Callout)null, (int)swSelectOption_e.swSelectOptionDefault);
-                returnVal = swAssem.ReplaceComponents($"{destPath}{Component3}", "", true, true);
-
-                #endregion
-
-            });
-            return;
-        }
-
-        private void LockOpen(string destPath, string sourcePath)
-        {
-
-            MessageBox.Show($"File Attempting to Open: {destPath}");
-            MessageBox.Show($"Copying From: {sourcePath}");
-
-            // Check that the file at the destination path does not already exist
-            if (!File.Exists(destPath))
-            {
-                // If the destination file does not already exist, then copy the template from the source path to the destination path
-                File.Copy(sourcePath, destPath);
-                MessageBox.Show("Successully Opened");
-            }
-
-            try
-            {
-                // Try to open the copied document
-                swPart = swApp.OpenDoc(destPath, (int)swDocumentTypes_e.swDocPART);
-
-            }
-            catch (Exception)
-            {
-                // If an exception is thrown, notify the user that the file was not able to be opened
-                MessageBox.Show("File Open Failed");
-
-                // Clear any unused objects - should clean up any COM-related errors that arise after debug close
-                Marshal.CleanupUnusedObjectsInCurrentContext();
-
-                // Return to the parent function (GlueButtonClick)
-                return;
-            }
-            return;
-        }
-
-        private void lockRead()
-        {
-            return;
-        }
+        
 
         private void LockResetButton_Click(object sender, RoutedEventArgs e)
         {
@@ -2565,6 +2574,26 @@ namespace ADCOPlugin
                 swFeature = swFeature.GetNextFeature() as Feature;
             }
             return ("");
+        }
+
+        private void FileOpen(int type)
+        {
+
+            if (type == FILE_PART)
+            {
+                swModel = swApp.OpenDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT", (int)swDocumentTypes_e.swDocPART);
+                swPart = (PartDoc)swApp.ActiveDoc;
+            }
+
+            if (type == FILE_ASSEM)
+            {
+                Debug.Print($@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
+                swModel = swApp.OpenDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDASM", (int)swDocumentTypes_e.swDocASSEMBLY);
+                swAssem = (AssemblyDoc)swApp.ActiveDoc;
+                modelExt = (ModelDocExtension)swModel.Extension;
+            }
+
+            return;
         }
 
         #endregion
