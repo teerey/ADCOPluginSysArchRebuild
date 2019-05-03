@@ -1,0 +1,101 @@
+{
+   "checksum": "f3aa39ed370f72d6ac7d6a46a6451787",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13183830740284931",
+            "id": "8",
+            "meta_info": {
+               "last_visited_desktop": "13188343013656931"
+            },
+            "name": " InkWell Academic Writing Retreats",
+            "sync_transaction_version": "29",
+            "type": "url",
+            "url": "https://stilliwrite.inkwellretreats.org/courses/417658/lectures/6380818"
+         }, {
+            "date_added": "13184101937654085",
+            "id": "9",
+            "meta_info": {
+               "last_visited_desktop": "13184101937655268"
+            },
+            "name": "Materials",
+            "sync_transaction_version": "14",
+            "type": "url",
+            "url": "http://www.fresnostate.edu/academics/facultyaffairs/procedures/facultyrtp/oyr.html"
+         }, {
+            "date_added": "13184290287769150",
+            "id": "10",
+            "meta_info": {
+               "last_visited_desktop": "13191592571638231"
+            },
+            "name": "Mexican Professors  in Mexico",
+            "sync_transaction_version": "46",
+            "type": "url",
+            "url": "https://ceaa.colmex.mx/profes"
+         }, {
+            "date_added": "13187352851837319",
+            "id": "15",
+            "meta_info": {
+               "last_visited_desktop": "13187352851838489"
+            },
+            "name": "Territorio de Zaguates",
+            "sync_transaction_version": "24",
+            "type": "url",
+            "url": "https://donate.territoriodezaguates.com/"
+         }, {
+            "date_added": "13188261067644748",
+            "id": "20",
+            "meta_info": {
+               "last_visited_desktop": "13190688236869510"
+            },
+            "name": "Interlibrary Loan @ Henry Madden Library",
+            "sync_transaction_version": "45",
+            "type": "url",
+            "url": "https://ill.lib.csufresno.edu/"
+         }, {
+            "date_added": "13188687376910846",
+            "id": "25",
+            "meta_info": {
+               "last_visited_desktop": "13189015417704646"
+            },
+            "name": "Tableau Server",
+            "sync_transaction_version": "40",
+            "type": "url",
+            "url": "https://tableau.fresnostate.edu/#/signin"
+         }, {
+            "date_added": "13191592915552449",
+            "id": "30",
+            "meta_info": {
+               "last_visited_desktop": "13191592915553280"
+            },
+            "name": "BOOK Designer Nicole Hayward Design ",
+            "sync_transaction_version": "51",
+            "type": "url",
+            "url": "https://www.nicolehayward.com/"
+         } ],
+         "date_added": "13183606106566928",
+         "date_modified": "13191592915552449",
+         "id": "1",
+         "name": "Bookmarks Bar",
+         "type": "folder"
+      },
+      "other": {
+         "children": [  ],
+         "date_added": "13183606106566949",
+         "date_modified": "0",
+         "id": "2",
+         "name": "Other Bookmarks",
+         "type": "folder"
+      },
+      "sync_transaction_version": "51",
+      "synced": {
+         "children": [  ],
+         "date_added": "13183606106566952",
+         "date_modified": "0",
+         "id": "3",
+         "name": "Mobile Bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}
