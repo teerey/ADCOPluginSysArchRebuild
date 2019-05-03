@@ -135,7 +135,7 @@ namespace ADCOPlugin
                                                 "STOP RAIL.SLDDRW" };//21
 
         //Assembly files in the glue mandrel domain
-        static string[] glueMandrelAssemblies = { "CYLINDER ASSEMBLY.SLDASM",//0
+        static string[] glueMandrelAssemblies = { "AIR CYLINDER.SLDASM",//0
                                                   "MANDREL ASSEMBLY.SLDASM" };//1
 
         static string[] glueMandrelAssembliesDRW = { "CYLINDER ASSEMBLY.SLDDRW",//0
@@ -610,7 +610,7 @@ namespace ADCOPlugin
                                 swFeat = swPart.FeatureByName("Base-Flange1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("GRail");
-                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim + 9.8125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim + (-0.01875 + 9.8125) / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                 swPart.EditRebuild();
                                 swModel.Save();
@@ -640,7 +640,7 @@ namespace ADCOPlugin
                                 swFeat = swPart.FeatureByName("Base-Flange1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("GRail");
-                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim + 9.8125 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim + (-0.01875 + 9.8125) / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
 
                                 swPart.EditRebuild();
                                 swModel.Save();
@@ -853,7 +853,7 @@ namespace ADCOPlugin
                                 swFeat = swPart.FeatureByName("Base-Flange1");
                                 swFeat.Select2(false, -1);
                                 swDim = (Dimension)swFeat.Parameter("D2");
-                                errors = swDim.SetSystemValue3(cDim - 4.5 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
+                                errors = swDim.SetSystemValue3(cDim - (-2*0.01875 + 4.5) / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InThisConfiguration, null);
                                 swPart.EditRebuild();
                                 swModel.Save();
                                 swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
@@ -1197,11 +1197,13 @@ namespace ADCOPlugin
                         case 0:
                             if (redundantCavAssem[idx] == '0')
                             {
+
                                 Debug.Print($@"Cavity Switch: {TemplatePath}\{glueCavityAssemblies[idx]}");
                                 Debug.Print($@"Cavity Switch: {ArchivePath}\{CAVITYASSEMBLIES[idx]}");
                                 File.Copy($@"{TemplatePath}\{glueCavityAssemblies[idx]}",
                                     $@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}",
                                     true);
+
 
                                 for (int idx2 = 0; idx2 < glueCavityParts.Length; idx2++)
                                 {
