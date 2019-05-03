@@ -135,10 +135,10 @@ namespace ADCOPlugin
                                                 "STOP RAIL.SLDDRW" };//21
 
         //Assembly files in the glue mandrel domain
-        static string[] glueMandrelAssemblies = { "AIR CYLINDER.SLDASM",//0
+        static string[] glueMandrelAssemblies = { "AIR CYLINDER ASSEMBLY.SLDASM",//0
                                                   "MANDREL ASSEMBLY.SLDASM" };//1
 
-        static string[] glueMandrelAssembliesDRW = { "CYLINDER ASSEMBLY.SLDDRW",//0
+        static string[] glueMandrelAssembliesDRW = { "AIR CYLINDER ASSEMBLY.SLDDRW",//0
                                                   "MANDREL ASSEMBLY.SLDDRW" };//1
 
         //Assembly files in the forming plate mandrel domain
@@ -1204,6 +1204,12 @@ namespace ADCOPlugin
                                     $@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}",
                                     true);
 
+                                File.Copy($@"{TemplatePath}\{glueCavityAssembliesDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 for (int idx2 = 0; idx2 < glueCavityParts.Length; idx2++)
                                 {
@@ -1292,6 +1298,13 @@ namespace ADCOPlugin
                                 File.Copy($@"{TemplatePath}\{glueMandrelAssemblies[idx]}",
                                     $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
                                     true);
+
+                                File.Copy($@"{TemplatePath}\{glueMandrelAssembliesDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{glueCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                                 for (int idx2 = 0; idx2 < glueMandrelParts.Length; idx2++)
                                 {
