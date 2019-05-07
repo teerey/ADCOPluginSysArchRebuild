@@ -154,6 +154,7 @@ namespace ADCOPlugin
 
         static string[] lockMandrelAssemblies = {"FSU5424-41-002.SLDASM",//0
                                                  "FSU5424-41-108.SLDASM",//1
+
                                                  "FSU5424-41-001 PLUNGER ASSY.SLDASM"};//2
 
         //Assembly files in the forming plate mandrel domain
