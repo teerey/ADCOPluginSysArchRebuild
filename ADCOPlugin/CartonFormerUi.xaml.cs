@@ -145,11 +145,8 @@ namespace ADCOPlugin
                                                 "STOP RAIL.SLDDRW" };//21
 
         //Assembly files in the glue mandrel domain
-<<<<<<< HEAD
-        static string[] glueMandrelAssemblies = { "AIR CYLINDER ASSEMBLY.SLDASM",//0
-=======
         static string[] glueMandrelAssemblies = { "CYLINDER ASSEMBLY.SLDASM",//0
->>>>>>> Beginnings of lock implementation
+       // Beginnings of lock implementation
                                                   "MANDREL ASSEMBLY.SLDASM" };//1
 
         static string[] glueMandrelAssembliesDRW = { "AIR CYLINDER ASSEMBLY.SLDDRW",//0
