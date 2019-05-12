@@ -180,7 +180,7 @@
             </StackPanel>
 
             <!--Lock-Bound Carton Page-->
-            <StackPanel x:Name="LockContent" Visibility="Visible">
+            <StackPanel x:Name="LockContent" Visibility="Hidden">
                 <!--Control button grid region-->
                 <Grid>
 
