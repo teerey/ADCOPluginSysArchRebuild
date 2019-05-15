@@ -115,6 +115,53 @@ namespace ADCOPlugin
                                              "FSU5424-37-121C.SLDPRT",//20
                                              "FSU5424-41-110C.SLDPRT" };//21
 
+        static string[] lockMandrelPartsDRW = { "5424-CARTON 7.0 x 5.0 x 1.75.SLDDRW",//0
+                                             "5424-41-100.SLDDRW",//1 x2
+                                             "5424-41-101.SLDDRW",//2
+                                             "5424-41 SPACER A10-H-0.500-C4-4.437-C4.SLDDRW",//3 x2
+                                             "5424-41-102.SLDDRW",//4 x2 vv
+                                             "5424-41-107.SLDDRW",//5 x2 ^v
+                                             "W169PL-4-1.SLDDRW",//6 x4, ^
+                                             "5424-41-111.SLDDRW",//7
+                                             //----------------------------
+                                             //Parts in the assembly 5424-41-002
+                                             "5424-37-103.SLDDRW",//8 x2
+                                             "5424-41-103.SLDDRW",//9
+                                             "5424 IGUS #JSI1012-08 BUSHING.SLDDRW",//10 x2
+                                             "5424-41-104.SLDDRW",//11
+                                             "5424-41-105.SLDDRW",//12 x2
+                                             "5424 - IGUS #JFI0810-06 BUSHING.SLDDRW",//13 x2
+                                             "5424 - MCMASTER CARR #91590A122 RETAINING RING .500.SLDDRW",//14 x2
+                                             "5424-37-106.SLDDRW",//15
+                                             "5424-37-112-3.SLDDRW",//16
+                                             "5424-37-112.SLDDRW",//17
+                                             "5424-41-106.SLDDRW",//18
+                                             //----------------------------
+                                             //Parts in assembly 5424-41-108
+                                             "5424-41-109C.SLDDRW",//19
+                                             "5424-37-121C.SLDDRW",//20
+                                             "5424-41-110C.SLDDRW" };//21
+
+
+        static string[] lockCavityParts = { "FSU5424-40-101C.SLDPRT",//0 x2
+                                            "FSU5424-40-108.SLDPRT",//1
+                                            "FSU5424-36-118.SLDPRT",//2 x2
+                                            "FSU5424-40-106.SLDPRT",//3 x2
+                                            "FSU5424-36 SPACER A09-S-0.750-0.281-0.875.SLDPRT",//4 x2
+                                            //-----------------------------
+                                            //Parts in assembly FSU5424-36-108
+                                            "FSU5424-36-107C.SLDPRT",//5
+                                            "FSU55CFW-532-C2.SLDPRT" };//6
+
+        static string[] lockCavityPartsDRW = { "5424-40-101C.SLDDRW",//0 x2
+                                               "5424-40-108.SLDDRW",//1
+                                               "5424-36-118.SLDDRW",//2 x2
+                                               "5424-40-106.SLDDRW",//3 x2
+                                               "5424-36 SPACER A09-S-0.750-0.281-0.875.SLDDRW",//4 x2
+                                            //-----------------------------
+                                            //Parts in assembly 5424-36-108
+                                               "5424-36-107C.SLDDRW",//5
+                                               "55CFW-532-C2.SLDDRW" };//
 
         //Part files in the glue forming plate domain
         static string[] glueCavityParts = {"BOLT MOUNT.SLDPRT",//0
@@ -173,6 +220,16 @@ namespace ADCOPlugin
         static string[] lockMandrelAssemblies = {"FSU5424-41-002.SLDASM",//0
                                                  "FSU5424-41-108.SLDASM",//1
                                                  "FSU5424-41-001 PLUNGER ASSY.SLDASM"};//2
+
+        static string[] lockMandrelAssembliesDRW = {"5424-41-002.SLDDRW",//0
+                                                 "5424-41-108.SLDDRW",//1
+                                                 "5424-41-001 PLUNGER ASSY.SLDDRW"};//2
+
+        static string[] lockCavityAssemblies = {"FSU5424-36-108.SLDASM",//0
+                                                "FSU5424-40-004 SINGLE RnD HEAD MNT PLATE TEST.SLDASM" };//1
+
+        static string[] lockCavityAssembliesDRW = {"5424-36-108.SLDDRW",//0
+                                                "FSU5424-40-004 SINGLE RnD HEAD MNT PLATE TEST.SLDDRW" };//1
 
         //Assembly files in the forming plate mandrel domain
         static string[] glueCavityAssemblies = { "FORMER PLATE ASSEMBLY.SLDASM" }; //0
@@ -1169,7 +1226,24 @@ namespace ADCOPlugin
                                         File.Copy($@"{TemplatePath}\{glueMandrelParts[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                         true);
+
+                                if (!File.Exists($@"{TemplatePath}\{glueMandrelPartsDRW[idx]}"))
+                                {
+                                    break;
                                 }
+
+                                else
+                                {
+                                    File.Copy($@"{TemplatePath}\{glueMandrelPartsDRW[idx]}",
+                                            $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                            true);
+
+                                    bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        $@"{TemplatePath}\{glueMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                                 }
+
+                            }
+
                                 break;
                         }
                     }
@@ -1178,7 +1252,7 @@ namespace ADCOPlugin
 
                 #region Glue Assembly Manipulation
 
-                #region Cavity Assemblies
+                #region Glue Cavity Assemblies
                 FILENAME[4] = COMPONENT_CAV.ToString()[0];
                 string[] CAVITYASSEMBLIES = new string[(int)glueCavityAssemblies.GetLength(0)];
                 stringBuilder = new StringBuilder(redundantCavAssem, redundantCavAssem.Length);
@@ -1276,7 +1350,7 @@ namespace ADCOPlugin
                
                 #endregion
 
-                #region Mandrel Assemblies
+                #region Glue Mandrel Assemblies
                 FILENAME[4] = COMPONENT_MAN.ToString()[0];
                 string[] MANDRELASSEMBLIES = new string[(int)glueMandrelAssemblies.GetLength(0)];
                 stringBuilder = new StringBuilder(redundantManAssem, redundantManAssem.Length);
@@ -1923,14 +1997,25 @@ namespace ADCOPlugin
             int warnings = 0;
             bool output;
             string[] checkReturn;
+
             string redundantMan = new string('0',lockMandrelParts.Length);
             string redundantManAssem = new string('0',lockMandrelAssemblies.Length);
             StringBuilder stringBuilder = new StringBuilder(redundantMan, redundantMan.Length);
+
+            string redundantCav = new string('0', lockCavityParts.Length);
+            string redundantCavAssem = new string('0', lockCavityAssemblies.Length);
+            StringBuilder stringBuilder2 = new StringBuilder(redundantCav, redundantCav.Length);
 
             string[] MANDRELPARTS = new string[(int)lockMandrelParts.GetLength(0)];
             for (int i = 0; i < MANDRELPARTS.Length; i++)
             {
                 MANDRELPARTS[i] = lockMandrelParts[i];
+            }
+
+            string[] CAVITYPARTS = new string[(int)lockCavityParts.GetLength(0)];
+            for (int i = 0; i < CAVITYPARTS.Length; i++)
+            {
+                CAVITYPARTS[i] = lockCavityParts[i];
             }
 
             #region Lock Input Handling
@@ -1953,11 +2038,11 @@ namespace ADCOPlugin
 
             #endregion
 
-            #region Mandrel Parts
+            #region Lock Mandrel Parts
             // Cycle through mandrel parts
 
             FILENAME[4] = COMPONENT_MAN.ToString()[0];
-            for (int idx = 0; idx < lockMandrelParts.Length; idx++)
+            for (int idx = 1; idx < lockMandrelParts.Length; idx++)
             {
                 Debug.Print("Parts LockSet:" + idx.ToString());
                 FILENAME[5] = idx.ToString("D2")[0];
@@ -1981,6 +2066,13 @@ namespace ADCOPlugin
                                 $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                 true);
 
+                            File.Copy($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                             FileOpen(FILE_PART);
 
                             swFeat = swPart.FeatureByName("Extrude1");
@@ -2003,6 +2095,13 @@ namespace ADCOPlugin
                                 $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                 true);
 
+                            File.Copy($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                             FileOpen(FILE_PART);
 
                             swFeat = swPart.FeatureByName("Extrude1");
@@ -2023,7 +2122,7 @@ namespace ADCOPlugin
                     #endregion
 
                     case 3:
-                    #region Part 3 FSU5424-41 SPACER A10-H-0.500-C4-4.437-C4.SLDPRT
+                        #region Part 3 FSU5424-41 SPACER A10-H-0.500-C4-4.437-C4.SLDPRT
                         if (redundantMan[idx] == '0')
                         {
                             File.Copy($@"{TemplatePath}\{lockMandrelParts[idx]}",
@@ -2044,12 +2143,19 @@ namespace ADCOPlugin
                     #endregion
 
                     case 4:
-                    #region Part 4 FSU5424-41-102.SLDPRT
+                        #region Part 4 FSU5424-41-102.SLDPRT
                         if(redundantMan[idx] == '0')
                         {
                             File.Copy($@"{TemplatePath}\{lockMandrelParts[idx]}",
                                 $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                 true);
+
+                            File.Copy($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                             FileOpen(FILE_PART);
                             swFeat = swPart.FeatureByName("Extrude1");
@@ -2072,6 +2178,13 @@ namespace ADCOPlugin
                                 $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                 true);
 
+                            File.Copy($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                             FileOpen(FILE_PART);
                             swFeat = swPart.FeatureByName("Extrude1");
                             swFeat.Select2(false, -1);
@@ -2092,6 +2205,13 @@ namespace ADCOPlugin
                             File.Copy($@"{TemplatePath}\{lockMandrelParts[idx]}",
                                 $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                 true);
+
+                            File.Copy($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
 
                             FileOpen(FILE_PART);
                             swFeat = swPart.FeatureByName("Extrude1");
@@ -2114,6 +2234,13 @@ namespace ADCOPlugin
                                 $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                                 true);
 
+                            File.Copy($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
                             FileOpen(FILE_PART);
                             swFeat = swPart.FeatureByName("Sketch1");
                             swFeat.Select2(false, -1);
@@ -2130,17 +2257,147 @@ namespace ADCOPlugin
                     default:
                         if (!File.Exists($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT"))
                         {
+
                             Debug.Print("lockMandrel Part" + lockMandrelParts[idx]);
                             File.Copy($@"{TemplatePath}\{lockMandrelParts[idx]}",
                             $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
                             true);
+
+                            if (!File.Exists($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}"))
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                File.Copy($@"{TemplatePath}\{lockMandrelPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{lockMandrelParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                            }
+
                         }
                         break;
                 }
             }
             #endregion
 
-            #region Mandrel Assemblies
+            #region Lock Cavity Parts
+
+            FILENAME[4] = COMPONENT_CAV.ToString()[0];
+            for (int idx = 0; idx < lockCavityParts.Length; idx++)
+            {
+
+                Debug.Print("Parts LockSet:" + idx.ToString());
+                FILENAME[5] = idx.ToString("D2")[0];
+                FILENAME[6] = idx.ToString("D2")[1];
+                checkReturn = LockRedundant(ArchivePath, lockCavityParts[idx], idx, dimStrs, FILE_PART, COMPONENT_CAV);
+                stringBuilder2[idx] = checkReturn[1][0];
+                redundantCav = stringBuilder2.ToString();
+                lastNum = checkReturn[0];
+                for (int i = 0; i < lastNum.Length; i++)
+                {
+                    FILENAME[14 - i] = (char)lastNum[i];
+                }
+                CAVITYPARTS[idx] = $"{new string(FILENAME)}.SLDPRT";
+                
+                switch (idx)
+                {
+                    case 0:
+                        #region Part 1 FSU5424-40-101C.SLDPRT
+                        if (redundantCav[idx] == '0')
+                        {
+                            File.Copy($@"{TemplatePath}\{lockCavityParts[idx]}",
+                                $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
+                                true);
+
+                            File.Copy($@"{TemplatePath}\{lockCavityPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+                            FileOpen(FILE_PART);
+
+                            swFeat = swPart.FeatureByName("Boss-Extrude1");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("D1");
+                            errors = swDim.SetSystemValue3(dDim / 2 + ThiccDim + 0.2788 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
+
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                        }
+                        break;
+                    #endregion
+
+                    case 1:
+                        #region Part 2 FSU5424-40-108.SLDPRT
+                        if (redundantCav[idx] == '0')
+                        {
+                            File.Copy($@"{TemplatePath}\{lockCavityParts[idx]}",
+                                $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
+                                true);
+
+                            File.Copy($@"{TemplatePath}\{lockCavityPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+
+                            FileOpen(FILE_PART);
+
+                            swFeat = swPart.FeatureByName("Sketch2");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("Dmain");
+                            errors = swDim.SetSystemValue3(dDim + 2 * ThiccDim + 9.4326 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
+
+                            swFeat = swPart.FeatureByName("Sketch2");
+                            swFeat.Select2(false, -1);
+                            swDim = (Dimension)swFeat.Parameter("Cmain");
+                            errors = swDim.SetSystemValue3(cDim + 4 * ThiccDim + 6.93252 / INCH_CONVERSION, (int)swSetValueInConfiguration_e.swSetValue_InAllConfigurations, null);
+
+                            swPart.EditRebuild();
+                            swModel.Save();
+                            swApp.CloseDoc($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                        }
+                        break;
+                    #endregion
+
+                    default:
+                        if (!File.Exists($@"{ArchivePath}\{new string(FILENAME)}.SLDPRT"))
+                        {
+                            Debug.Print("lockCavity Part" + lockCavityParts[idx]);
+                            File.Copy($@"{TemplatePath}\{lockCavityParts[idx]}",
+                            $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT",
+                            true);
+
+                            if (!File.Exists($@"{TemplatePath}\{lockCavityPartsDRW[idx]}"))
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                File.Copy($@"{TemplatePath}\{lockCavityPartsDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                                bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                    $@"{TemplatePath}\{lockCavityParts[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDPRT");
+                            }
+                        }
+                        break;
+                }
+
+            }
+
+
+            #endregion
+
+            #region Lock Mandrel Assemblies
             FILENAME[4] = COMPONENT_MAN.ToString()[0];
             string[] MANDRELASSEMBLIES = new string[(int)lockMandrelAssemblies.GetLength(0)];
             stringBuilder = new StringBuilder(redundantManAssem, redundantManAssem.Length);
@@ -2175,10 +2432,18 @@ namespace ADCOPlugin
                                $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
                                true);
 
-                            for(int idx2 = 8; idx2 <= 18; idx2++)
+                            File.Copy($@"{TemplatePath}\{lockMandrelAssembliesDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelAssemblies[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
+
+                            for (int idx2 = 8; idx2 <= 18; idx2++)
                             {
                                 output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{lockMandrelParts[idx2]}", $@"{ArchivePath}\{MANDRELPARTS[idx2]}");
                             }
+
                         }
                         
                         break;
@@ -2192,11 +2457,21 @@ namespace ADCOPlugin
                                 $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
                                 true);
 
+                            File.Copy($@"{TemplatePath}\{lockMandrelAssembliesDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelAssemblies[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
+
                         }
                         for (int idx2 = 19; idx2 < lockMandrelParts.Length; idx2++)
                         {
                             output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{lockMandrelParts[idx2]}", $@"{ArchivePath}\{MANDRELPARTS[idx2]}");
                         }
+
+                        
+
                         break;
 
                     case 2:
@@ -2205,6 +2480,14 @@ namespace ADCOPlugin
                             File.Copy($@"{TemplatePath}\{lockMandrelAssemblies[idx]}",
                                 $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
                                 true);
+
+                            File.Copy($@"{TemplatePath}\{lockMandrelAssembliesDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockMandrelAssemblies[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
+
                             for (int idx2 = 0; idx2 <= 7; idx2++)
                             {
                                 output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}", $@"{TemplatePath}\{lockMandrelParts[idx2]}", $@"{ArchivePath}\{MANDRELPARTS[idx2]}");
@@ -2220,14 +2503,105 @@ namespace ADCOPlugin
                             File.Copy($@"{TemplatePath}\{lockMandrelAssemblies[idx]}",
                                $@"{ArchivePath}\{MANDRELASSEMBLIES[idx]}",
                                true);
+
                         }
                         break;
                 }
             }
 
-           FileOpen(FILE_ASSEM);
+            FileOpen(FILE_ASSEM);
             output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
-            
+
+            #endregion
+
+            #region Lock Cavity Assemblies
+
+            FILENAME[4] = COMPONENT_CAV.ToString()[0];
+            string[] CAVITYASSEMBLIES = new string[(int)lockCavityAssemblies.GetLength(0)];
+            stringBuilder = new StringBuilder(redundantCavAssem, redundantCavAssem.Length);
+            for (int i = 0; i < CAVITYASSEMBLIES.Length; i++)
+            {
+                CAVITYASSEMBLIES[i] = lockCavityAssemblies[i];
+            }
+
+            // Manipulate Cavity assembly
+            for (int idx = 0; idx < lockCavityAssemblies.Length; idx++)
+            {
+                Debug.Print($@"Lock Cavity Mainpulation: {idx.ToString()}");
+                FILENAME[5] = idx.ToString("D2")[0];
+                FILENAME[6] = idx.ToString("D2")[1];
+                checkReturn = LockRedundant(ArchivePath, lockCavityAssemblies[idx], idx, dimStrs, FILE_ASSEM, COMPONENT_CAV);
+                stringBuilder[idx] = checkReturn[1][0];
+                redundantCavAssem = stringBuilder.ToString();
+                lastNum = checkReturn[0];
+                for (int i = 0; i < lastNum.Length; i++)
+                {
+                    FILENAME[14 - i] = (char)lastNum[i];
+                }
+                CAVITYASSEMBLIES[idx] = $"{new string(FILENAME)}.SLDASM";
+                
+                switch (idx)
+                {
+                    case 0:
+
+                        if (redundantCavAssem[idx] == '2')
+                        {
+                            
+                            File.Copy($@"{TemplatePath}\{lockCavityAssemblies[idx]}",
+                               $@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}",
+                               true);
+
+
+                            for (int idx2 = 5; idx2 <= 6; idx2++)
+                            {
+                                output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}", $@"{TemplatePath}\{lockCavityParts[idx2]}", $@"{ArchivePath}\{CAVITYPARTS[idx2]}");
+                            }
+                        }
+
+                        break;
+
+                    case 1:
+                        if (redundantCavAssem[idx] == '0')
+                        {
+                            File.Copy($@"{TemplatePath}\{lockCavityAssemblies[idx]}",
+                                $@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}",
+                                true);
+
+                            File.Copy($@"{TemplatePath}\{lockCavityAssembliesDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            Debug.Print("Archive Path is " + $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW");
+                            Debug.Print("WTF Im talkin bout Path is " + $@"{TemplatePath}\{lockCavityAssemblies[idx]}");
+                            Debug.Print("WTF Where TF is going Path is " + $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockCavityAssemblies[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
+
+                            for (int idx2 = 0; idx2 <= 4; idx2++)
+                            {
+                                output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}", $@"{TemplatePath}\{lockCavityParts[idx2]}", $@"{ArchivePath}\{CAVITYPARTS[idx2]}");
+                            }
+                            output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}", $@"{TemplatePath}\{lockCavityAssemblies[0]}", $@"{ArchivePath}\{CAVITYASSEMBLIES[0]}");
+                            //output = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}", $@"{TemplatePath}\{lockMandrelAssemblies[1]}", $@"{ArchivePath}\{CAVITYASSEMBLIES[1]}");
+                        }
+                        break;
+                        
+
+                    default:
+                        if (!File.Exists($@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}"))
+                        {
+                            File.Copy($@"{TemplatePath}\{lockCavityAssemblies[idx]}",
+                               $@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}",
+                               true);
+                        }
+                        break;
+                }
+            }
+
+            FileOpen(FILE_ASSEM);
+            output = swModel.Save3((int)swSaveAsOptions_e.swSaveAsOptions_Silent, ref errors, ref warnings);
+
             #endregion
         }
 
@@ -2278,14 +2652,13 @@ namespace ADCOPlugin
                 }
                 else
                 {
-                    string[] checkLoc = {  "0123456",
-                                            "04",
+                    string[] checkLoc = {  "04",
                                             "034",
-                                            "03",
                                             "",
                                             "",
                                             "",
-                                            ""};
+                                            "",
+                                            "" };
 
                     //// Specify a particular dependency string in checkLoc for the current part
                     checkStr = checkLoc[PartNum];
@@ -2456,14 +2829,15 @@ namespace ADCOPlugin
                     // List of strings defining which dimensions each part is dependent on
                     // The string number corresponds to the part defined in lockMandrelParts string array
                     string[] checkLoc = {  "04",//0
-                                        "",//1
-                                       "034" };//2
+                                            "",//1
+                                            "034" };//2
                     // Specify a particular dependency string in checkLoc for the current part
                     checkStr = checkLoc[PartNum];
                 }
                 else
                 {
-                    string[] checkLoc = { "0346" };//0
+                    string[] checkLoc = { "",
+                                          "034"};//0
                     // Specify a particular dependency string in checkLoc for the current part
                     checkStr = checkLoc[PartNum];
                 }
