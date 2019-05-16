@@ -365,8 +365,8 @@ namespace ADCOPlugin
         {
             int error = GlueRead();
 
-            while (true)
-            {
+            while (error != 1)
+            
                 if(error == 0)
                 {
                     if (!File.Exists($@"{ArchivePath}\~app.lock"))
@@ -383,7 +383,7 @@ namespace ADCOPlugin
                         MessageBox.Show("Glue archive is currently being altered. Press OK to check again.");
                     }
                 }
-            }
+            
             return;
         }
 
@@ -464,7 +464,7 @@ namespace ADCOPlugin
         /// </summary>
         private void GlueSet()
         {
-
+            Debug.Print("in GlueSET()");
             ThreadHelpers.RunOnUIThread(() =>
             {
                 string lastNum;
@@ -1898,12 +1898,14 @@ namespace ADCOPlugin
         private void LockApplyButton_Click(object sender, RoutedEventArgs e)
         {
             int error = LockRead();
+            Debug.Print("LockRead Value is " + LockRead().ToString());
             Debug.Print("Exited LockRead");
             Debug.Print($@"{ArchivePath}");
-            while (true)
+            while (error != 1)
             {
                 if (error == 0)
                 {
+                    Debug.Print("Up in this");
                     if (!File.Exists($@"{ArchivePath}\~app.lock"))
                     {
                         using (FileStream fs = File.Create($@"{ArchivePath}\~app.lock")) { }
@@ -1973,7 +1975,7 @@ namespace ADCOPlugin
                 return (1);
             }
 
-            if (double.Parse(LockEParam.Text) < 4.5 || double.Parse(LockEParam.Text) > 6)
+            if (double.Parse(LockEParam.Text) < 1.5 || double.Parse(LockEParam.Text) > 6)
             {
                 MessageBox.Show("Value of E must be between 4.5\" and 6\"", "", button, icon);
                 return (1);
@@ -2551,6 +2553,12 @@ namespace ADCOPlugin
                                $@"{ArchivePath}\{CAVITYASSEMBLIES[idx]}",
                                true);
 
+                            File.Copy($@"{TemplatePath}\{lockCavityAssembliesDRW[idx]}",
+                                        $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                        true);
+
+                            bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
+                                $@"{TemplatePath}\{lockCavityAssemblies[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
 
                             for (int idx2 = 5; idx2 <= 6; idx2++)
                             {
@@ -2570,10 +2578,6 @@ namespace ADCOPlugin
                             File.Copy($@"{TemplatePath}\{lockCavityAssembliesDRW[idx]}",
                                         $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                         true);
-
-                            Debug.Print("Archive Path is " + $@"{ArchivePath}\{new string(FILENAME)}.SLDDRW");
-                            Debug.Print("WTF Im talkin bout Path is " + $@"{TemplatePath}\{lockCavityAssemblies[idx]}");
-                            Debug.Print("WTF Where TF is going Path is " + $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
 
                             bool ReplaceRefDRW = swApp.ReplaceReferencedDocument($@"{ArchivePath}\{new string(FILENAME)}.SLDDRW",
                                 $@"{TemplatePath}\{lockCavityAssemblies[idx]}", $@"{ArchivePath}\{new string(FILENAME)}.SLDASM");
